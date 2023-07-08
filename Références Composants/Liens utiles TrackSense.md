@@ -19,6 +19,9 @@
   - []()
   - []()
   - []()
+
+
+
 - [LILYGO® TTGO T-SIM7000G 4MB / 16MB Module ESP32-WROVER-B Chip SIM Card WiFi Bluetooth 18650 Battery Holder Solar Charge Board](https://www.aliexpress.com/item/1005003094951052.html?spm=a2g0o.productlist.main.3.1a1a5740L7h1SR&algo_pvid=3b26d104-ae2f-4380-8052-8678d1a883ed&algo_exp_id=3b26d104-ae2f-4380-8052-8678d1a883ed-1&pdp_npi=3%40dis%21CAD%2149.28%2149.28%21%21%21%21%21%40211bd8be16881367152552303d07c3%2112000024051725112%21sea%21CA%210&curPageLogUid=yhWCcz28lw2N)
   - [**Dépot GitHub Officiel LILYGO**](https://github.com/Xinyuan-LilyGO/LilyGO-T-SIM7000G)
   - [T-SIM7000G SIM Development Board ESP32 Wireless Module](https://www.lilygo.cc/products/t-sim7000g)
@@ -28,8 +31,16 @@
   - [**Getting Started with LILYGO T-SIM7000G ESP32 (LTE, GPRS, and GPS)**](https://randomnerdtutorials.com/lilygo-t-sim7000g-esp32-lte-gprs-gps/)
   - [?? GNSS – How to use GNSS feature on Simcom Modules? ??](https://m2msupport.net/m2msupport/gnss-how-to-use-gnss-feature-on-simcom-modules/)
   - []()
-- [GY-87]()
+
+
+
+- [GY-87 ou HW-290](https://fr.aliexpress.com/item/4000234539826.html?spm=a2g0o.productlist.main.1.ada2255fipWjkx&algo_pvid=cab0b467-da01-484c-b1c1-c998dc8504ef&algo_exp_id=cab0b467-da01-484c-b1c1-c998dc8504ef-0&pdp_npi=3%40dis%21CAD%214.26%213.74%21%21%21%21%21%40211be54b16881375764153518d07ff%2110000000949655594%21sea%21CA%210&curPageLogUid=aoOXPM3ZuVVH&gatewayAdapt=glo2fra#nav-review)
   - [Interfacing GY-87 IMU MPU6050 HMC5883L BMP085 Module with Arduino](https://electropeak.com/learn/interfacing-gy-87-10dof-imu-mpu6050-hmc5883l-bmp085-module-with-arduino/)
+  - [HMC5883L_Simple Library](https://github.com/sleemanj/HMC5883L_Simple)
+  - [GY-87 10DOF MPU6050 HMC5883L BMP180 Sensor Module](https://store.roboticsbd.com/sensors/382-gy-87-10dof-mpu6050-hmc5883l-bmp180-sensor-module-robotics-bangladesh.html)
+
+
+
 - [MPU-6050]()
   - [**I2C Device Library** The I2C Device Library (i2cdevlib) is a collection of mostly uniform and well-documented classes to provide simple and intuitive interfaces to I2C devices.](https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/MPU6050)
   - [**Use and Calibrate HMC5883L Digital Compass**](https://www.best-microcontroller-projects.com/hmc5883l.html)
@@ -39,10 +50,12 @@
   - []()
   - []()
   - []()
+
+
+
 - [Connecteur female headers PCB, long, 2.54mm, 11/12mm, 2mm, 3mm, 4mm, 6mm, 8mm, 10mm, 15mm, 20/40 broches](https://fr.aliexpress.com/item/1005003961219838.html?spm=a2g0o.detail.0.0.3789fYbafYbajp&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=3dd93779-9ecc-4d7b-9a69-51549ba19462&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:3dd93779-9ecc-4d7b-9a69-51549ba19462,tpp_buckets:668%232846%238116%232002&pdp_npi=3%40dis%21CAD%211.65%211.65%21%21%21%21%21%402101ec1f16884816869006605eff6d%2112000027575194850%21rec%21CA%21)
   - [Dessin connecteurs female headers](https://fr.aliexpress.com/item/4000979967513.html?spm=a2g0o.detail.0.0.4a767yp77yp7Mx&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=e7105b2a-5874-40fd-b602-fba5c134012f&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:e7105b2a-5874-40fd-b602-fba5c134012f,tpp_buckets:668%232846%238116%232002&pdp_npi=3%40dis%21CAD%211.0%210.95%21%21%21%21%21%402101ead816884800553916301ef787%2110000013144422244%21rec%21CA%21)
   - []()
-
   - []()
   - []()
   - []()
