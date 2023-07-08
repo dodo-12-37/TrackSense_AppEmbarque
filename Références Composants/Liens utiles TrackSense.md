@@ -6,6 +6,7 @@
   - [**Library Bodmer/TFT_eSPI**](https://github.com/Bodmer/TFT_eSPI/blob/master/User_Setups/Setup200_GC9A01.h)
   - [Library carlfriess/GC9A01_demo]()
   - [Exemple de code pour l'écran](https://www.makerfabs.com/gc9a01-1.28-inch-round-lcd-module.html)
+  - [Adafruit_GC9A01A Library](https://github.com/adafruit/Adafruit_GC9A01A)  
   - [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library/blob/master/README.md)
   - [**ESP32 SPI Communication: Set Pins, Multiple SPI Bus Interfaces, and Peripherals (Arduino IDE)**](https://randomnerdtutorials.com/esp32-spi-communication-arduino/)
   - Exemple de code : [Photographic album using ESP32 and GC9A01 round screen](https://giltesa.com/en/2021/01/05/photographic-album-using-esp32-and-gc9a01-round-screen)
@@ -13,6 +14,8 @@
   - Très bonne référence complète, mais pas modèle exacte [**Waveshare 1.28inch LCD Module**](https://www.waveshare.com/wiki/1.28inch_LCD_Module)
   - [**Waveshare : 240×240, General 1.28inch Round LCD Display Module, 65K RGB**](https://www.waveshare.com/1.28inch-LCD-Module.htm)
   - [GSM/GPRS/GPS Shield (B), Arduino Shield Based on SIM808 ](https://www.waveshare.com/wiki/GSM/GPRS/GPS_Shield_(B))
+  - [**IPS LCD 1.28″ 240×240 RGB Round Display GC9A01**](https://protosupplies.com/product/ips-lcd-128-round-square-display-gc9a01-copy/)
+  - [1.28inch LCD Display Module, IPS Screen, 65K RGB, 240 × 240 Resolution, SPI Interface. ](https://www.waveshare.com/wiki/1.28inch_LCD_Module#Introduction)
   - []()
   - []()
   - []()
@@ -38,6 +41,11 @@
   - []()
 - [Connecteur female headers PCB, long, 2.54mm, 11/12mm, 2mm, 3mm, 4mm, 6mm, 8mm, 10mm, 15mm, 20/40 broches](https://fr.aliexpress.com/item/1005003961219838.html?spm=a2g0o.detail.0.0.3789fYbafYbajp&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=3dd93779-9ecc-4d7b-9a69-51549ba19462&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:3dd93779-9ecc-4d7b-9a69-51549ba19462,tpp_buckets:668%232846%238116%232002&pdp_npi=3%40dis%21CAD%211.65%211.65%21%21%21%21%21%402101ec1f16884816869006605eff6d%2112000027575194850%21rec%21CA%21)
   - [Dessin connecteurs female headers](https://fr.aliexpress.com/item/4000979967513.html?spm=a2g0o.detail.0.0.4a767yp77yp7Mx&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=e7105b2a-5874-40fd-b602-fba5c134012f&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:e7105b2a-5874-40fd-b602-fba5c134012f,tpp_buckets:668%232846%238116%232002&pdp_npi=3%40dis%21CAD%211.0%210.95%21%21%21%21%21%402101ead816884800553916301ef787%2110000013144422244%21rec%21CA%21)
+  - []()
+
+  - []()
+  - []()
+  - []()
   - []()
 
 
