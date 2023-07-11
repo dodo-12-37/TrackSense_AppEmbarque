@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cadsofttools version="2.0">
+  <Measuring3d ScaleFactor="1">
+    <DimDistance UserString="" Distance="36.53143688616" Start="38.1143724684138,102.651105003406,394.522014147387" End="1.58293558225378,102.651105003406,394.522014147387" Normal="0,0" Type="1" Pos="403,269">
+      <Polyline Type="FPoint" Count="2" Values="38.1143724684138,102.651105003406,394.522014147387|1.58293558225378,102.651105003406,394.522014147387"/>
+      <PolylineExt Type="FPoint" Count="0" Values=""/>
+    </DimDistance>
+    <DimDistance UserString="" Distance="125.231432773779" Start="20.4490057756988,128.365716386888,394.522014147387" End="20.4490057756936,3.13428361310947,394.522014147387" Normal="0,0" Type="1" Pos="382,262">
+      <Polyline Type="FPoint" Count="2" Values="20.4490057756988,128.365716386888,394.522014147387|20.4490057756936,3.13428361310947,394.522014147387"/>
+      <PolylineExt Type="FPoint" Count="0" Values=""/>
+    </DimDistance>
+    <DimDistance UserString="" Distance="1.96318161536064" Start="8.05944051914378,126.49647,393.922014147387" End="8.05944051914355,128.365716386887,394.522014147387" Normal="0,0" Type="1" Pos="454,246">
+      <Polyline Type="FPoint" Count="2" Values="8.05944051914378,126.49647,393.922014147387|8.05944051914355,128.365716386887,394.522014147387"/>
+      <PolylineExt Type="FPoint" Count="0" Values=""/>
+    </DimDistance>
+    <DimDistance UserString="" Distance="2.63134745999812" Start="1.58293558225213,122.99066370775,394.522014147387" End="4.14496396914377,122.99066370775,393.922014147387" Normal="0,0" Type="1" Pos="432,426">
+      <Polyline Type="FPoint" Count="2" Values="1.58293558225213,122.99066370775,394.522014147387|4.14496396914377,122.99066370775,393.922014147387"/>
+      <PolylineExt Type="FPoint" Count="0" Values=""/>
+    </DimDistance>
+  </Measuring3d>
+</cadsofttools>

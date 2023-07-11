@@ -31,6 +31,8 @@
   - [**Getting Started with LILYGO T-SIM7000G ESP32 (LTE, GPRS, and GPS)**](https://randomnerdtutorials.com/lilygo-t-sim7000g-esp32-lte-gprs-gps/)
   - [?? GNSS – How to use GNSS feature on Simcom Modules? ??](https://m2msupport.net/m2msupport/gnss-how-to-use-gnss-feature-on-simcom-modules/)
   - []()
+  - []()
+  - []()
 
 
 
@@ -38,6 +40,9 @@
   - [Interfacing GY-87 IMU MPU6050 HMC5883L BMP085 Module with Arduino](https://electropeak.com/learn/interfacing-gy-87-10dof-imu-mpu6050-hmc5883l-bmp085-module-with-arduino/)
   - [HMC5883L_Simple Library](https://github.com/sleemanj/HMC5883L_Simple)
   - [GY-87 10DOF MPU6050 HMC5883L BMP180 Sensor Module](https://store.roboticsbd.com/sensors/382-gy-87-10dof-mpu6050-hmc5883l-bmp180-sensor-module-robotics-bangladesh.html)
+  - []()
+  - []()
+  - []()
 
 
 
@@ -50,6 +55,15 @@
   - []()
   - []()
   - []()
+
+
+
+- [Buzzer SFM-27 ou SFM-20B](https://fr.aliexpress.com/item/1005001792688572.html?spm=a2g0o.order_list.order_list_main.11.7a4818028e6SUh&gatewayAdapt=glo2fra)
+  - [Images dimension buzzer](https://fr.aliexpress.com/item/1005005426676025.html?spm=a2g0o.detail.0.0.5d5fBK1hBK1hFP&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=f82a8dd0-6433-49ed-a130-f7840a425f60&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:f82a8dd0-6433-49ed-a130-f7840a425f60,tpp_buckets:668%232846%238107%231934&pdp_npi=3%40dis%21CAD%210.58%210.52%21%21%21%21%21%402103250716890035395333740e7c3e%2112000033021292153%21rec%21CA%21)
+  - []()
+  - []()
+  - []()
+
 
 
 
@@ -91,8 +105,8 @@
 - [Document Tutorial](https://docs.easyeda.com/en/Introduction/Schematic-Capture/index.html)
 - [How to Make Custom ESP32 Board in 3 Hours | Full Tutorial](https://www.youtube.com/watch?app=desktop&v=S_p0YV-JlfU&feature=youtu.be)
 - [Get quote for PCB - JLCPCB](https://cart.jlcpcb.com/quote)
-- []()
-- []()
+- [Explication des connecteurs JST](https://www.mattmillman.com/info/crimpconnectors/common-jst-connector-types/#shsr)
+- [Autre explication des connecteurs JST](https://www.ourpcb.com/jst-connector-types.html)
 - []()
 - []()
 - []()
@@ -109,14 +123,14 @@
 # Résumé 04 juillet
 
 - [x] Ajouter 2ème rangée de pins pour connecter les CHEVELUS. 
-- [ ] Mesuré le speaker piézo et y trouver une place.
+- [x] Mesuré le speaker piézo et y trouver une place.
 - [x] Ajouter un connecteur pour le speaker piézo.
 - [x] Deux connectiques pour l'écran TFT. Un sur la TFCard et un sur le VSPI.
-- [ ] Ajouter deux connecteurs pour les boutons. (Vérifier pour une résistance???)
-- [ ] Ajouter des résistances pour les connecteurs I2C.
-- [ ] Enlever les connecteurs I2C en surplus.
-- [ ] Mettre le GY-87 directement sur le PCB.
-- [ ] Mettre des pins VCC et GND pour les boutons. (Et pins infos aussi ???)
+- [x] Ajouter deux connecteurs pour les boutons. (Vérifier pour une résistance???)
+- [x] Ajouter des résistances pour les connecteurs I2C.
+- [x] Enlever les connecteurs I2C en surplus.
+- [x] Mettre le GY-87 directement sur le PCB.
+- [x] Mettre des pins VCC et GND pour les boutons. (Et pins infos aussi ???)
 - [ ] 
 
 
