@@ -5,7 +5,7 @@
 
 #define BOARD_ESP32DEV 1
 #define BOARD_ESP32DOIT_DEVKIT_V1 2
-#define SPI_TFCard true
+#define SPI_TFCard false
 
 #if BOARD == BOARD_ESP32DEV
 
