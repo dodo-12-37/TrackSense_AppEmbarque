@@ -398,5 +398,8 @@ FodyWeavers.xsd
 *.sln.iml
 
 
+
+# User-specific files
 *.zip
-# Références Composants/Boitier TrackSense/Modèles 3D/20-pin-male-female-double-row-pcb-socket-connector-1.snapshot.2.zip
+TestEcran_Adafruit_GC9A01A
+TestEcran_TFT_eSPI
