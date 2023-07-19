@@ -66,6 +66,20 @@
 
 
 
+- [10 Pack TTP223B Digital Touch Capacitive Sensor Switch Module DIY for Arduino Raspberry Pi](https://www.aliexpress.com/item/1005004822891026.html?spm=a2g0n.productlist.0.0.6f1c2166sQjUmx&browser_id=f40f7d28e6504e32a352599361871f7c&aff_platform=msite&m_page_id=uphebnmecaykkgge18900068c97196d23eb016d7b9&gclid=&pdp_npi=3%40dis%21CAD%213.38%212.26%21%21%21%21%21%40212249cb16879225765457075d07bc%2112000030618614778%21sea%21CA%212631034824&algo_pvid=01b7a514-7b09-4ba2-9845-fc7d70db6b4e&gatewayAdapt=Msite2Pc)
+  - [Vidéo du fonctionnement des boutons](https://www.youtube.com/watch?v=V6ORKSxHLN0)
+  - [Tutorial for TTP223 Touch Sensor Module ( Capacitive)](https://www.instructables.com/Tutorial-for-TTP223-Touch-Sensor-Module-Capacitive/)
+  - Exemple avec capteur différent : [How to use a TTP223 based touch switch](https://diyusthad.com/2019/06/how-to-use-ttp223-based-touch-switch.html)
+  - []()
+  - []()
+  - [CapacitiveSensor Library : CapacitiveSensor lets you create sensors that can detect touch or proximity.](https://github.com/PaulStoffregen/CapacitiveSensor)
+  - [Capacitive Sensing Library](https://playground.arduino.cc/Main/CapacitiveSensor/)
+  - [Vidéo explication : Capacitive Sensing Library](https://www.youtube.com/watch?v=jhtY_Hn5jBM)
+  - []()
+  - []()
+
+
+
 - [Connecteur female headers PCB, long, 2.54mm, 11/12mm, 2mm, 3mm, 4mm, 6mm, 8mm, 10mm, 15mm, 20/40 broches](https://fr.aliexpress.com/item/1005003961219838.html?spm=a2g0o.detail.0.0.3789fYbafYbajp&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=3dd93779-9ecc-4d7b-9a69-51549ba19462&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:3dd93779-9ecc-4d7b-9a69-51549ba19462,tpp_buckets:668%232846%238116%232002&pdp_npi=3%40dis%21CAD%211.65%211.65%21%21%21%21%21%402101ec1f16884816869006605eff6d%2112000027575194850%21rec%21CA%21)
   - [Dessin connecteurs female headers](https://fr.aliexpress.com/item/4000979967513.html?spm=a2g0o.detail.0.0.4a767yp77yp7Mx&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.281175.0&scm_id=1007.40050.281175.0&scm-url=1007.40050.281175.0&pvid=e7105b2a-5874-40fd-b602-fba5c134012f&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.281175.0,pvid:e7105b2a-5874-40fd-b602-fba5c134012f,tpp_buckets:668%232846%238116%232002&pdp_npi=3%40dis%21CAD%211.0%210.95%21%21%21%21%21%402101ead816884800553916301ef787%2110000013144422244%21rec%21CA%21)
   - []()
