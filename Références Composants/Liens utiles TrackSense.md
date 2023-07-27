@@ -152,3 +152,18 @@
 Fusion 360 fabriquer boitier
 
 
+
+
+
+cd "C:\Program Files\Oracle\VirtualBox\"
+VBoxManage.exe modifyvm "VM_MacOS_AppMobile_2" --cpuidset 00000001 000106e5 00100800 0098e3fd bfebfbff
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "iMac19,3"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/efi/0/Config/DmiSystemVersion" "1.0"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/efi/0/Config/DmiBoardProduct" "Iloveapple"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/smc/0/Config/DeviceKey" "ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/smc/0/Config/GetKeyFromRealSMC" 0
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/TM/TSCMode" "RealTSCOffset"
+
+
+Gravité	Code	Description	Projet	Fichier	Ligne	État de la suppression
+Erreur	APT2098	xml_microsoft_maui_essentials_fileprovider_file_paths.xml.flat: error: failed to open file. "xml_microsoft_maui_essentials_fileprovider_file_paths.xml.flat: error: failed to open file.".	BluetoothLEConnection	C:\Program Files\dotnet\packs\Microsoft.Android.Sdk.Windows\32.0.485\tools\Xamarin.Android.Aapt2.targets	123	
