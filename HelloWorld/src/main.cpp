@@ -176,7 +176,7 @@ void setup()
     characteristicUserName->setValue("Pierre-Francois");
     Serial.println("Configuration des callback...");
     characteristicUserName->setCallbacks(new ServiceUserCallbacks());
-    Serial.println("Creation de la  caraceristique UserName terminee !");
+    Serial.println("Creation de la caraceristique UserName terminee !");
 
     Serial.println("Creation du descripteur UserName...");
     BLEDescriptor *descriptorUserName = new BLEDescriptor(DESCRIPTOR_USERNAME_UUID);
@@ -207,7 +207,6 @@ void setup()
 
 void loop()
 {
-
     if (!deviceConnected)
     {
         serverBLE->startAdvertising();
