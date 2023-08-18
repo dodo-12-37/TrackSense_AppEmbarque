@@ -2,32 +2,31 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_GC9A01A.h"
 
-
 #define BOARD_ESP32DEV 1
 #define BOARD_ESP32DOIT_DEVKIT_V1 2
 #define SPI_TFCard false
 
 #if BOARD == BOARD_ESP32DEV
 
-    #if SPI_TFCard
+#if SPI_TFCard
 
-    #define TFT_BL_BLK -1           // LED back-light
-    #define TFT_CS_SS 12 //25       // Chip select control pin
-    #define TFT_DC 25 //02          // Data Command control pin
-    #define TFT_RES_RST -1          // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 15     // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 14      // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 02          // Ne semble pas être utile
+#define TFT_BL_BLK -1       // LED back-light
+#define TFT_CS_SS 12        // 25       // Chip select control pin
+#define TFT_DC 25           // 02          // Data Command control pin
+#define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+#define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
+// #define TFT_MISO 02          // Ne semble pas être utile
 
-    #else   // VSPI
+#else // VSPI
 
-    #define TFT_BL_BLK   -1         // LED back-light
-    #define TFT_CS_SS   05 //25     // Chip select control pin
-    #define TFT_DC   00 //19        // Data Command control pin
-    #define TFT_RES_RST  -1         // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 23     // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 18      // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 19          // Ne semble pas être utile
+#define TFT_BL_BLK -1       // LED back-light
+#define TFT_CS_SS 05        // 25     // Chip select control pin
+#define TFT_DC 00           // 19        // Data Command control pin
+#define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+#define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
+// #define TFT_MISO 19          // Ne semble pas être utile
 
 /*!
     @brief  Instantiate Adafruit GC9A01A driver with software SPI
@@ -38,20 +37,20 @@
     @param  rst   Reset pin # (optional, pass -1 if unused)
     @param  miso  SPI MISO pin # (optional, pass -1 if unused)
 */
-    #endif
+#endif
 
 #endif
 
 #if BOARD == BOARD_ESP32DOIT_DEVKIT_V1
 
-#define TFT_BL_BLK 14           // LED back-light
-#define TFT_CS_SS 5                // Chip select control pin
-#define TFT_DC 16               // Data Command control pin
-#define TFT_RES_RST 13          // Reset pin (could connect to Arduino RESET pin)
-#define TFT_SDA_DIN_MOSI 23     // In some display driver board, it might be written as "SDA" and so on.
-#define TFT_SCL_CLK_SCK 18      // In some display driver board, it might be written as "SCL" and so on.
+#define TFT_BL_BLK 14       // LED back-light
+#define TFT_CS_SS 5         // Chip select control pin
+#define TFT_DC 16           // Data Command control pin
+#define TFT_RES_RST 13      // Reset pin (could connect to Arduino RESET pin)
+#define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
 
-//Adafruit_GC9A01A(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
+// Adafruit_GC9A01A(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
 
 #endif
 
@@ -73,6 +72,11 @@ unsigned long testFilledRoundRects();
 
 void setup()
 {
+    pinMode(33, INPUT);
+    pinMode(32, OUTPUT);
+    tone(32, 500, 5000);
+    
+
     pinMode(TFT_BL_BLK, OUTPUT);
     digitalWrite(TFT_BL_BLK, HIGH);
 
@@ -81,65 +85,93 @@ void setup()
 
     tft.begin();
 
-    Serial.println(F("Benchmark                Time (microseconds)"));
-    delay(10);
-    Serial.print(F("Screen fill              "));
-    Serial.println(testFillScreen());
-    delay(500);
+    tft.fillScreen(GC9A01A_BLACK);
 
-    Serial.print(F("Text                     "));
-    Serial.println(testText());
-    delay(3000);
+    // Serial.println(F("Benchmark                Time (microseconds)"));
+    // delay(10);
+    // Serial.print(F("Screen fill              "));
+    // Serial.println(testFillScreen());
+    // delay(500);
 
-    Serial.print(F("Lines                    "));
-    Serial.println(testLines(GC9A01A_CYAN));
-    delay(500);
+    // Serial.print(F("Text                     "));
+    // Serial.println(testText());
+    // delay(3000);
 
-    Serial.print(F("Horiz/Vert Lines         "));
-    Serial.println(testFastLines(GC9A01A_RED, GC9A01A_BLUE));
-    delay(500);
+    // Serial.print(F("Lines                    "));
+    // Serial.println(testLines(GC9A01A_CYAN));
+    // delay(500);
 
-    Serial.print(F("Rectangles (outline)     "));
-    Serial.println(testRects(GC9A01A_GREEN));
-    delay(500);
+    // Serial.print(F("Horiz/Vert Lines         "));
+    // Serial.println(testFastLines(GC9A01A_RED, GC9A01A_BLUE));
+    // delay(500);
 
-    Serial.print(F("Rectangles (filled)      "));
-    Serial.println(testFilledRects(GC9A01A_YELLOW, GC9A01A_MAGENTA));
-    delay(500);
+    // Serial.print(F("Rectangles (outline)     "));
+    // Serial.println(testRects(GC9A01A_GREEN));
+    // delay(500);
 
-    Serial.print(F("Circles (filled)         "));
-    Serial.println(testFilledCircles(10, GC9A01A_MAGENTA));
+    // Serial.print(F("Rectangles (filled)      "));
+    // Serial.println(testFilledRects(GC9A01A_YELLOW, GC9A01A_MAGENTA));
+    // delay(500);
 
-    Serial.print(F("Circles (outline)        "));
-    Serial.println(testCircles(10, GC9A01A_WHITE));
-    delay(500);
+    // Serial.print(F("Circles (filled)         "));
+    // Serial.println(testFilledCircles(10, GC9A01A_MAGENTA));
 
-    Serial.print(F("Triangles (outline)      "));
-    Serial.println(testTriangles());
-    delay(500);
+    // Serial.print(F("Circles (outline)        "));
+    // Serial.println(testCircles(10, GC9A01A_WHITE));
+    // delay(500);
 
-    Serial.print(F("Triangles (filled)       "));
-    Serial.println(testFilledTriangles());
-    delay(500);
+    // Serial.print(F("Triangles (outline)      "));
+    // Serial.println(testTriangles());
+    // delay(500);
 
-    Serial.print(F("Rounded rects (outline)  "));
-    Serial.println(testRoundRects());
-    delay(500);
+    // Serial.print(F("Triangles (filled)       "));
+    // Serial.println(testFilledTriangles());
+    // delay(500);
 
-    Serial.print(F("Rounded rects (filled)   "));
-    Serial.println(testFilledRoundRects());
-    delay(500);
+    // Serial.print(F("Rounded rects (outline)  "));
+    // Serial.println(testRoundRects());
+    // delay(500);
+
+    // Serial.print(F("Rounded rects (filled)   "));
+    // Serial.println(testFilledRoundRects());
+    // delay(500);
 
     Serial.println(F("Done!"));
 }
 
 void loop(void)
 {
-    for (uint8_t rotation = 0; rotation < 4; rotation++)
+    // for (uint8_t rotation = 0; rotation < 4; rotation++)
+    // {
+    //     tft.setRotation(rotation);
+    //     testText();
+    //     delay(1000);
+    // }
+
+    // tft.fillScreen(GC9A01A_BLACK);
+    tft.setCursor(40, 100);
+    // tft.setTextColor(GC9A01A_WHITE);
+    tft.setTextSize(2);
+
+    int valeur = digitalRead(33);
+
+    if (valeur == HIGH)
     {
-        tft.setRotation(rotation);
-        testText();
-        delay(1000);
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_BLACK);
+        tft.print("Pas appuyer...");
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_WHITE);
+        tft.print("Appuyer !");
+    }
+    else
+    {
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_BLACK);
+        tft.print("Appuyer !");
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_WHITE);
+        tft.print("Pas appuyer...");
     }
 }
 
