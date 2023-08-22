@@ -5,39 +5,41 @@
 #define BOARD_ESP32DEV 1
 #define BOARD_ESP32DOIT_DEVKIT_V1 2
 #define SPI_TFCard false
+#define RUN_DEMO false
+
 
 #if BOARD == BOARD_ESP32DEV
 
-#if SPI_TFCard
+    #if SPI_TFCard
 
-#define TFT_BL_BLK -1       // LED back-light
-#define TFT_CS_SS 12        // 25       // Chip select control pin
-#define TFT_DC 25           // 02          // Data Command control pin
-#define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-#define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
-#define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
-// #define TFT_MISO 02          // Ne semble pas être utile
+    #define TFT_BL_BLK -1       // LED back-light
+    #define TFT_CS_SS 12        // 25       // Chip select control pin
+    #define TFT_DC 25           // 02          // Data Command control pin
+    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
+    // #define TFT_MISO 02          // Ne semble pas être utile
 
-#else // VSPI
+    #else // VSPI
 
-#define TFT_BL_BLK -1       // LED back-light
-#define TFT_CS_SS 05        // 25     // Chip select control pin
-#define TFT_DC 00           // 19        // Data Command control pin
-#define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-#define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
-#define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
-// #define TFT_MISO 19          // Ne semble pas être utile
+    #define TFT_BL_BLK -1       // LED back-light
+    #define TFT_CS_SS 05        // 25     // Chip select control pin
+    #define TFT_DC 00           // 19        // Data Command control pin
+    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
+    // #define TFT_MISO 19          // Ne semble pas être utile
 
-/*!
-    @brief  Instantiate Adafruit GC9A01A driver with software SPI
-    @param  cs    Chip select pin #   05
-    @param  dc    Data/Command pin #    19
-    @param  mosi  SPI MOSI pin #    23
-    @param  sclk  SPI Clock pin #   18
-    @param  rst   Reset pin # (optional, pass -1 if unused)
-    @param  miso  SPI MISO pin # (optional, pass -1 if unused)
-*/
-#endif
+    /*!
+        @brief  Instantiate Adafruit GC9A01A driver with software SPI
+        @param  cs    Chip select pin #   05
+        @param  dc    Data/Command pin #    19
+        @param  mosi  SPI MOSI pin #    23
+        @param  sclk  SPI Clock pin #   18
+        @param  rst   Reset pin # (optional, pass -1 if unused)
+        @param  miso  SPI MISO pin # (optional, pass -1 if unused)
+    */
+    #endif
 
 #endif
 
@@ -84,70 +86,13 @@ void setup()
     Serial.println("GC9A01A Test!");
 
     tft.begin();
-
     tft.fillScreen(GC9A01A_BLACK);
 
-    // Serial.println(F("Benchmark                Time (microseconds)"));
-    // delay(10);
-    // Serial.print(F("Screen fill              "));
-    // Serial.println(testFillScreen());
-    // delay(500);
-
-    // Serial.print(F("Text                     "));
-    // Serial.println(testText());
-    // delay(3000);
-
-    // Serial.print(F("Lines                    "));
-    // Serial.println(testLines(GC9A01A_CYAN));
-    // delay(500);
-
-    // Serial.print(F("Horiz/Vert Lines         "));
-    // Serial.println(testFastLines(GC9A01A_RED, GC9A01A_BLUE));
-    // delay(500);
-
-    // Serial.print(F("Rectangles (outline)     "));
-    // Serial.println(testRects(GC9A01A_GREEN));
-    // delay(500);
-
-    // Serial.print(F("Rectangles (filled)      "));
-    // Serial.println(testFilledRects(GC9A01A_YELLOW, GC9A01A_MAGENTA));
-    // delay(500);
-
-    // Serial.print(F("Circles (filled)         "));
-    // Serial.println(testFilledCircles(10, GC9A01A_MAGENTA));
-
-    // Serial.print(F("Circles (outline)        "));
-    // Serial.println(testCircles(10, GC9A01A_WHITE));
-    // delay(500);
-
-    // Serial.print(F("Triangles (outline)      "));
-    // Serial.println(testTriangles());
-    // delay(500);
-
-    // Serial.print(F("Triangles (filled)       "));
-    // Serial.println(testFilledTriangles());
-    // delay(500);
-
-    // Serial.print(F("Rounded rects (outline)  "));
-    // Serial.println(testRoundRects());
-    // delay(500);
-
-    // Serial.print(F("Rounded rects (filled)   "));
-    // Serial.println(testFilledRoundRects());
-    // delay(500);
-
-    Serial.println(F("Done!"));
+    Serial.println(F("Setup Done!"));
 }
 
 void loop(void)
 {
-    // for (uint8_t rotation = 0; rotation < 4; rotation++)
-    // {
-    //     tft.setRotation(rotation);
-    //     testText();
-    //     delay(1000);
-    // }
-
     // tft.fillScreen(GC9A01A_BLACK);
     tft.setCursor(40, 100);
     // tft.setTextColor(GC9A01A_WHITE);
@@ -172,6 +117,72 @@ void loop(void)
         tft.setCursor(40, 100);
         tft.setTextColor(GC9A01A_WHITE);
         tft.print("Pas appuyer...");
+    }
+
+    #if RUN_DEMO == true
+        runScreenDemo();
+    #endif
+}
+
+void runScreenDemo(){
+
+    Serial.println(F("Benchmark                Time (microseconds)"));
+    delay(10);
+    Serial.print(F("Screen fill              "));
+    Serial.println(testFillScreen());
+    delay(500);
+
+    Serial.print(F("Text                     "));
+    Serial.println(testText());
+    delay(3000);
+
+    Serial.print(F("Lines                    "));
+    Serial.println(testLines(GC9A01A_CYAN));
+    delay(500);
+
+    Serial.print(F("Horiz/Vert Lines         "));
+    Serial.println(testFastLines(GC9A01A_RED, GC9A01A_BLUE));
+    delay(500);
+
+    Serial.print(F("Rectangles (outline)     "));
+    Serial.println(testRects(GC9A01A_GREEN));
+    delay(500);
+
+    Serial.print(F("Rectangles (filled)      "));
+    Serial.println(testFilledRects(GC9A01A_YELLOW, GC9A01A_MAGENTA));
+    delay(500);
+
+    Serial.print(F("Circles (filled)         "));
+    Serial.println(testFilledCircles(10, GC9A01A_MAGENTA));
+
+    Serial.print(F("Circles (outline)        "));
+    Serial.println(testCircles(10, GC9A01A_WHITE));
+    delay(500);
+
+    Serial.print(F("Triangles (outline)      "));
+    Serial.println(testTriangles());
+    delay(500);
+
+    Serial.print(F("Triangles (filled)       "));
+    Serial.println(testFilledTriangles());
+    delay(500);
+
+    Serial.print(F("Rounded rects (outline)  "));
+    Serial.println(testRoundRects());
+    delay(500);
+
+    Serial.print(F("Rounded rects (filled)   "));
+    Serial.println(testFilledRoundRects());
+    delay(500);
+
+    Serial.println(F("Test Screen Demo Done!"));
+    Serial.println(F("Enter Infinite LOOP !!!"));
+
+    for (uint8_t rotation = 0; rotation < 4; rotation++)
+    {
+        tft.setRotation(rotation);
+        testText();
+        delay(1000);
     }
 }
 
