@@ -2,56 +2,57 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_GC9A01A.h"
 
-
 #define BOARD_ESP32DEV 1
 #define BOARD_ESP32DOIT_DEVKIT_V1 2
 #define SPI_TFCard false
+#define RUN_DEMO false
+
 
 #if BOARD == BOARD_ESP32DEV
 
     #if SPI_TFCard
 
-    #define TFT_BL_BLK -1           // LED back-light
-    #define TFT_CS_SS 12 //25       // Chip select control pin
-    #define TFT_DC 25 //02          // Data Command control pin
-    #define TFT_RES_RST -1          // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 15     // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 14      // In some display driver board, it might be written as "SCL" and so on.
+    #define TFT_BL_BLK -1       // LED back-light
+    #define TFT_CS_SS 12        // 25       // Chip select control pin
+    #define TFT_DC 25           // 02          // Data Command control pin
+    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
     // #define TFT_MISO 02          // Ne semble pas être utile
 
-    #else   // VSPI
+    #else // VSPI
 
-    #define TFT_BL_BLK   -1         // LED back-light
-    #define TFT_CS_SS   05 //25     // Chip select control pin
-    #define TFT_DC   00 //19        // Data Command control pin
-    #define TFT_RES_RST  -1         // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 23     // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 18      // In some display driver board, it might be written as "SCL" and so on.
+    #define TFT_BL_BLK -1       // LED back-light
+    #define TFT_CS_SS 05        // 25     // Chip select control pin
+    #define TFT_DC 00           // 19        // Data Command control pin
+    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
     // #define TFT_MISO 19          // Ne semble pas être utile
 
-/*!
-    @brief  Instantiate Adafruit GC9A01A driver with software SPI
-    @param  cs    Chip select pin #   05
-    @param  dc    Data/Command pin #    19
-    @param  mosi  SPI MOSI pin #    23
-    @param  sclk  SPI Clock pin #   18
-    @param  rst   Reset pin # (optional, pass -1 if unused)
-    @param  miso  SPI MISO pin # (optional, pass -1 if unused)
-*/
+    /*!
+        @brief  Instantiate Adafruit GC9A01A driver with software SPI
+        @param  cs    Chip select pin #   05
+        @param  dc    Data/Command pin #    19
+        @param  mosi  SPI MOSI pin #    23
+        @param  sclk  SPI Clock pin #   18
+        @param  rst   Reset pin # (optional, pass -1 if unused)
+        @param  miso  SPI MISO pin # (optional, pass -1 if unused)
+    */
     #endif
 
 #endif
 
 #if BOARD == BOARD_ESP32DOIT_DEVKIT_V1
 
-#define TFT_BL_BLK 14           // LED back-light
-#define TFT_CS_SS 5                // Chip select control pin
-#define TFT_DC 16               // Data Command control pin
-#define TFT_RES_RST 13          // Reset pin (could connect to Arduino RESET pin)
-#define TFT_SDA_DIN_MOSI 23     // In some display driver board, it might be written as "SDA" and so on.
-#define TFT_SCL_CLK_SCK 18      // In some display driver board, it might be written as "SCL" and so on.
+#define TFT_BL_BLK 14       // LED back-light
+#define TFT_CS_SS 5         // Chip select control pin
+#define TFT_DC 16           // Data Command control pin
+#define TFT_RES_RST 13      // Reset pin (could connect to Arduino RESET pin)
+#define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
 
-//Adafruit_GC9A01A(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
+// Adafruit_GC9A01A(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK, int8_t _RST = -1, int8_t _MISO = -1);
 
 #endif
 
@@ -73,6 +74,11 @@ unsigned long testFilledRoundRects();
 
 void setup()
 {
+    pinMode(33, INPUT);
+    pinMode(32, OUTPUT);
+    tone(32, 500, 5000);
+    
+
     pinMode(TFT_BL_BLK, OUTPUT);
     digitalWrite(TFT_BL_BLK, HIGH);
 
@@ -80,6 +86,45 @@ void setup()
     Serial.println("GC9A01A Test!");
 
     tft.begin();
+    tft.fillScreen(GC9A01A_BLACK);
+
+    Serial.println(F("Setup Done!"));
+}
+
+void loop(void)
+{
+    // tft.fillScreen(GC9A01A_BLACK);
+    tft.setCursor(40, 100);
+    // tft.setTextColor(GC9A01A_WHITE);
+    tft.setTextSize(2);
+
+    int valeur = digitalRead(33);
+
+    if (valeur == HIGH)
+    {
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_BLACK);
+        tft.print("Pas appuyer...");
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_WHITE);
+        tft.print("Appuyer !");
+    }
+    else
+    {
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_BLACK);
+        tft.print("Appuyer !");
+        tft.setCursor(40, 100);
+        tft.setTextColor(GC9A01A_WHITE);
+        tft.print("Pas appuyer...");
+    }
+
+    #if RUN_DEMO == true
+        runScreenDemo();
+    #endif
+}
+
+void runScreenDemo(){
 
     Serial.println(F("Benchmark                Time (microseconds)"));
     delay(10);
@@ -130,11 +175,9 @@ void setup()
     Serial.println(testFilledRoundRects());
     delay(500);
 
-    Serial.println(F("Done!"));
-}
+    Serial.println(F("Test Screen Demo Done!"));
+    Serial.println(F("Enter Infinite LOOP !!!"));
 
-void loop(void)
-{
     for (uint8_t rotation = 0; rotation < 4; rotation++)
     {
         tft.setRotation(rotation);

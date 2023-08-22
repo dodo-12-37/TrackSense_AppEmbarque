@@ -13,7 +13,6 @@
   - [Video : GC9A01 Round LCD with ESP32 & Arduino](https://www.youtube.com/watch?v=k2c2zCmC_X0)
   - Très bonne référence complète, mais pas modèle exacte [**Waveshare 1.28inch LCD Module**](https://www.waveshare.com/wiki/1.28inch_LCD_Module)
   - [**Waveshare : 240×240, General 1.28inch Round LCD Display Module, 65K RGB**](https://www.waveshare.com/1.28inch-LCD-Module.htm)
-  - [GSM/GPRS/GPS Shield (B), Arduino Shield Based on SIM808 ](https://www.waveshare.com/wiki/GSM/GPRS/GPS_Shield_(B))
   - [**IPS LCD 1.28″ 240×240 RGB Round Display GC9A01**](https://protosupplies.com/product/ips-lcd-128-round-square-display-gc9a01-copy/)
   - [1.28inch LCD Display Module, IPS Screen, 65K RGB, 240 × 240 Resolution, SPI Interface. ](https://www.waveshare.com/wiki/1.28inch_LCD_Module#Introduction)
   - []()
@@ -24,7 +23,7 @@
 
 - [LILYGO® TTGO T-SIM7000G 4MB / 16MB Module ESP32-WROVER-B Chip SIM Card WiFi Bluetooth 18650 Battery Holder Solar Charge Board](https://www.aliexpress.com/item/1005003094951052.html?spm=a2g0o.productlist.main.3.1a1a5740L7h1SR&algo_pvid=3b26d104-ae2f-4380-8052-8678d1a883ed&algo_exp_id=3b26d104-ae2f-4380-8052-8678d1a883ed-1&pdp_npi=3%40dis%21CAD%2149.28%2149.28%21%21%21%21%21%40211bd8be16881367152552303d07c3%2112000024051725112%21sea%21CA%210&curPageLogUid=yhWCcz28lw2N)
   - [**Dépot GitHub Officiel LILYGO**](https://github.com/Xinyuan-LilyGO/LilyGO-T-SIM7000G)
-  - [T-SIM7000G SIM Development Board ESP32 Wireless Module](https://www.lilygo.cc/products/t-sim7000g)
+  - [T-SIM7000G SIM Development Board ESP32 Wireless Module](https://www.lilygo.cc/products/t-sim7000g?variant=42275516776629)
   - [LILYGO® TTGO Accessories Shield LoRa 868/915 Mhz](https://www.tindie.com/products/lilygo/lilygo-ttgo-accessories-shield-lora-868915-mhz/)
   - [**ACOPTEX Guide to LILYGO T-SIM7000G ESP32 development board- AT communication**](https://acoptex.com/wp/guide-to-lilygo-t-sim7000g-esp32-development-board/)
   - [**LILYGO T-SIM7000G ESP32: Get GPS Data (Latitude, Longitude, Altitude, and more)**](https://randomnerdtutorials.com/lilygo-t-sim7000g-esp32-gps-data/)
@@ -33,13 +32,14 @@
   - []()
   - []()
   - []()
-
+  - [GSM/GPRS/GPS Shield (B), Arduino Shield Based on SIM808 ](https://www.waveshare.com/wiki/GSM/GPRS/GPS_Shield_(B))
 
 
 - [GY-87 ou HW-290](https://fr.aliexpress.com/item/4000234539826.html?spm=a2g0o.productlist.main.1.ada2255fipWjkx&algo_pvid=cab0b467-da01-484c-b1c1-c998dc8504ef&algo_exp_id=cab0b467-da01-484c-b1c1-c998dc8504ef-0&pdp_npi=3%40dis%21CAD%214.26%213.74%21%21%21%21%21%40211be54b16881375764153518d07ff%2110000000949655594%21sea%21CA%210&curPageLogUid=aoOXPM3ZuVVH&gatewayAdapt=glo2fra#nav-review)
   - [Interfacing GY-87 IMU MPU6050 HMC5883L BMP085 Module with Arduino](https://electropeak.com/learn/interfacing-gy-87-10dof-imu-mpu6050-hmc5883l-bmp085-module-with-arduino/)
   - [HMC5883L_Simple Library](https://github.com/sleemanj/HMC5883L_Simple)
   - [GY-87 10DOF MPU6050 HMC5883L BMP180 Sensor Module](https://store.roboticsbd.com/sensors/382-gy-87-10dof-mpu6050-hmc5883l-bmp180-sensor-module-robotics-bangladesh.html)
+  - [**Use and Calibrate HMC5883L Digital Compass**](https://www.best-microcontroller-projects.com/hmc5883l.html)
   - []()
   - []()
   - []()
@@ -48,7 +48,6 @@
 
 - [MPU-6050]()
   - [**I2C Device Library** The I2C Device Library (i2cdevlib) is a collection of mostly uniform and well-documented classes to provide simple and intuitive interfaces to I2C devices.](https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/MPU6050)
-  - [**Use and Calibrate HMC5883L Digital Compass**](https://www.best-microcontroller-projects.com/hmc5883l.html)
   - [MPU6050 by Electronic Cats - Library for Arduino](https://github.com/ElectronicCats/mpu6050/tree/master)
   - [What is MPU6050?](https://github.com/ElectronicCats/mpu6050/wiki/1.-What-is-MPU6050%3F#features)
   - [VIDEO : ESP32 Web Server with MPU-6050 Accelerometer and Gyroscope (3D object representation)](https://www.youtube.com/watch?v=dXcF-Uqa-gw)
@@ -64,6 +63,20 @@
   - []()
   - []()
 
+
+
+
+- [10 Pack TTP223B Digital Touch Capacitive Sensor Switch Module DIY for Arduino Raspberry Pi](https://www.aliexpress.com/item/1005004822891026.html?spm=a2g0n.productlist.0.0.6f1c2166sQjUmx&browser_id=f40f7d28e6504e32a352599361871f7c&aff_platform=msite&m_page_id=uphebnmecaykkgge18900068c97196d23eb016d7b9&gclid=&pdp_npi=3%40dis%21CAD%213.38%212.26%21%21%21%21%21%40212249cb16879225765457075d07bc%2112000030618614778%21sea%21CA%212631034824&algo_pvid=01b7a514-7b09-4ba2-9845-fc7d70db6b4e&gatewayAdapt=Msite2Pc)
+  - [Vidéo du fonctionnement des boutons](https://www.youtube.com/watch?v=V6ORKSxHLN0)
+  - [Tutorial for TTP223 Touch Sensor Module ( Capacitive)](https://www.instructables.com/Tutorial-for-TTP223-Touch-Sensor-Module-Capacitive/)
+  - Exemple avec capteur différent : [How to use a TTP223 based touch switch](https://diyusthad.com/2019/06/how-to-use-ttp223-based-touch-switch.html)
+  - []()
+  - []()
+  - [CapacitiveSensor Library : CapacitiveSensor lets you create sensors that can detect touch or proximity.](https://github.com/PaulStoffregen/CapacitiveSensor)
+  - [Capacitive Sensing Library](https://playground.arduino.cc/Main/CapacitiveSensor/)
+  - [Vidéo explication : Capacitive Sensing Library](https://www.youtube.com/watch?v=jhtY_Hn5jBM)
+  - []()
+  - []()
 
 
 
@@ -139,3 +152,18 @@
 Fusion 360 fabriquer boitier
 
 
+
+
+
+cd "C:\Program Files\Oracle\VirtualBox\"
+VBoxManage.exe modifyvm "VM_MacOS_AppMobile_2" --cpuidset 00000001 000106e5 00100800 0098e3fd bfebfbff
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "iMac19,3"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/efi/0/Config/DmiSystemVersion" "1.0"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/efi/0/Config/DmiBoardProduct" "Iloveapple"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/smc/0/Config/DeviceKey" "ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc"
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/Devices/smc/0/Config/GetKeyFromRealSMC" 0
+VBoxManage setextradata "VM_MacOS_AppMobile_2" "VBoxInternal/TM/TSCMode" "RealTSCOffset"
+
+
+Gravité	Code	Description	Projet	Fichier	Ligne	État de la suppression
+Erreur	APT2098	xml_microsoft_maui_essentials_fileprovider_file_paths.xml.flat: error: failed to open file. "xml_microsoft_maui_essentials_fileprovider_file_paths.xml.flat: error: failed to open file.".	BluetoothLEConnection	C:\Program Files\dotnet\packs\Microsoft.Android.Sdk.Windows\32.0.485\tools\Xamarin.Android.Aapt2.targets	123	
