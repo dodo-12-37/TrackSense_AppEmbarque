@@ -35,7 +35,7 @@ TinyGsm modem(debugger);
 TinyGsm modem(SerialAT);
 #endif
 
-#define UART_BAUD 115200 //9600 //115200
+#define UART_BAUD 115200 // 9600 //115200
 #define PIN_DTR 25
 #define PIN_TX 27
 #define PIN_RX 26
@@ -110,7 +110,7 @@ void setup()
         Serial.println(str);
     }
 
-    // SD.mkdir("/test");
+    // SD.mkdir("/.test");
 
     SerialAT.begin(UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
 
@@ -241,19 +241,29 @@ void setup()
     modem.waitResponse();
 
     // res = modem.getLocalIP();
-    modem.sendAT("+CNACT?");
-    if (modem.waitResponse("+CNACT: ") == 1)
+    do
     {
-        modem.stream.read();
-        modem.stream.read();
-        res = modem.stream.readStringUntil('\n');
-        res.replace("\"", "");
-        res.replace("\r", "");
-        res.replace("\n", "");
-        modem.waitResponse();
-        Serial.print("The current network IP address is:");
-        Serial.println(res);
-    }
+        modem.sendAT("+CNACT?");
+
+        if (modem.waitResponse("+CNACT: ") == 1)
+        {
+            modem.stream.read();
+            modem.stream.read();
+            res = modem.stream.readStringUntil('\n');
+            res.replace("\"", "");
+            res.replace("\r", "");
+            res.replace("\n", "");
+            modem.waitResponse();
+            Serial.print("The current network IP address is:");
+            Serial.println(res);
+        }
+
+    } while (res == "0.0.0.0");
+
+    res = modem.getIMEI();
+    Serial.print("IMEI:");
+    Serial.println(res);
+    Serial.println();
 
     modem.sendAT("+CPSI?");
     if (modem.waitResponse("+CPSI: ") == 1)
@@ -270,58 +280,96 @@ void setup()
     Serial.println("After the network test is complete, please enter the  ");
     Serial.println("AT command in the serial terminal.");
     Serial.println("/**********************************************************/\n\n");
+
+    // Serial.println("1");
+    modem.sendAT("+EMAILCID=0"); // Set parameters of Email
+    modem.waitResponse();
+    
+    // Serial.println("2");
+    modem.sendAT("+EMAILTO=30"); // Set parameters of Email
+    // modem.waitResponse();
+
+    // Serial.println("3");
+    modem.sendAT("+SMTPSRV=\"smtp.office365.com\",25"); // Set SMTP server address and port //25
+    // modem.waitResponse();
+    
+    // Serial.println("4");
+    modem.sendAT("+SMTPAUTH=1,\"homedepot37@hotmail.com\",\"Makyo1327\""); // Set user name and password
+    // modem.waitResponse();
+
+    // Serial.println("5");
+    modem.sendAT("+SMTPFROM=\"homedepot37@hotmail.com\",\"homedepot37@hotmail.com\""); // Set sender address and name
+    // modem.waitResponse();
+
+    // Serial.println("6");
+    modem.sendAT("+SMTPRCPT=0,0,\"homedepot37@hotmail.com\",\"homedepot37@hotmail.com\""); // Set the recipient(To:)
+    // modem.waitResponse();
+
+    // Serial.println("7");
+    modem.sendAT("+SMTPRCPT=0,0,\"dodo-12-37@hotmail.com\",\"Dominique\""); // Set the recipient(To:)
+    // modem.waitResponse();
+
+    // modem.sendAT("+SMTPRCPT=1,0,\"john@sim.com\",\"john\"");    //Set the recipient(Cc:)
+    // modem.sendAT("+SMTPRCPT=2,0,\"john@sim.com\",\"john\"");    //Set the recipient(Bcc:)
+
+    // Serial.println("8");
+    modem.sendAT("+SMTPSUB=\"Test\""); // Set the subject
+    // modem.waitResponse();
+
+    // Serial.println("9");
+    modem.sendAT("+SMTPBODY=19"); // Set the body
+    // modem.waitResponse();
+
+    // Serial.println("10");
+    modem.sendAT("+SMTPSEND"); // Send the Email
+    // modem.waitResponse();
+
+    // AT+EMAILCID=0 //Set parameters of Email
+    // AT+EMAILTO=30 //Set parameters of Email
+    // AT+SMTPSRV="mail.sim.com",25 //Set SMTP server address and port
+    // AT+SMTPAUTH=1,"ohn","123456" //Set user name and password
+    // AT+SMTPFROM="john@sim.com","john" //Set sender address and name
+    // AT+SMTPRCPT=0,0,"john@sim.com","john" //Set the recipient(To:)
+    // AT+SMTPRCPT=1,0,"john@sim.com","john" //Set the recipient(Cc:)
+    // AT+SMTPRCPT=2,0,"john@sim.com","john" //Set the recipient(Bcc:)
+    // AT+SMTPSUB="Test" //Set the subject
+    // AT+SMTPBODY=19 //Set the body
+    // AT+SMTPSEND //Send the Email
 }
 
-    float lat, lon, alt, speed;
+// float lat, lon, alt, speed;
 
 void loop()
 {
     while (SerialAT.available())
     {
         SerialMon.write(SerialAT.read());
-        
-
-
-        Serial.println();
-        Serial.println("****************BATTERY*****************");
-        Serial.print("Battery percent: ");
-        Serial.print(modem.getBattPercent());
-        Serial.println("%");
-
-        modem.getGPS(&lat, &lon, &alt, &speed);
-
-        Serial.println("****************GPS*****************");
-        Serial.print("lat:");
-        Serial.println(lat);
-        Serial.print("lon:");
-        Serial.println(lon);
-        Serial.print("alt:");
-        Serial.println(alt);
-        Serial.print("speed:");
-        Serial.println(speed);
-        Serial.println("************************************");
-        Serial.println();
-
     }
     while (SerialMon.available())
     {
         SerialAT.write(SerialMon.read());
-
     }
+
+    // Serial.println();
+    // Serial.println("****************BATTERY*****************");
+    // Serial.print("Battery percent: ");
+    // Serial.print(modem.getBattPercent());
+    // Serial.println("%");
+
+    // modem.getGPS(&lat, &lon, &alt, &speed);
+
+    // Serial.println("****************GPS*****************");
+    // Serial.print("lat:");
+    // Serial.println(lat);
+    // Serial.print("lon:");
+    // Serial.println(lon);
+    // Serial.print("alt:");
+    // Serial.println(alt);
+    // Serial.print("speed:");
+    // Serial.println(speed);
+    // Serial.println("************************************");
+    // Serial.println();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // /*
 //   FILE: AllFunctions.ino
