@@ -7,39 +7,38 @@
 #define SPI_TFCard false
 #define RUN_DEMO false
 
-
 #if BOARD == BOARD_ESP32DEV
 
-    #if SPI_TFCard
+#if SPI_TFCard
 
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 12        // 25       // Chip select control pin
-    #define TFT_DC 25           // 02          // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 02          // Ne semble pas être utile
+#define TFT_BL_BLK -1       // LED back-light
+#define TFT_CS_SS 12        // 25       // Chip select control pin
+#define TFT_DC 25           // 02          // Data Command control pin
+#define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+#define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
+// #define TFT_MISO 02          // Ne semble pas être utile
 
-    #else // VSPI
+#else // VSPI
 
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 05        // 25     // Chip select control pin
-    #define TFT_DC 00           // 19        // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 19          // Ne semble pas être utile
+#define TFT_BL_BLK -1       // LED back-light
+#define TFT_CS_SS 05        // 25     // Chip select control pin
+#define TFT_DC 00           // 19        // Data Command control pin
+#define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
+#define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
+// #define TFT_MISO 19          // Ne semble pas être utile
 
-    /*!
-        @brief  Instantiate Adafruit GC9A01A driver with software SPI
-        @param  cs    Chip select pin #   05
-        @param  dc    Data/Command pin #    19
-        @param  mosi  SPI MOSI pin #    23
-        @param  sclk  SPI Clock pin #   18
-        @param  rst   Reset pin # (optional, pass -1 if unused)
-        @param  miso  SPI MISO pin # (optional, pass -1 if unused)
-    */
-    #endif
+/*!
+    @brief  Instantiate Adafruit GC9A01A driver with software SPI
+    @param  cs    Chip select pin #   05
+    @param  dc    Data/Command pin #    19
+    @param  mosi  SPI MOSI pin #    23
+    @param  sclk  SPI Clock pin #   18
+    @param  rst   Reset pin # (optional, pass -1 if unused)
+    @param  miso  SPI MISO pin # (optional, pass -1 if unused)
+*/
+#endif
 
 #endif
 
@@ -72,12 +71,17 @@ unsigned long testFilledTriangles();
 unsigned long testRoundRects();
 unsigned long testFilledRoundRects();
 
+void testMaisonScreen();
+void runScreenDemo();
+void testInterfaceAccueil();
+void dessinerBatteryLogo(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage);
+
+
 void setup()
 {
     pinMode(33, INPUT);
     pinMode(32, OUTPUT);
-    tone(32, 500, 5000);
-    
+    // tone(32, 500, 5000);
 
     pinMode(TFT_BL_BLK, OUTPUT);
     digitalWrite(TFT_BL_BLK, HIGH);
@@ -93,6 +97,77 @@ void setup()
 
 void loop(void)
 {
+    testInterfaceAccueil();
+
+    // testMaisonScreen();
+
+#if RUN_DEMO == true
+    runScreenDemo();
+#endif
+}
+
+void testInterfaceAccueil()
+{
+    tft.setCursor(140, 85);
+    tft.write("Bonjour");
+
+
+    tft.setCursor(20, 120);
+    // Serial.println(tft.width());
+    tft.setCursor(20, 140);
+    // Serial.println(tft.height());
+
+    tft.startWrite();
+    tft.writeFillRect(90, 180, 50, 50, GC9A01A_YELLOW);
+    tft.writeFillRect(140, 180, 50, 50, GC9A01A_DARKCYAN);
+    tft.setTextColor(GC9A01A_WHITE);
+    tft.setCursor(110, 200);
+    tft.write("Hello World !");
+    tft.endWrite();
+
+    tft.fillRect(175, 110, 50, 50, GC9A01A_RED);
+    tft.drawRect(175, 110, 50, 50, GC9A01A_WHITE);
+    
+    // Comme le nombre de pixel est pair (240), le centre est entre 2 pixels. On ne peut pas mettre de fraction de pixel... Donc pour avoir un cercle centré, il faut dessiner 4 cercles...
+    tft.drawCircle(119, 119, 120, GC9A01A_BLUE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+    tft.drawCircle(120, 120, 120, GC9A01A_BLUE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+    tft.drawCircle(119, 120, 120, GC9A01A_BLUE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+    tft.drawCircle(120, 119, 120, GC9A01A_BLUE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+
+    tft.drawPixel(0, 119, GC9A01A_RED);     // ouest / gauche 
+    tft.drawPixel(239, 119, GC9A01A_RED);   // est / droite
+    tft.drawPixel(119, 0, GC9A01A_RED);     // nord / haut
+    tft.drawPixel(119, 239, GC9A01A_RED);   // sud / bas
+
+    dessinerBatteryLogo(tft.width() / 2 - 30, 30, 60, 100);
+    dessinerBatteryLogo(20, 100, 150, 50);
+    dessinerBatteryLogo(20, 70, 50, 50);
+    dessinerBatteryLogo(100, 70, 20, 50);
+    dessinerBatteryLogo(150, 70, 10, 50);
+}
+
+void dessinerBatteryLogo(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage){
+    double hauteurY = largeurX / 2;
+    double zoneBarreVerteX = largeurX * 0.875;
+    double barreVerteX = zoneBarreVerteX / 3;
+    double barreVerteY = hauteurY * 0.8;
+    double coordBarreVerteX = coordX + (barreVerteX - barreVerteX * 0.875);
+    double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
+
+    // tft.drawRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);  // Contour
+    tft.drawRect(coordX, coordY, zoneBarreVerteX , hauteurY, GC9A01A_WHITE);  // Contour
+    tft.fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE);   // ti boute        + hauteurY / 2 - 16/2
+
+    
+    tft.fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #1
+    tft.fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #2
+    tft.fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #3
+
+
+}
+
+void testMaisonScreen()
+{
     // tft.fillScreen(GC9A01A_BLACK);
     tft.setCursor(40, 100);
     // tft.setTextColor(GC9A01A_WHITE);
@@ -100,31 +175,38 @@ void loop(void)
 
     int valeur = digitalRead(33);
 
+    char buffer[15];    // 1 caractère de plus que le nombre de lettres à cacher !
+
     if (valeur == HIGH)
     {
+        // tft.setCursor(40, 100);
+        // tft.setTextColor(GC9A01A_BLACK);
+        // tft.print("Pas appuyer...");
         tft.setCursor(40, 100);
-        tft.setTextColor(GC9A01A_BLACK);
-        tft.print("Pas appuyer...");
-        tft.setCursor(40, 100);
-        tft.setTextColor(GC9A01A_WHITE);
-        tft.print("Appuyer !");
+        tft.setTextColor(GC9A01A_WHITE, GC9A01A_RED);   // mettre GC9A01A_BLACK pour le fond
+        // tft.print("Appuyer !");
+        tft.printf("%-14s", "Appuyer !");
+
+        // sprintf(buffer, "%-14s", "Appuyer !");
+        // tft.print(buffer);
     }
     else
     {
+        // tft.setCursor(40, 100);
+        // tft.setTextColor(GC9A01A_BLACK);
+        // tft.print("Appuyer !");
         tft.setCursor(40, 100);
-        tft.setTextColor(GC9A01A_BLACK);
-        tft.print("Appuyer !");
-        tft.setCursor(40, 100);
-        tft.setTextColor(GC9A01A_WHITE);
-        tft.print("Pas appuyer...");
-    }
+        tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+        // tft.print("Pas appuyer...");
+        tft.printf("%-14s", "Pas appuyer...");
 
-    #if RUN_DEMO == true
-        runScreenDemo();
-    #endif
+        // sprintf(buffer, "%-14s", "Pas appuyer...");
+        // tft.print(buffer);
+    }
 }
 
-void runScreenDemo(){
+void runScreenDemo()
+{
 
     Serial.println(F("Benchmark                Time (microseconds)"));
     delay(10);
