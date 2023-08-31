@@ -183,7 +183,7 @@ void testMaisonScreen()
         // tft.setTextColor(GC9A01A_BLACK);
         // tft.print("Pas appuyer...");
         tft.setCursor(40, 100);
-        tft.setTextColor(GC9A01A_WHITE, GC9A01A_RED);   // mettre GC9A01A_BLACK pour le fond
+        tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);   // mettre GC9A01A_BLACK pour le fond
         // tft.print("Appuyer !");
         tft.printf("%-14s", "Appuyer !");
 
