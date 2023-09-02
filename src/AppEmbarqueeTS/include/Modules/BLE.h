@@ -1,14 +1,19 @@
 #pragma once
 #include <Arduino.h>
 #include "Interfaces/IBLE.h"
+#include "Configurations.h"
+#include "TrackSenseProperties.h"
 
 
 
 class BLE : IBLE
 {
 private:
-    /* data */
+    TrackSenseProperties* _trackSenseProperties;
+
 public:
-    BLE();
+    BLE(TrackSenseProperties* trackSenseProperties);
     ~BLE();
+
+    void tick() const override;
 };
