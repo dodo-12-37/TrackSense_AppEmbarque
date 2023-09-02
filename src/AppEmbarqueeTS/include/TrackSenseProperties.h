@@ -6,13 +6,17 @@
 
 class TrackSenseProperties
 {
-private:
+// private:
+public:
     /* Datas TrackSense */
     bool _isRideStarted;
     bool _isRidePaused;
     bool _isRideStopped;
     // bool _isRideSaved;
     // bool _isRideDeleted;
+
+    bool _TEST_isButton1Pressed;
+    bool _TEST_isButton2Pressed;
 
     // bool _isWIFIConnected;
     // bool _isBluetoothConnected;
@@ -77,7 +81,7 @@ private:
 
 
 
-public:
+// public:
     TrackSenseProperties();
     ~TrackSenseProperties();
 };
