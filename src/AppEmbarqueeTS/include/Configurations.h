@@ -14,7 +14,7 @@
     #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
     #define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
     #define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 02          // Ne semble pas être utile
+    // #define TFT_MISO 02          // Ne semble pas être utile, car non tactile
 
 #else // VSPI
 
@@ -24,24 +24,31 @@
     #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
     #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
     #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 19          // Ne semble pas être utile
+    // #define TFT_MISO 19          // Ne semble pas être utile, car non tactile
 
-    /*
-        @brief  Instantiate Adafruit GC9A01A driver with software SPI
-        @param  cs    Chip select pin #   05
-        @param  dc    Data/Command pin #    19
-        @param  mosi  SPI MOSI pin #    23
-        @param  sclk  SPI Clock pin #   18
-        @param  rst   Reset pin # (optional, pass -1 if unused)
-        @param  miso  SPI MISO pin # (optional, pass -1 if unused)
-    */
 #endif
+
+/*----- SD Card -----*/
+#define PIN_SDCARD_MOSI 15
+#define PIN_SDCARD_SCLK 14
+#define PIN_SDCARD_CS 13
+#define PIN_SDCARD_MISO 2
+
+
+/*----- LilyGO T-SIM7000G (GPS, LTE) -----*/
+#define UART_BAUD   115200
+#define PIN_GPS_LTE_TX 27 // 26
+#define PIN_GPS_LTE_RX 26 // 27
+#define PIN_GPS_LTE_PWR 4
+#define TINY_GSM_MODEM_SIM7000  // Utile ???
+#define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
 
 
 /*----- Buzzer -----*/
-#define PIN_BUZZER 26
+#define PIN_BUZZER 32
+
 
 /*----- Buttons -----*/
 #define LONG_TOUCH_TIME_BUTTON_MS 2000
-#define PIN_BUTTON1 25
-#define PIN_BUTTON2 25
+#define PIN_BUTTON1 33
+#define PIN_BUTTON2 34
