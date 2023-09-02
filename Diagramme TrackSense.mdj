@@ -9534,7 +9534,7 @@
 							"top": 944,
 							"width": 160,
 							"height": 120,
-							"text": "Je ne sais pas encore si je combine l'accéléromètre et le Gyroscope dans le même objet, car les 2 vont utiliser la même bibliothèque MPU6050... Et sont interreliées."
+							"text": "Je ne sais pas encore si je combine l'Accéléromètre et le Gyroscope dans le même objet, car les 2 vont utiliser la même bibliothèque MPU6050... Et sont interreliées."
 						}
 					]
 				},
