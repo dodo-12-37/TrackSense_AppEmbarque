@@ -1,14 +1,23 @@
 #pragma once
 #include <Arduino.h>
+#include "Configurations.h"
+#include "TrackSenseProperties.h"
+#include "Interfaces/IButton.h"
+#include "Modules/ButtonTactile.h"
 
 
 
 class ControlerButtons
 {
 private:
-    /* data */
+    TrackSenseProperties* _trackSenseProperties;
+    IButton* _button1;
+    IButton* _button2;
+    bool _isButton1Pressed;
+    bool _isButton2Pressed;
+
 public:
-    ControlerButtons();
+    ControlerButtons(TrackSenseProperties* trackSenseProperties);
     ~ControlerButtons();
 
     void changePage();
@@ -17,4 +26,6 @@ public:
     void stopRide();
     void restartRide();
     void makeNoiseBuzzer();
+
+    void tick();
 };
