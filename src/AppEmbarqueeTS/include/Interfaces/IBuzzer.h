@@ -3,7 +3,7 @@
 
 
 
-class ICompass
+class IBuzzer
 {
 public:
     virtual void tick() const = 0;

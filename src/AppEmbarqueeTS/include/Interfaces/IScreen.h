@@ -1,9 +1,10 @@
 #pragma once
+#include "TrackSenseProperties.h"
 
 
 
 class IScreen
 {
 public:
-    // virtual IAccelerometer* mesurerPositionGPS() const = 0;
+    virtual void tick() = 0;
 };
