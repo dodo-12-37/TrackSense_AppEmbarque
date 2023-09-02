@@ -44,6 +44,11 @@
 #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
 
 
+/*----- Accelerometer, Gyroscope, Compass, Temperature -----*/
+#define PIN_GY87_SDA 21
+#define PIN_GY87_SCL 22
+
+
 /*----- Buzzer -----*/
 #define PIN_BUZZER 32
 
