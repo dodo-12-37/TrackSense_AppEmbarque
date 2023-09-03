@@ -5,6 +5,7 @@
 Buzzer::Buzzer(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
 {
     pinMode(PIN_BUZZER, OUTPUT);
+    this->_trackSenseProperties->_isBuzzerOn = false;
 }
 
 Buzzer::~Buzzer()
@@ -13,5 +14,9 @@ Buzzer::~Buzzer()
 
 void Buzzer::tick() const
 {
-    tone(PIN_BUZZER, 500, 100);
+    if (this->_trackSenseProperties->_isBuzzerOn)
+    {
+        tone(PIN_BUZZER, 500, 100);
+        this->_trackSenseProperties->_isBuzzerOn = false;
+    }
 }

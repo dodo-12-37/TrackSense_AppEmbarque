@@ -44,5 +44,5 @@ void Program::execute()
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-    // this->_buzzer->tick();   // gossant
+    this->_buzzer->tick();   // gossant ou pas :p
 }

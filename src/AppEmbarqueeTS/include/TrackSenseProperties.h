@@ -32,6 +32,8 @@ public:
     // bool _isButton1Connected;
     // bool _isButton2Connected;
     // bool _isBuzzerConnected;
+    
+    bool _isBuzzerOn;
 
 
     /* datas GPS */
@@ -77,7 +79,6 @@ public:
     /* datas LED */
 
     /* datas Buzzer */
-
 
 
 
