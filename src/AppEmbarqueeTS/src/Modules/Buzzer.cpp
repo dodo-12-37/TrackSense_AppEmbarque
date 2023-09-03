@@ -5,7 +5,6 @@
 Buzzer::Buzzer(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
 {
     pinMode(PIN_BUZZER, OUTPUT);
-    this->_trackSenseProperties->_isBuzzerOn = false;
 }
 
 Buzzer::~Buzzer()

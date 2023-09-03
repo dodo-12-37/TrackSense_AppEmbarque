@@ -15,6 +15,9 @@ public:
     // bool _isRideSaved;
     // bool _isRideDeleted;
 
+    String _currentRideId;
+
+
     bool _TEST_isButton1Pressed;
     bool _TEST_isButton2Pressed;
 
@@ -32,8 +35,9 @@ public:
     // bool _isButton1Connected;
     // bool _isButton2Connected;
     // bool _isBuzzerConnected;
-    
+
     bool _isBuzzerOn;
+
 
 
     /* datas GPS */
@@ -67,10 +71,20 @@ public:
     /* datas SD Card */
 
     /* datas Screen */
+    bool _isHomePage;
+    bool _isCompassPage;
+    bool _isRideDirectionPage;
+    bool _isRidePage;
+    bool _isGlobalStatisticsPage;
+    bool _isGoHomePage;
+    bool _isRideStatisticsPage;
+    bool _isDarkMode;
 
     /* datas Wifi */
 
     /* datas Bluetooth */
+    bool _isDeviceConnected;
+
 
     /* datas LTE */
 
