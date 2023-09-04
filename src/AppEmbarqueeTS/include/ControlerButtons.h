@@ -13,8 +13,7 @@ private:
     TrackSenseProperties* _trackSenseProperties;
     IButton* _button1;
     IButton* _button2;
-    // bool _isButton1Pressed;
-    // bool _isButton2Pressed;
+
     int _stateButton1;  
     int _stateButton2;
 
