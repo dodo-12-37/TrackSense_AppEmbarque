@@ -7,5 +7,5 @@ class IButton
 {
 public:
     // virtual void tick() const = 0;
-    virtual bool getState() = 0;
+    virtual int getState() = 0;
 };

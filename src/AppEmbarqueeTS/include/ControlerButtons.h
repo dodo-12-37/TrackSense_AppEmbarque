@@ -13,8 +13,10 @@ private:
     TrackSenseProperties* _trackSenseProperties;
     IButton* _button1;
     IButton* _button2;
-    bool _isButton1Pressed;
-    bool _isButton2Pressed;
+    // bool _isButton1Pressed;
+    // bool _isButton2Pressed;
+    int _stateButton1;  
+    int _stateButton2;
 
 public:
     ControlerButtons(TrackSenseProperties* trackSenseProperties);
@@ -23,7 +25,7 @@ public:
     void changePage();
     void startRide();
     void pauseRide();
-    void stopRide();
+    void finishRide();
     void restartRide();
     void makeNoiseBuzzer();
 
