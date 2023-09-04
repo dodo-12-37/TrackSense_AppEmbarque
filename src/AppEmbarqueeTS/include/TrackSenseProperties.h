@@ -18,6 +18,7 @@ public:
         String _currentRideId;
 
 
+
         // VRAIMENT NECESSAIRE ?? //
         // bool _isWIFIConnected;
         // bool _isBluetoothConnected;
@@ -71,6 +72,7 @@ public:
     struct TrackSensePropertiesBluetooth
     {
         bool _isDeviceBluetoothConnected;
+        
         // bool _isBluetoothConnected;
         // bool _isBluetoothActivated;
     } PropertiesBluetooth;
@@ -149,6 +151,23 @@ public:
         bool _isBuzzerOn;
     } PropertiesBuzzer;
     
+    /* datas CompletedRide to send */
+    struct TrackSensePropertiesCompletedRideToSend
+    {
+        String _completedRideId;
+        String _routeId;
+        double _maxSpeed;
+        double _avgSpeed;
+        double _distance;
+        double _duration;
+        String _dateBegin;
+        String _dateEnd;
+        String _points;
+        int _nbPoints;
+        int _nbFalls;
+        bool _isReady;
+        bool _isReceived;
+    } PropertiesCompletedRideToSend;
 
     /* Methods */
     TrackSenseProperties();

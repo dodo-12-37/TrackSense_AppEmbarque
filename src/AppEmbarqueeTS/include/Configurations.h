@@ -62,8 +62,14 @@
 #define BUTTON_LONG_PRESS_DURATION_MS 2000
 #define BUTTON_INACTIVITY_TIME_MS 10000
 
+
 /*----- BLE -----*/
 #define BLE_DEVICE_NAME "TrackSense"
+#define BLE_PIN_CODE "123456"
+#define BLE_TRUE "true"
+#define BLE_FALSE "false"
+
+// Service et caracterisiques pour CompletedRide
 #define BLE_COMPLETED_RIDE_SERVICE_UUID "62ffab64-3646-4fb9-88d8-541deb961192"
 #define BLE_COMPLETED_RIDE_CHARACTERISTIC_ID "51656aa8-b795-427f-a96c-c4b6c57430dd"
 #define BLE_COMPLETED_RIDE_CHARACTERISTIC_ROUTE_ID "17072e79-57c3-4aa2-a71e-02dea60b5804"
