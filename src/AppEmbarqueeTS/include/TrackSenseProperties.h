@@ -2,101 +2,155 @@
 #include <Arduino.h>
 #include "TrackSenseProperties.h"
 
-
-
 class TrackSenseProperties
 {
-// private:
 public:
+
     /* Datas TrackSense */
-    bool _isRideStarted;
-    bool _isRidePaused;
-    bool _isRideStopped;
-    // bool _isRideSaved;
-    // bool _isRideDeleted;
+    struct TrackSensePropertiesTS
+    {
+        bool _isRideStarted;
+        bool _isRidePaused;
+        bool _isRideFinished;
+        // bool _isRideSaved;
+        // bool _isRideDeleted;
 
-    String _currentRideId;
-
-
-    bool _TEST_isButton1Pressed;
-    bool _TEST_isButton2Pressed;
-
-    // bool _isWIFIConnected;
-    // bool _isBluetoothConnected;
-    // bool _isLTEConnected;
-    // bool _isSDCardConnected;
-    // bool _isScreenConnected;
-    // bool _isGPSConnected;
-    // bool _isCompassConnected;
-    // bool _isGyroscopeConnected;
-    // bool _isAccelerometerConnected;
-    // bool _isTemperatureConnected;
-    // bool _isBatteryConnected;
-    // bool _isButton1Connected;
-    // bool _isButton2Connected;
-    // bool _isBuzzerConnected;
-
-    bool _isBuzzerOn;
+        String _currentRideId;
 
 
+        // VRAIMENT NECESSAIRE ?? //
+        // bool _isWIFIConnected;
+        // bool _isBluetoothConnected;
+        // bool _isLTEConnected;
+        // bool _isSDCardConnected;
+        // bool _isScreenConnected;
+        // bool _isGPSConnected;
+        // bool _isCompassConnected;
+        // bool _isGyroscopeConnected;
+        // bool _isAccelerometerConnected;
+        // bool _isTemperatureConnected;
+        // bool _isBatteryConnected;
+        // bool _isButton1Connected;
+        // bool _isButton2Connected;
+        // bool _isBuzzerConnected;
+    } PropertiesTS;
 
-    /* datas GPS */
-    double _latitude;
-    double _longitude;
-    double _altitude;
-    double _speed;
 
-    /* datas Compass */
-    double _heading_angle;  //PositionNord
-    double _declinationAngle;
-    // double _calibrationCompassX;
-    // double _calibrationCompassY;
-    // double _calibrationCompassZ;
+    /* datas Buttons */
+    struct TrackSensePropertiesButton
+    {
+        bool _isButton1Pressed;
+        bool _isButton2Pressed;
+        bool _TEST_isButton1Pressed;
+        bool _TEST_isButton2Pressed;
+    } PropertiesButtons;
 
-    /* datas Gyroscope */
-    double _roll_angle;     //PositionRoulis
-    double _pitch_angle;    //PositionTangage
-    double _yaw_angle;      //PositionLacet
-
-    /* datas Accelerometer */
-    double _acceleration_x;
-    double _acceleration_y;
-    double _acceleration_z;
-
-    /* datas Temperature */
-    double _temperature;
-
-    /* datas Battery */
-
-    /* datas SD Card */
 
     /* datas Screen */
-    bool _isHomePage;
-    bool _isCompassPage;
-    bool _isRideDirectionPage;
-    bool _isRidePage;
-    bool _isGlobalStatisticsPage;
-    bool _isGoHomePage;
-    bool _isRideStatisticsPage;
-    bool _isDarkMode;
+    struct TrackSensePropertiesScreen
+    {
+        bool _isHomePage;
+        bool _isCompassPage;
+        bool _isRideDirectionPage;
+        bool _isRidePage;
+        bool _isGlobalStatisticsPage;
+        bool _isGoHomePage;
+        bool _isRideStatisticsPage;
+        bool _isDarkMode;
+    } PropertiesScreen;
+    
 
-    /* datas Wifi */
+    /* datas SD Card */
+    struct TrackSensePropertiesSDCard
+    {
+        ;
+    } PropertiesSDCard;
+    
 
     /* datas Bluetooth */
-    bool _isDeviceConnected;
+    struct TrackSensePropertiesBluetooth
+    {
+        bool _isDeviceBluetoothConnected;
+        // bool _isBluetoothConnected;
+        // bool _isBluetoothActivated;
+    } PropertiesBluetooth;
 
 
     /* datas LTE */
+    struct TrackSensePropertiesLTE
+    {
+        bool _isDeviceLTEConnected;
+    } PropertiesLTE;
 
-    /* datas Button */
 
-    /* datas LED */
+    /* datas Wifi */
+    struct TrackSensePropertiesWifi
+    {
+        ;
+    } PropertiesWifi;
+
+
+    /* datas GPS */
+    struct TrackSensePropertiesGPS
+    {
+        double _latitude;
+        double _longitude;
+        double _altitude;
+        double _speed;
+    } PropertiesGPS;
+
+
+    /* datas Compass */
+    struct TrackSensePropertiesCompass
+    {
+        double _heading_angle; // PositionNord
+        double _declinationAngle;
+        // double _calibrationCompassX;
+        // double _calibrationCompassY;
+        // double _calibrationCompassZ;
+    } PropertiesCompass;
+
+
+    /* datas Gyroscope */
+    struct TrackSensePropertiesGyroscope
+    {
+        double _roll_angle;  // PositionRoulis
+        double _pitch_angle; // PositionTangage
+        double _yaw_angle;   // PositionLacet
+    } PropertiesGyroscope;
+
+
+    /* datas Accelerometer */
+    struct TrackSensePropertiesAccelerometer
+    {
+        double _acceleration_x;
+        double _acceleration_y;
+        double _acceleration_z;
+    } PropertiesAccelerometer;
+
+
+    /* datas Temperature */
+    struct TrackSensePropertiesTemperature
+    {
+        double _temperature;
+    } PropertiesTemperature;
+    
+
+    /* datas Battery */
+    struct TrackSensePropertiesBattery
+    {
+        double _batteryLevel;
+    } PropertiesBattery;
+    
 
     /* datas Buzzer */
+    struct TrackSensePropertiesBuzzer
+    {
+        bool _isBuzzerOn;
+    } PropertiesBuzzer;
+    
 
-
-
-// public:
+    /* Methods */
     TrackSenseProperties();
     ~TrackSenseProperties();
 };
