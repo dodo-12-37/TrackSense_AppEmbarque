@@ -13,7 +13,8 @@ private:
     int _lastStateButton;
     long _lastDateChange;
     int _lastStableStateButton;
-    uint16_t _minimumPressDuration;
+    uint16_t _durationDebounce;
+    int _timeFirstPress;
 
 public:
     ButtonTactile(const uint8_t pinButton);

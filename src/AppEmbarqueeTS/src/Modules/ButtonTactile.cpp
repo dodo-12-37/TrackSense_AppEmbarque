@@ -4,10 +4,11 @@
 
 ButtonTactile::ButtonTactile(const uint8_t pinButton) : 
     _pinButton(pinButton),
-    _lastStateButton(HIGH),
+    _lastStateButton(LOW),
     _lastDateChange(0),
-    _lastStableStateButton(HIGH),
-    _minimumPressDuration(25)
+    _lastStableStateButton(LOW),
+    _durationDebounce(0),
+    _timeFirstPress(0)
 {
     pinMode(this->_pinButton, INPUT);
 }
@@ -19,37 +20,73 @@ ButtonTactile::~ButtonTactile()
 
 int ButtonTactile::getState()
 {
-    int etatBouton = digitalRead(this->_pinButton);
-    long dateActuelle = millis();
+    int buttonState = digitalRead(this->_pinButton);
+    long actualTime = millis();
     int finalState = 0;     // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
 
-    if (etatBouton != this->_lastStateButton)
+    if (buttonState != this->_lastStateButton)
     {
-        this->_lastDateChange = dateActuelle;
-        this->_lastStateButton = etatBouton;
+        this->_lastDateChange = actualTime;
+        this->_lastStateButton = buttonState;
     }
-    // else if (etatBouton == HIGH && (dateActuelle - this->_lastDateChange > BUTTON_INACTIVITY_TIME_MS))
-    // {
-        // this->_actionInactivite->executer();
-    // }
 
-    if (dateActuelle - this->_lastDateChange > this->_minimumPressDuration)
+    if (actualTime - this->_lastDateChange > this->_durationDebounce)
     {
-        if (this->_lastStableStateButton == HIGH && etatBouton == LOW)
+        if (this->_lastStableStateButton == HIGH && buttonState == LOW)
         {
-            Serial.println("Short Pressed Button");
+            // Serial.print("Short Pressed Button Pin=");
+            // Serial.println(this->_pinButton);
             finalState = 1; // 1 == short press
         }
 
-        if (this->_lastStableStateButton == LOW && etatBouton == LOW && (dateActuelle - this->_lastDateChange > BUTTON_LONG_PRESS_DURATION_MS))
+        if (buttonState == LOW && (actualTime - this->_lastDateChange > BUTTON_LONG_PRESS_DURATION_MS))
         {
-            Serial.println("Long Pressed Button");
+            // Serial.print("Long Pressed Button Pin=");
+            // Serial.println(this->_pinButton);
             finalState = 2; // 2 == long press
-            this->_lastDateChange = dateActuelle;
+            this->_lastDateChange = actualTime;
         }
 
         /* Manque gestion des double pressions longues et courtes ...  */
 
-        this->_lastStableStateButton = etatBouton;
+        this->_lastStableStateButton = buttonState;
     }
+
+    Serial.println(finalState);
+    return finalState;
 }
+
+// int ButtonTactile::getState()
+// {
+//     int buttonState = digitalRead(this->_pinButton);
+//     long actualTime = millis();
+//     int finalState = 0;     // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
+
+//     if (buttonState != this->_lastStateButton) 
+//     {
+//         this->_lastDateChange = actualTime;
+//         this->_lastStateButton = buttonState;
+//     }
+
+//     if(actualTime - this->_lastDateChange > this->_durationDebounce) 
+//     {
+//         if (_lastStableStateButton == HIGH && buttonState == LOW) 
+//         {
+//             // _actionPressionCourte->executer();
+//             finalState = 1; // 1 == short press
+//             // this->_timeFirstPress = millis();
+//         } 
+
+//         if((actualTime - this->_lastDateChange > BUTTON_LONG_PRESS_DURATION_MS) && buttonState == LOW)
+//         {
+//             // _actionPressionLongue->executer();
+//             finalState = 2; // 2 == long press
+//             this->_lastDateChange = actualTime;
+//             // this->_timeFirstPress = 0;
+//         }
+
+//         this->_lastStableStateButton = buttonState;
+//     }
+
+//     return finalState;
+// }
