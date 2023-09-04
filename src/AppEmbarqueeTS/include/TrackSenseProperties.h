@@ -41,8 +41,8 @@ public:
     {
         bool _isButton1Pressed;
         bool _isButton2Pressed;
-        bool _TEST_isButton1Pressed;
-        bool _TEST_isButton2Pressed;
+        int _TEST_Button1State;
+        int _TEST_Button2State;
     } PropertiesButtons;
 
 

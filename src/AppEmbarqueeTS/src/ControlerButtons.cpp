@@ -25,8 +25,8 @@ void ControlerButtons::tick()
     this->_stateButton1 = this->_button1->getState();   // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     this->_stateButton2 = this->_button2->getState();
 
-    // this->_trackSenseProperties->_TEST_isButton1Pressed = this->_stateButton1;
-    // this->_trackSenseProperties->_TEST_isButton2Pressed = this->_stateButton2;
+    this->_trackSenseProperties->PropertiesButtons._TEST_Button1State = this->_stateButton1;
+    this->_trackSenseProperties->PropertiesButtons._TEST_Button2State = this->_stateButton2;
 
     if (this->_stateButton1 == 0 & this->_stateButton2 == 0)    // not pressed
     {
@@ -55,13 +55,13 @@ void ControlerButtons::tick()
 
         // this->_trackSenseProperties->PropertiesTS._isRideStarted = false;
 
-        if (this->_trackSenseProperties->PropertiesTS._isRideStarted)
-        {
-            this->pauseRide();
+        // if (this->_trackSenseProperties->PropertiesTS._isRideStarted)
+        // {
+        //     this->pauseRide();
             
-        }
+        // }
         
-        this->restartRide();
+        // this->restartRide();
 
     }
     else if (this->_stateButton1 == 3 & this->_stateButton2 == 0)   // double short press button 1
