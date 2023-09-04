@@ -24,7 +24,7 @@ ScreenGC9A01::~ScreenGC9A01()
 
 void ScreenGC9A01::tick()
 {
-    this->testMaisonScreen();
+    // this->testMaisonScreen();
 }
 
 void ScreenGC9A01::testMaisonScreen()
@@ -33,8 +33,8 @@ void ScreenGC9A01::testMaisonScreen()
     this->tft->setTextSize(2);
 
     // int isButton1Pressed = digitalRead(PIN_BUTTON1); // 33
-    int isButton1Pressed = this->_trackSenseProperties->_TEST_isButton1Pressed;
-    int isButton2Pressed = this->_trackSenseProperties->_TEST_isButton2Pressed;
+    int isButton1Pressed = this->_trackSenseProperties->PropertiesButtons._TEST_isButton1Pressed;
+    int isButton2Pressed = this->_trackSenseProperties->PropertiesButtons._TEST_isButton2Pressed;
 
     if (isButton1Pressed == false & isButton2Pressed == false)
     {
