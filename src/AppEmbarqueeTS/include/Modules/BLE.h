@@ -35,6 +35,7 @@ private:
     BLECharacteristic* _CRIsReceivedCaracteristic;
 
     void initBLE();
+    void initAdvertising();
     void initCompletedRideService();
     void initCompletedRideCaracteristics();
     void sendCompletedRide();

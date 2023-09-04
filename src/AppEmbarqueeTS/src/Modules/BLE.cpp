@@ -73,7 +73,7 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     this->initBLE();
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
-
+    this->initAdvertising();
 }
 
 BLE::~BLE()
@@ -94,6 +94,10 @@ void BLE::tick()
         this->sendCompletedRide();
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
     }
+    else if (!BLE::isDeviceConnected)
+    {
+        this->_serverBLE->startAdvertising();
+    }
 }
 
 void BLE::initBLE()
@@ -106,9 +110,20 @@ void BLE::initBLE()
     this->_serverBLE->setCallbacks(new ServerBLECallbacks());
 }
 
+void BLE::initAdvertising()
+{
+    BLEAdvertising *advertising = BLEDevice::getAdvertising();
+    advertising->addServiceUUID(BLE_COMPLETED_RIDE_SERVICE_UUID);
+    advertising->setScanResponse(true);
+    advertising->setMinPreferred(0x06);
+    advertising->setMinPreferred(0x12);
+    advertising->start();
+}
+
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
+    this->_completedRideService->start();
 };
 
 void BLE::initCompletedRideCaracteristics()
