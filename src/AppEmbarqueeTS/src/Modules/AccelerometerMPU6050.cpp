@@ -10,7 +10,7 @@ AccelerometerMPU6050::~AccelerometerMPU6050()
 {
 }
 
-void AccelerometerMPU6050::tick() const
+void AccelerometerMPU6050::tick()
 {
     ;
 }

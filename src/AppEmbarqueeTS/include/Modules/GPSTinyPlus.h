@@ -16,5 +16,5 @@ public:
     ~GPSTinyPlus();
 
     // void test() const override;
-    void tick() const override;
+    void tick() override;
 };

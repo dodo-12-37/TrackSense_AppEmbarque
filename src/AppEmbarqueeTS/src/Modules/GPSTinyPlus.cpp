@@ -18,7 +18,7 @@ GPSTinyPlus::~GPSTinyPlus()
 //     Serial.println("GPSTinyPlus::test() - _trackSenseProperties->_TEST_isButton2Pressed: " + String(_trackSenseProperties->_TEST_isButton2Pressed));
 // }
 
-void GPSTinyPlus::tick() const
+void GPSTinyPlus::tick()
 {
     ;
 }

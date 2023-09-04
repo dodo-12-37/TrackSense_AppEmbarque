@@ -15,5 +15,5 @@ public:
     AccelerometerMPU6050(TrackSenseProperties* trackSenseProperties);
     ~AccelerometerMPU6050();
 
-    void tick() const override;
+    void tick() override;
 };

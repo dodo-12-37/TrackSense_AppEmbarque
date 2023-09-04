@@ -15,5 +15,5 @@ public:
     CompassHMC5883L(TrackSenseProperties* trackSenseProperties);
     ~CompassHMC5883L();
 
-    void tick() const override;
+    void tick() override;
 };

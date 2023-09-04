@@ -15,5 +15,5 @@ public:
     LTE(TrackSenseProperties* trackSenseProperties);
     ~LTE();
 
-    void tick() const override;
+    void tick() override;
 };
