@@ -4,7 +4,7 @@ ButtonTactile::ButtonTactile(const uint8_t pinButton) : _pinButton(pinButton),
                                                         _lastStateButton(LOW),
                                                         _lastDateChange(0),
                                                         _lastStableStateButton(LOW),
-                                                        _durationDebounce(0)
+                                                        _durationDebounce(25)
 {
     pinMode(this->_pinButton, INPUT);
 }
@@ -13,7 +13,7 @@ ButtonTactile::~ButtonTactile()
 {
 }
 
-int ButtonTactile::getFinalState(bool isPressedOtherButton)
+int ButtonTactile::getFinalState()
 {
     this->_buttonState = digitalRead(this->_pinButton);
     long actualTime = millis();
@@ -57,7 +57,7 @@ int ButtonTactile::getFinalState(bool isPressedOtherButton)
         this->_lastStableStateButton = this->_buttonState;
     }
 
-    if (this->_buttonState != this->_lastStateButton && isPressedOtherButton == false)
+    if (this->_buttonState != this->_lastStateButton)
     {
         this->_lastDateChange = actualTime;
         this->_lastStateButton = this->_buttonState;
@@ -66,7 +66,7 @@ int ButtonTactile::getFinalState(bool isPressedOtherButton)
     return finalState;
 }
 
-bool ButtonTactile::getIsPressedButton()
-{
-    return this->_buttonState == HIGH;
-}
+// bool ButtonTactile::getIsPressedButton()
+// {
+//     return this->_buttonState == HIGH;
+// }

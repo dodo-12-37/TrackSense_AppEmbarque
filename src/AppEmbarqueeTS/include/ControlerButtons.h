@@ -14,10 +14,8 @@ private:
     IButton* _button1;
     IButton* _button2;
 
-    // int _liveStateButton1;  
-    // int _liveStateButton2;
-    bool _isPressedButton1;
-    bool _isPressedButton2;
+    // bool _isPressedButton1;
+    // bool _isPressedButton2;
 
     int _finalStateButton1;
     int _finalStateButton2;    
