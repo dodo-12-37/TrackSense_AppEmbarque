@@ -39,8 +39,8 @@ public:
     /* datas Buttons */
     struct TrackSensePropertiesButton
     {
-        bool _isButton1Pressed;
-        bool _isButton2Pressed;
+        // bool _isButton1Pressed;
+        // bool _isButton2Pressed;
         int _TEST_Button1State;
         int _TEST_Button2State;
     } PropertiesButtons;

@@ -2,6 +2,9 @@
 #include <Arduino.h>
 
 
+/*----- DEBUG -----*/
+#define DEBUG_BUTTONS false
+
 
 /*----- Screen -----*/
 #define SPI_TFCard 0 // 1 = SPI, 0 = VSPI

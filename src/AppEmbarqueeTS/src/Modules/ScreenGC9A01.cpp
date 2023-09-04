@@ -41,7 +41,7 @@ void ScreenGC9A01::testMaisonScreen()
         /* Nothing */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "No button pressed !");
-        Serial.println("No button pressed");
+        // Serial.println("No button pressed");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 0)   // short press button 1
     {

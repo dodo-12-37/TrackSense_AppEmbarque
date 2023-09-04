@@ -14,11 +14,12 @@ private:
     long _lastDateChange;
     int _lastStableStateButton;
     uint16_t _durationDebounce;
-    int _timeFirstPress;
+    int _buttonState;
 
 public:
     ButtonTactile(const uint8_t pinButton);
     ~ButtonTactile();
 
-    int getState() override;    // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
+    int getFinalState() override;    // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
+    bool getIsPressedButton() override;    // 0 == not pressed    // 1 == pressed
 };
