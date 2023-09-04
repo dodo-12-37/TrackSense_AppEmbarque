@@ -9,7 +9,7 @@
 
 
 
-class SDCard : ISDCard
+class SDCard : public ISDCard
 {
 private:
     TrackSenseProperties* trackSenseProperties;

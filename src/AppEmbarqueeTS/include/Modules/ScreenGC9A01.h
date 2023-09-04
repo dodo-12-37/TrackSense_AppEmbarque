@@ -10,7 +10,7 @@
 
 
 
-class ScreenGC9A01 : IScreen
+class ScreenGC9A01 : public IScreen
 {
 private:
     TrackSenseProperties* _trackSenseProperties;

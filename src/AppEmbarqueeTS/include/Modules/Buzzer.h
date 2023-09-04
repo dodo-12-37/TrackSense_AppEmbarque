@@ -6,7 +6,7 @@
 
 
 
-class Buzzer : IBuzzer
+class Buzzer : public IBuzzer
 {
 private:
     TrackSenseProperties* _trackSenseProperties;

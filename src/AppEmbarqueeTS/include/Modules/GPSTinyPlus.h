@@ -6,7 +6,7 @@
 
 
 
-class GPSTinyPlus : IGPS
+class GPSTinyPlus : public IGPS
 {
 private:
     TrackSenseProperties* _trackSenseProperties;

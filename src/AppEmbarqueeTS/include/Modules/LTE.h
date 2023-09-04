@@ -6,7 +6,7 @@
 
 
 
-class LTE : ILTE
+class LTE : public ILTE
 {
 private:
     const TrackSenseProperties* _trackSenseProperties;

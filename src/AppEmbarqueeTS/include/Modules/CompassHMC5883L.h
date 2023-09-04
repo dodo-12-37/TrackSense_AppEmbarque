@@ -6,7 +6,7 @@
 
 
 
-class CompassHMC5883L : ICompass
+class CompassHMC5883L : public ICompass
 {
 private:
     TrackSenseProperties* _trackSenseProperties;
