@@ -13,7 +13,7 @@ ButtonTactile::~ButtonTactile()
 {
 }
 
-int ButtonTactile::getFinalState()
+int ButtonTactile::getFinalState(bool isPressedOtherButton)
 {
     this->_buttonState = digitalRead(this->_pinButton);
     long actualTime = millis();
@@ -57,7 +57,7 @@ int ButtonTactile::getFinalState()
         this->_lastStableStateButton = this->_buttonState;
     }
 
-    if (this->_buttonState != this->_lastStateButton)
+    if (this->_buttonState != this->_lastStateButton && isPressedOtherButton == false)
     {
         this->_lastDateChange = actualTime;
         this->_lastStateButton = this->_buttonState;

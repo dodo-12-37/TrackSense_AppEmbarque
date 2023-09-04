@@ -20,6 +20,6 @@ public:
     ButtonTactile(const uint8_t pinButton);
     ~ButtonTactile();
 
-    int getFinalState() override;    // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
+    int getFinalState(bool isPressedOtherButton) override;    // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     bool getIsPressedButton() override;    // 0 == not pressed    // 1 == pressed
 };

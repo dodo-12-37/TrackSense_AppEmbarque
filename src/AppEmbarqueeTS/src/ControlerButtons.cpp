@@ -22,25 +22,26 @@ ControlerButtons::~ControlerButtons()
 
 void ControlerButtons::tick() 
 {
-    this->_finalStateButton1 = this->_button1->getFinalState();   // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
-    this->_finalStateButton2 = this->_button2->getFinalState();
     this->_isPressedButton1 = this->_button1->getIsPressedButton();   // 0 == not pressed    // 1 == pressed
     this->_isPressedButton2 = this->_button2->getIsPressedButton();
+
+    this->_finalStateButton1 = this->_button1->getFinalState(this->_isPressedButton2);   // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
+    this->_finalStateButton2 = this->_button2->getFinalState(this->_isPressedButton1);
 
     // if (this->_isPressedButton1 == true & this->_isPressedButton2 == true)
     // {
     //     this->_finalStateButton1 = 1;
     //     this->_finalStateButton2 = 1;
     // }
-    // else if (this->_isPressedButton1 == true & this->_isPressedButton2 == false)
+    // if (this->_isPressedButton1 == true & this->_isPressedButton2 == false)
     // {
-    //     this->_finalStateButton1 = 1;
+    //     // this->_finalStateButton1 = 1;
     //     this->_finalStateButton2 = 0;
     // }
     // else if (this->_isPressedButton1 == false & this->_isPressedButton2 == true)
     // {
     //     this->_finalStateButton1 = 0;
-    //     this->_finalStateButton2 = 1;
+    //     // this->_finalStateButton2 = 1;
     // }
     // else if (this->_isPressedButton1 == false & this->_isPressedButton2 == false)
     // {
