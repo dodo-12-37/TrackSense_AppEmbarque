@@ -26,6 +26,8 @@ Program::Program() :
     this->_accelerometer = new AccelerometerMPU6050(this->_trackSenseProperties);
     this->_buzzer = new Buzzer(this->_trackSenseProperties);
 
+    this->initProperties();
+
 }
 
 Program::~Program()
@@ -44,5 +46,22 @@ void Program::execute()
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-    // this->_buzzer->tick();   // gossant
+    this->_buzzer->tick();   // gossant ou pas :p
+}
+
+void Program::initProperties()
+{
+    // Buzzer
+    this->_trackSenseProperties->_isBuzzerOn = false;
+
+    // Screen
+    this->_trackSenseProperties->_isHomePage = true;
+    this->_trackSenseProperties->_isRidePage = false;
+    this->_trackSenseProperties->_isRideDirectionPage = false;
+    this->_trackSenseProperties->_isRideStatisticsPage = false;
+    this->_trackSenseProperties->_isGlobalStatisticsPage = false;
+    this->_trackSenseProperties->_isCompassPage = false;
+    this->_trackSenseProperties->_isGoHomePage = false;
+    this->_trackSenseProperties->_isDarkMode = true;
+
 }

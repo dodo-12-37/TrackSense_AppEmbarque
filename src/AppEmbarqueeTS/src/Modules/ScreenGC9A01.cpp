@@ -9,6 +9,8 @@ ScreenGC9A01::ScreenGC9A01(TrackSenseProperties* trackSenseProperties) : _trackS
     this->tft->fillScreen(GC9A01A_BLACK);
     this->tft->setRotation(0);
 
+    
+
     // this->tft->setTextColor(GC9A01A_RED, GC9A01A_BLACK);
     // this->tft->setTextSize(3);
     // this->tft->setCursor(20, 140);

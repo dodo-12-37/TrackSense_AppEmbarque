@@ -13,5 +13,9 @@ Buzzer::~Buzzer()
 
 void Buzzer::tick() const
 {
-    tone(PIN_BUZZER, 500, 100);
+    if (this->_trackSenseProperties->_isBuzzerOn)
+    {
+        tone(PIN_BUZZER, 500, 100);
+        this->_trackSenseProperties->_isBuzzerOn = false;
+    }
 }

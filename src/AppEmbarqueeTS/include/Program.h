@@ -32,6 +32,8 @@ private:
     Buzzer *_buzzer;
     ControlerButtons *_controlerButtons;
 
+    void initProperties();
+
 public:
     Program();
     ~Program();
