@@ -6,7 +6,7 @@
 
 
 
-class GyroscopeMPU6050 : IGyroscope
+class GyroscopeMPU6050 : public IGyroscope
 {
 private:
     TrackSenseProperties* _trackSenseProperties;

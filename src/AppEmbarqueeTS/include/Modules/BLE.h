@@ -6,7 +6,7 @@
 
 
 
-class BLE : IBLE
+class BLE : public IBLE
 {
 private:
     TrackSenseProperties* _trackSenseProperties;

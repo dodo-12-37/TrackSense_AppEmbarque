@@ -6,7 +6,7 @@
 
 
 
-class AccelerometerMPU6050 : IAccelerometer
+class AccelerometerMPU6050 : public IAccelerometer
 {
 private:
     TrackSenseProperties* _trackSenseProperties;

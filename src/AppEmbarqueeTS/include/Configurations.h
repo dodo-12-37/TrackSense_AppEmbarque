@@ -2,6 +2,9 @@
 #include <Arduino.h>
 
 
+/*----- DEBUG -----*/
+#define DEBUG_BUTTONS false
+
 
 /*----- Screen -----*/
 #define SPI_TFCard 0 // 1 = SPI, 0 = VSPI
@@ -54,6 +57,7 @@
 
 
 /*----- Buttons -----*/
-#define LONG_TOUCH_TIME_BUTTON_MS 2000
 #define PIN_BUTTON1 33
 #define PIN_BUTTON2 34
+#define BUTTON_LONG_PRESS_DURATION_MS 2000
+#define BUTTON_INACTIVITY_TIME_MS 10000

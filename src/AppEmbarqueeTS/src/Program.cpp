@@ -46,22 +46,26 @@ void Program::execute()
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-    this->_buzzer->tick();   // gossant ou pas :p
+    this->_buzzer->tick();   // gossant ou pas :p   // lol
 }
 
 void Program::initProperties()
 {
+    // Buttons
+    this->_trackSenseProperties->PropertiesButtons._TEST_Button1State = 0;
+    this->_trackSenseProperties->PropertiesButtons._TEST_Button2State = 0;
+
     // Buzzer
-    this->_trackSenseProperties->_isBuzzerOn = false;
+    this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = false;
 
     // Screen
-    this->_trackSenseProperties->_isHomePage = true;
-    this->_trackSenseProperties->_isRidePage = false;
-    this->_trackSenseProperties->_isRideDirectionPage = false;
-    this->_trackSenseProperties->_isRideStatisticsPage = false;
-    this->_trackSenseProperties->_isGlobalStatisticsPage = false;
-    this->_trackSenseProperties->_isCompassPage = false;
-    this->_trackSenseProperties->_isGoHomePage = false;
-    this->_trackSenseProperties->_isDarkMode = true;
+    this->_trackSenseProperties->PropertiesScreen._isHomePage = true;
+    this->_trackSenseProperties->PropertiesScreen._isRidePage = false;
+    this->_trackSenseProperties->PropertiesScreen._isRideDirectionPage = false;
+    this->_trackSenseProperties->PropertiesScreen._isRideStatisticsPage = false;
+    this->_trackSenseProperties->PropertiesScreen._isGlobalStatisticsPage = false;
+    this->_trackSenseProperties->PropertiesScreen._isCompassPage = false;
+    this->_trackSenseProperties->PropertiesScreen._isGoHomePage = false;
+    this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
 
 }
