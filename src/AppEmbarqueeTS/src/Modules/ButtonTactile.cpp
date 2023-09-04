@@ -2,7 +2,7 @@
 
 
 
-ButtonTactile::ButtonTactile(uint8_t pinButton) : 
+ButtonTactile::ButtonTactile(const uint8_t pinButton) : 
     _pinButton(pinButton),
     _lastStateButton(HIGH),
     _lastDateChange(0),
@@ -47,6 +47,8 @@ int ButtonTactile::getState()
             finalState = 2; // 2 == long press
             this->_lastDateChange = dateActuelle;
         }
+
+        /* Manque gestion des double pressions longues et courtes ...  */
 
         this->_lastStableStateButton = etatBouton;
     }

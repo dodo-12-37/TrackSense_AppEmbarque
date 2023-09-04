@@ -16,7 +16,7 @@ private:
     uint16_t _minimumPressDuration;
 
 public:
-    ButtonTactile(uint8_t pinButton);
+    ButtonTactile(const uint8_t pinButton);
     ~ButtonTactile();
 
     int getState() override;    // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
