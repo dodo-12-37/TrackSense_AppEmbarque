@@ -13,15 +13,33 @@ SDCard::~SDCard()
 
 void SDCard::init()
 {
-    Serial.println("Initializing SD card...");
+    // Serial.println("Initializing SD card...");
+    // SPI.begin(PIN_SDCARD_SCLK, PIN_SDCARD_MISO, PIN_SDCARD_MOSI);
+
+    // if (!SD.begin(PIN_SDCARD_CS))
+    // {
+    //     Serial.println("initialization failed!");
+    //     return;
+    // }
+    // Serial.println("initialization done.");
+
+
+
+
+    Serial.println("========SDCard Detect.======");
     SPI.begin(PIN_SDCARD_SCLK, PIN_SDCARD_MISO, PIN_SDCARD_MOSI);
 
     if (!SD.begin(PIN_SDCARD_CS))
     {
-        Serial.println("initialization failed!");
-        return;
+        Serial.println("SDCard MOUNT FAIL");
     }
-    Serial.println("initialization done.");
+    else
+    {
+        uint32_t cardSize = SD.cardSize() / (1024 * 1024);
+        String str = "SDCard Size: " + String(cardSize) + "MB";
+        Serial.println(str);
+    }
+    Serial.println("===========================");
 }
 
 void SDCard::tick()
