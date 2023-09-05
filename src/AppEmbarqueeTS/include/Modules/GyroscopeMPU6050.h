@@ -15,5 +15,5 @@ public:
     GyroscopeMPU6050(TrackSenseProperties* trackSenseProperties);
     ~GyroscopeMPU6050();
 
-    void tick() const override;
+    void tick() override;
 };

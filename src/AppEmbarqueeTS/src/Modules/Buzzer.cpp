@@ -11,7 +11,7 @@ Buzzer::~Buzzer()
 {
 }
 
-void Buzzer::tick() const
+void Buzzer::tick()
 {
     if (this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn)
     {

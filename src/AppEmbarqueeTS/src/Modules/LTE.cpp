@@ -10,7 +10,7 @@ LTE::~LTE()
 {
 }
 
-void LTE::tick() const
+void LTE::tick()
 {
     ;
 }

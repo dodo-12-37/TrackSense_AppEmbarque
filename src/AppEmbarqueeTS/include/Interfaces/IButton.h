@@ -6,7 +6,7 @@
 class IButton
 {
 public:
-    // virtual void tick() const = 0;
+    // virtual void tick() = 0;
     virtual int getFinalState() = 0;
     // virtual bool getIsPressedButton() = 0;
 };

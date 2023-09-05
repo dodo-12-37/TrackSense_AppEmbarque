@@ -10,7 +10,7 @@ CompassHMC5883L::~CompassHMC5883L()
 {
 }
 
-void CompassHMC5883L::tick() const
+void CompassHMC5883L::tick()
 {
     ;
 }

@@ -6,5 +6,9 @@
 class IGPS
 {
 public:
-    virtual void tick() const = 0;
+    virtual void tick() = 0;
+
+    virtual void gpsPowerOn() = 0;
+    virtual void gpsPowerOff() = 0;
+    virtual void gpsRestart() = 0;
 };

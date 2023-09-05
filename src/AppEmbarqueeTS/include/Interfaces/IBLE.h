@@ -6,5 +6,5 @@
 class IBLE
 {
 public:
-    virtual void tick() const = 0;
+    virtual void tick() = 0;
 };

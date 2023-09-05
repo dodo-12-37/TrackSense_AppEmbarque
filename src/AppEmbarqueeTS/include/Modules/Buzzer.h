@@ -15,5 +15,5 @@ public:
     Buzzer(TrackSenseProperties* trackSenseProperties);
     ~Buzzer();
 
-    void tick() const override;
+    void tick() override;
 };

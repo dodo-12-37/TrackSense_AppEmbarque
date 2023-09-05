@@ -10,7 +10,7 @@ GyroscopeMPU6050::~GyroscopeMPU6050()
 {
 }
 
-void GyroscopeMPU6050::tick() const
+void GyroscopeMPU6050::tick()
 {
     ;
 }
