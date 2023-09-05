@@ -48,62 +48,62 @@ void ScreenGC9A01::testMaisonScreen()
         /* Change Screen Menu Up */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Button 1 SHORT press !");
-        Serial.println("Button 1 SHORT press");
+        // Serial.println("Button 1 SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 1)   // short press button 2
     {
         /* Change Screen Menu Down */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Button 2 SHORT press !");
-        Serial.println("Button 2 SHORT press");
+        // Serial.println("Button 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 0)   // long press button 1
     {
         /* Start/Stop Ride */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Button 1 LONG press !");
-        Serial.println("Button 1 LONG press");
+        // Serial.println("Button 1 LONG press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 2)   // long press button 2
     {
         /* Pause/Restart Ride */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Button 2 LONG press !");
-        Serial.println("Button 2 LONG press");
+        // Serial.println("Button 2 LONG press");
     }
     else if (isButton1Pressed == 3 & isButton2Pressed == 0)   // double short press button 1
     {
         /* Trigger The Buzzer */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Button 1 DOUBLE SHORT press !");
-        Serial.println("Button 1 DOUBLE SHORT press");
+        // Serial.println("Button 1 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 3)   // double short press button 2
     {
         /* Trigger The Buzzer */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Button 2 DOUBLE SHORT press !");
-        Serial.println("Button 2 DOUBLE SHORT press");
+        // Serial.println("Button 2 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 1)   // short press button 1 and 2
     {
         /* Activate GoHome Mode */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Buttons 1 and 2 SHORT press !");
-        Serial.println("Buttons 1 and 2 SHORT press");
+        // Serial.println("Buttons 1 and 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 2)   // long press button 1 and 2
     {
         /* Trigger The Buzzer */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "Buttons 1 and 2 LONG press !");
-        Serial.println("Buttons 1 and 2 LONG press");
+        // Serial.println("Buttons 1 and 2 LONG press");
     }
     else
     {
         /* Nothing Good Happened... */
         this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf("%-28s", "BUTTONS ERROR !!!");
-        Serial.println("BUTTONS ERROR !!!");
+        // Serial.println("BUTTONS ERROR !!!");
     }
 }
