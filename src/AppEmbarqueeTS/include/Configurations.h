@@ -38,6 +38,9 @@
 #define PIN_SDCARD_MISO 2
 #define PIN_SDCARD_LED 12
 
+#define SDCARD_ROOT_PATH "/rd"
+#define SDCARD_FILE_EXTENSION ".csv"
+
 /*----- LilyGO T-SIM7000G (GPS, LTE) -----*/
 #define GPS_UART_BAUD   115200
 #define PIN_GPS_LTE_DTR 25
