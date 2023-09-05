@@ -39,13 +39,14 @@
 
 
 /*----- LilyGO T-SIM7000G (GPS, LTE) -----*/
-#define UART_BAUD   115200
+#define GPS_UART_BAUD   115200
 #define PIN_GPS_LTE_TX 27 // 26
 #define PIN_GPS_LTE_RX 26 // 27
 #define PIN_GPS_LTE_PWR 4
 #define TINY_GSM_MODEM_SIM7000  // Utile ???
 #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
-
+// #define GPSNEO6M_SERIAL_BAUD 9600
+#define DISTANCE_MINIMUM_AJOUT_POSITION 10
 
 /*----- Accelerometer, Gyroscope, Compass, Temperature -----*/
 #define PIN_GY87_SDA 21

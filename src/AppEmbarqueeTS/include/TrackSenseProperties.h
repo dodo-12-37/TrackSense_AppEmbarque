@@ -58,6 +58,18 @@ public:
         bool _isGoHomePage;
         bool _isRideStatisticsPage;
         bool _isDarkMode;
+
+        void reset()
+        {
+            this->_isHomePage = false;
+            this->_isCompassPage = false;
+            this->_isRideDirectionPage = false;
+            this->_isRidePage = false;
+            this->_isGlobalStatisticsPage = false;
+            this->_isGoHomePage = false;
+            this->_isRideStatisticsPage = false;
+            this->_isDarkMode = false;
+        }
     } PropertiesScreen;
 
 
@@ -99,6 +111,9 @@ public:
         double _longitude;
         double _altitude;
         double _speed;
+
+        double mph()      { return 0.621371 * _speed; }
+        double miles()    { return 0.00062137112 * _altitude; }
     } PropertiesGPS;
 
 
