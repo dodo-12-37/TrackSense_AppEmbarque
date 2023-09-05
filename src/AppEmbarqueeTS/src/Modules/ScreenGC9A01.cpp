@@ -9,12 +9,6 @@ ScreenGC9A01::ScreenGC9A01(TrackSenseProperties* trackSenseProperties) : _trackS
     this->tft->fillScreen(GC9A01A_BLACK);
     this->tft->setRotation(0);
 
-    
-
-    // this->tft->setTextColor(GC9A01A_RED, GC9A01A_BLACK);
-    // this->tft->setTextSize(3);
-    // this->tft->setCursor(20, 140);
-    // this->tft->printf("ScreenGC9A01\n");
 }
 
 ScreenGC9A01::~ScreenGC9A01()
@@ -25,6 +19,27 @@ ScreenGC9A01::~ScreenGC9A01()
 void ScreenGC9A01::tick()
 {
     this->testMaisonScreen();
+
+    this->tft->setCursor(20, 140);
+    this->tft->setTextSize(2);
+    this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    this->tft->printf("%-28s", "Latitude : %f", this->_trackSenseProperties->PropertiesGPS._latitude);
+
+    this->tft->setCursor(20, 160);
+    this->tft->setTextSize(2);
+    this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    this->tft->printf("%-28s", "Longitude : %f", this->_trackSenseProperties->PropertiesGPS._longitude);
+
+    this->tft->setCursor(20, 180);
+    this->tft->setTextSize(2);
+    this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    this->tft->printf("%-28s", "Altitude : %f", this->_trackSenseProperties->PropertiesGPS._altitude);
+
+    this->tft->setCursor(20, 200);
+    this->tft->setTextSize(2);
+    this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    this->tft->printf("%-28s", "Speed : %f", this->_trackSenseProperties->PropertiesGPS._speed);
+
 }
 
 void ScreenGC9A01::testMaisonScreen()

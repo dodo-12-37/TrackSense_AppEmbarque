@@ -36,16 +36,17 @@
 #define PIN_SDCARD_SCLK 14
 #define PIN_SDCARD_CS 13
 #define PIN_SDCARD_MISO 2
-
+#define PIN_SDCARD_LED 12
 
 /*----- LilyGO T-SIM7000G (GPS, LTE) -----*/
-#define UART_BAUD   115200
+#define GPS_UART_BAUD   115200
+#define PIN_GPS_LTE_DTR 25
 #define PIN_GPS_LTE_TX 27 // 26
 #define PIN_GPS_LTE_RX 26 // 27
 #define PIN_GPS_LTE_PWR 4
 #define TINY_GSM_MODEM_SIM7000  // Utile ???
 #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
-
+#define MINIMUM_DISTANCE_TO_ADD_POSITION 10
 
 /*----- Accelerometer, Gyroscope, Compass, Temperature -----*/
 #define PIN_GY87_SDA 21
