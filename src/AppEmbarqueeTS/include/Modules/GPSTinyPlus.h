@@ -21,4 +21,9 @@ public:
 
     // void test() const override;
     void tick() override;
+
+
+    void gpsPowerOn() override;
+    void gpsPowerOff() override;
+    void gpsRestart() override;
 };
