@@ -111,6 +111,7 @@ void ControlerButtons::tick()
 void ControlerButtons::changePageUp()
 {
     // this->_trackSenseProperties->PropertiesScreen.nextPage();
+    this->_trackSenseProperties->PropertiesScreen.setActivePage(1);
 }
 
 void ControlerButtons::changePageDown()
