@@ -58,7 +58,7 @@ public:
         bool _isRideStatisticsPage;
         bool _isDarkMode;
     } PropertiesScreen;
-    
+
 
     /* datas SD Card */
     struct TrackSensePropertiesSDCard
