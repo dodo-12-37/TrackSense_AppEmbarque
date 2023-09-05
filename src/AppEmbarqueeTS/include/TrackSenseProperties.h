@@ -11,6 +11,7 @@ public:
         bool _isRideStarted;
         bool _isRidePaused;
         bool _isRideFinished;
+        
         // bool _isRideSaved;
         // bool _isRideDeleted;
 
@@ -32,6 +33,24 @@ public:
         // bool _isButton2Connected;
         // bool _isBuzzerConnected;
     } PropertiesTS;
+
+    /* datas Current ride */
+    struct TrackSensePropertiesCurrentRide
+    {
+        String _completedRideId;
+        String _routeId;
+        double _maxSpeed;
+        double _avgSpeed;
+        double _distance;
+        double _duration;
+        String _dateBegin;
+        String _dateEnd;
+        String _currentPoint;
+        int _nbPoints;
+        int _nbFalls;
+        bool _isRideReadyToSave;
+        bool _isPointReadyToSave;
+    } PropertiesCurrentRide;
 
     /* datas Buttons */
     struct TrackSensePropertiesButton
