@@ -24,12 +24,14 @@ public:
     ControlerButtons(TrackSenseProperties* trackSenseProperties);
     ~ControlerButtons();
 
-    void changePage();
+    void changePageUp();
+    void changePageDown();
     void startRide();
     void pauseRide();
     void finishRide();
     void restartRide();
     void makeNoiseBuzzer();
+    void goHome();
 
     void tick();
 };
