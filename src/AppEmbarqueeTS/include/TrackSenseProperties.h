@@ -64,25 +64,26 @@ public:
     /* datas Screen */
     struct TrackSensePropertiesScreen
     {
-        bool _isHomePage;
-        bool _isCompassPage;
-        bool _isRideDirectionPage;
-        bool _isRidePage;
-        bool _isGlobalStatisticsPage;
-        bool _isGoHomePage;
-        bool _isRideStatisticsPage;
+        uint8_t _activeScreen;
+        // bool _isHomePage;
+        // bool _isCompassPage;
+        // bool _isRideDirectionPage;
+        // bool _isRidePage;
+        // bool _isGlobalStatisticsPage;
+        // bool _isGoHomePage;
+        // bool _isRideStatisticsPage;
         bool _isDarkMode;
 
-        void reset()
-        {
-            this->_isHomePage = false;
-            this->_isCompassPage = false;
-            this->_isRideDirectionPage = false;
-            this->_isRidePage = false;
-            this->_isGlobalStatisticsPage = false;
-            this->_isGoHomePage = false;
-            this->_isRideStatisticsPage = false;
-        }
+        // void reset()
+        // {
+        //     this->_isHomePage = false;
+        //     this->_isCompassPage = false;
+        //     this->_isRideDirectionPage = false;
+        //     this->_isRidePage = false;
+        //     this->_isGlobalStatisticsPage = false;
+        //     this->_isGoHomePage = false;
+        //     this->_isRideStatisticsPage = false;
+        // }
 
         /*
             1 : Home Page
@@ -94,41 +95,41 @@ public:
             7 : Ride Statistics Page
             0 : No Page (error)
         */
-        int getActivePageId()
-        {
-            if (this->_isHomePage)
-            {
-                return 1;
-            }
-            else if (this->_isCompassPage)
-            {
-                return 2;
-            }
-            else if (this->_isRideDirectionPage)
-            {
-                return 3;
-            }
-            else if (this->_isRidePage)
-            {
-                return 4;
-            }
-            else if (this->_isGlobalStatisticsPage)
-            {
-                return 5;
-            }
-            else if (this->_isGoHomePage)
-            {
-                return 6;
-            }
-            else if (this->_isRideStatisticsPage)
-            {
-                return 7;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        // int getActivePageId()
+        // {
+        //     if (this->_isHomePage)
+        //     {
+        //         return 1;
+        //     }
+        //     else if (this->_isCompassPage)
+        //     {
+        //         return 2;
+        //     }
+        //     else if (this->_isRideDirectionPage)
+        //     {
+        //         return 3;
+        //     }
+        //     else if (this->_isRidePage)
+        //     {
+        //         return 4;
+        //     }
+        //     else if (this->_isGlobalStatisticsPage)
+        //     {
+        //         return 5;
+        //     }
+        //     else if (this->_isGoHomePage)
+        //     {
+        //         return 6;
+        //     }
+        //     else if (this->_isRideStatisticsPage)
+        //     {
+        //         return 7;
+        //     }
+        //     else
+        //     {
+        //         return 0;
+        //     }
+        // }
 
         /*
             1 : Home Page
@@ -140,37 +141,37 @@ public:
             7 : Ride Statistics Page
             0 : No Page (error)
         */
-        void setActivePage(int pageId)
-        {
-            this->reset();
+        // void setActivePage(int pageId)
+        // {
+        //     this->reset();
 
-            switch (pageId)
-            {
-            case 1:
-                this->_isHomePage = true;
-                break;
-            case 2:
-                this->_isCompassPage = true;
-                break;
-            case 3:
-                this->_isRideDirectionPage = true;
-                break;
-            case 4:
-                this->_isRidePage = true;
-                break;
-            case 5:
-                this->_isGlobalStatisticsPage = true;
-                break;
-            case 6:
-                this->_isGoHomePage = true;
-                break;
-            case 7:
-                this->_isRideStatisticsPage = true;
-                break;
-            default:
-                break;
-            }
-        }
+        //     switch (pageId)
+        //     {
+        //     case 1:
+        //         this->_isHomePage = true;
+        //         break;
+        //     case 2:
+        //         this->_isCompassPage = true;
+        //         break;
+        //     case 3:
+        //         this->_isRideDirectionPage = true;
+        //         break;
+        //     case 4:
+        //         this->_isRidePage = true;
+        //         break;
+        //     case 5:
+        //         this->_isGlobalStatisticsPage = true;
+        //         break;
+        //     case 6:
+        //         this->_isGoHomePage = true;
+        //         break;
+        //     case 7:
+        //         this->_isRideStatisticsPage = true;
+        //         break;
+        //     default:
+        //         break;
+        //     }
+        // }
     } PropertiesScreen;
 
     /* datas SD Card */
