@@ -207,6 +207,48 @@ void BLE::initCompletedRideCaracteristics()
     this->_CRIsReceivedCaracteristic->setValue(BLE_FALSE);
 }
 
+void BLE::initCompletedRideDescriptors()
+{
+    this->_CRIdCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_UUID));
+    this->_CRIdCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_NAME);
+
+    this->_CRRouteIdCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_UUID));
+    this->_CRRouteIdCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_NAME);
+
+    this->_CRMaxSpeedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_UUID));
+    this->_CRMaxSpeedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_NAME);
+
+    this->_CRAVGSpeedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_UUID));
+    this->_CRAVGSpeedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_NAME);
+
+    this->_CRDateBeginCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_UUID));
+    this->_CRDateBeginCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_NAME);
+
+    this->_CRDateEndCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_UUID));
+    this->_CRDateEndCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_NAME);
+
+    this->_CRDurationCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_UUID));
+    this->_CRDurationCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_NAME);
+
+    this->_CRDistanceCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_UUID));
+    this->_CRDistanceCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_NAME);
+
+    this->_CRPointsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_UUID));
+    this->_CRPointsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_NAME);
+
+    this->_CRNbPointsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_UUID));
+    this->_CRNbPointsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_NAME);
+
+    this->_CRNbFallsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_UUID));
+    this->_CRNbFallsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_NAME);
+
+    this->_CRIsReadyCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID));
+    this->_CRIsReadyCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_NAME);
+
+    this->_CRIsReceivedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID));
+    this->_CRIsReceivedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_NAME);
+}
+
 void BLE::sendCompletedRide()
 {
     this->_CRIdCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._completedRideId.c_str());
@@ -221,4 +263,5 @@ void BLE::sendCompletedRide()
     this->_CRNbPointsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints).c_str());
     this->_CRNbFallsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbFalls).c_str());
     this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
+    this->_CRIsReceivedCaracteristic->notify();
 }
