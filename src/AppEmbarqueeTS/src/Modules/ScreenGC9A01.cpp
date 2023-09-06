@@ -59,8 +59,8 @@ void ScreenGC9A01::testMaisonScreen()
     this->tft->setTextSize(2);
 
     // int isButton1Pressed = digitalRead(PIN_BUTTON1); // 33
-    int isButton1Pressed = this->_trackSenseProperties->PropertiesButtons._TEST_Button1State;
-    int isButton2Pressed = this->_trackSenseProperties->PropertiesButtons._TEST_Button2State;
+    int isButton1Pressed = this->_trackSenseProperties->PropertiesButtons._button1State;
+    int isButton2Pressed = this->_trackSenseProperties->PropertiesButtons._button2State;
 
     if (isButton1Pressed == 0 & isButton2Pressed == 0) // not pressed
     {

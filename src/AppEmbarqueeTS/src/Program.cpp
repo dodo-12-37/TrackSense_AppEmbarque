@@ -52,20 +52,21 @@ void Program::execute()
 void Program::initProperties()
 {
     // Buttons
-    this->_trackSenseProperties->PropertiesButtons._TEST_Button1State = 0;
-    this->_trackSenseProperties->PropertiesButtons._TEST_Button2State = 0;
+    this->_trackSenseProperties->PropertiesButtons._button1State = 0;
+    this->_trackSenseProperties->PropertiesButtons._button2State = 0;
 
     // Buzzer
     this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = false;
 
     // Screen
-    this->_trackSenseProperties->PropertiesScreen._isHomePage = true;
-    this->_trackSenseProperties->PropertiesScreen._isRidePage = false;
-    this->_trackSenseProperties->PropertiesScreen._isRideDirectionPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isRideStatisticsPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isGlobalStatisticsPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isCompassPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isGoHomePage = false;
-    this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
+    this->_trackSenseProperties->PropertiesScreen._activeScreen = 0;
+    // this->_trackSenseProperties->PropertiesScreen._isHomePage = true;
+    // this->_trackSenseProperties->PropertiesScreen._isRidePage = false;
+    // this->_trackSenseProperties->PropertiesScreen._isRideDirectionPage = false;
+    // this->_trackSenseProperties->PropertiesScreen._isRideStatisticsPage = false;
+    // this->_trackSenseProperties->PropertiesScreen._isGlobalStatisticsPage = false;
+    // this->_trackSenseProperties->PropertiesScreen._isCompassPage = false;
+    // this->_trackSenseProperties->PropertiesScreen._isGoHomePage = false;
+    // this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
 
 }

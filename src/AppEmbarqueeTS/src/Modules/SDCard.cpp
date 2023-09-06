@@ -3,8 +3,10 @@
 
 
 SDCard::SDCard(TrackSenseProperties* trackSenseProperties) 
-    : trackSenseProperties(trackSenseProperties),
-    _nbFiles(0)
+    : _trackSenseProperties(trackSenseProperties),
+    _nbFiles(0),
+    _currentFile(NULL),
+    _currentRideId("")
 {
     this->init();
 }
@@ -41,6 +43,13 @@ void SDCard::init()
 void SDCard::tick()
 {
     File f = SD.open(SDCARD_ROOT_PATH, FILE_WRITE);
+
+    if (this->_trackSenseProperties->PropertiesCurrentRide._completedRideId != this->_currentRideId)
+    {
+        this->_currentRideId = this->_trackSenseProperties->PropertiesCurrentRide._completedRideId;
+        // this->_currentFile = SD.open(SDCARD_ROOT_PATH + "/" + this->_currentRideId + SDCARD_FILE_EXTENSION, FILE_WRITE);
+    }
+
 
     // Serial.println("SDCard");
     // Serial.println("Writing to test.txt...");

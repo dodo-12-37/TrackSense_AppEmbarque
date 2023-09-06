@@ -11,11 +11,12 @@
 class SDCard : public ISDCard
 {
 private:
-    TrackSenseProperties* trackSenseProperties;
+    TrackSenseProperties* _trackSenseProperties;
     // SD* _sd;
 
     int _nbFiles;
     File _currentFile;
+    String _currentRideId;
 
     void checkFiles();
 
