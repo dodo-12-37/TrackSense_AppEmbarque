@@ -110,6 +110,11 @@ void BLE::tick()
     {
         Serial.println("Restart Advertising");
         this->_serverBLE->startAdvertising();
+    } else 
+    {
+        this->_CRIsReadyCaracteristic->notify();
+        Serial.println("Notified");
+        delay(1000);
     }
 }
 
@@ -301,6 +306,6 @@ void BLE::sendCompletedRide()
     // this->_CRNbPointsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints).c_str());
     // this->_CRNbFallsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbFalls).c_str());
     this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
-    this->_CRIsReceivedCaracteristic->notify();
+    this->_CRIsReadyCaracteristic->notify();
     Serial.println("Completed Ride envoyed");
 }
