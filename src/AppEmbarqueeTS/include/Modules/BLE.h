@@ -38,6 +38,7 @@ private:
     void initAdvertising();
     void initCompletedRideService();
     void initCompletedRideCaracteristics();
+    void initCompletedRideDescriptors();
     void sendCompletedRide();
 
 

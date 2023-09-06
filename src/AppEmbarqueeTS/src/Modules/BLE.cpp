@@ -73,7 +73,10 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     this->initBLE();
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
+    this->initCompletedRideDescriptors();
+    this->_completedRideService->start();
     this->initAdvertising();
+    this->_serverBLE->startAdvertising();
 }
 
 BLE::~BLE()
@@ -84,6 +87,7 @@ void BLE::tick()
 {            
     if (this->isCompletedRideReceived)
     {
+        Serial.println("Completed Ride Received");
         this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
         this->isCompletedRideReceived = false;
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
@@ -91,11 +95,13 @@ void BLE::tick()
     }
     else if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady && this->isDeviceConnected)
     {
+        Serial.println("Send Completed Ride");
         this->sendCompletedRide();
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
     }
     else if (!BLE::isDeviceConnected)
     {
+        Serial.println("Restart Advertising");
         this->_serverBLE->startAdvertising();
     }
 }
@@ -108,6 +114,8 @@ void BLE::initBLE()
 
     this->_serverBLE = BLEDevice::createServer();
     this->_serverBLE->setCallbacks(new ServerBLECallbacks());
+
+    Serial.println("BLE initialise");
 }
 
 void BLE::initAdvertising()
@@ -117,13 +125,13 @@ void BLE::initAdvertising()
     advertising->setScanResponse(true);
     advertising->setMinPreferred(0x06);
     advertising->setMinPreferred(0x12);
-    advertising->start();
 }
 
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
-    this->_completedRideService->start();
+
+    Serial.println("Completed Ride Service initialise");
 };
 
 void BLE::initCompletedRideCaracteristics()
@@ -183,28 +191,74 @@ void BLE::initCompletedRideCaracteristics()
     this->_CRPointsCaracteristic->setValue("id;lat;long;alt;tmp;speed;date;effectiveTime");
 
     this->_CRNbPointsCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_NUMBER_OF_POINTS,
         BLECharacteristic::PROPERTY_READ
     );
     this->_CRNbPointsCaracteristic->setValue("0");
 
     this->_CRNbFallsCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_NUMBER_OF_FALLS,
         BLECharacteristic::PROPERTY_READ
     );
     this->_CRNbFallsCaracteristic->setValue("0");
 
     this->_CRIsReadyCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_READY,
         BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ
     );
     this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
 
     this->_CRIsReceivedCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_RECEIVED,
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
     );
     this->_CRIsReceivedCaracteristic->setValue(BLE_FALSE);
+
+    Serial.println("Completed Ride Caracteristics initialise");
+}
+
+void BLE::initCompletedRideDescriptors()
+{
+    this->_CRIdCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_UUID));
+    this->_CRIdCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_NAME);
+
+    this->_CRRouteIdCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_UUID));
+    this->_CRRouteIdCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_NAME);
+
+    this->_CRMaxSpeedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_UUID));
+    this->_CRMaxSpeedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_NAME);
+
+    this->_CRAVGSpeedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_UUID));
+    this->_CRAVGSpeedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_NAME);
+
+    this->_CRDateBeginCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_UUID));
+    this->_CRDateBeginCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_NAME);
+
+    this->_CRDateEndCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_UUID));
+    this->_CRDateEndCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_NAME);
+
+    this->_CRDurationCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_UUID));
+    this->_CRDurationCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_NAME);
+
+    this->_CRDistanceCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_UUID));
+    this->_CRDistanceCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_NAME);
+
+    this->_CRPointsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_UUID));
+    this->_CRPointsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_NAME);
+
+    this->_CRNbPointsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_UUID));
+    this->_CRNbPointsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_NAME);
+
+    this->_CRNbFallsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_UUID));
+    this->_CRNbFallsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_NAME);
+
+    this->_CRIsReadyCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID));
+    this->_CRIsReadyCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_NAME);
+
+    this->_CRIsReceivedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID));
+    this->_CRIsReceivedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_NAME);
+
+    Serial.println("Completed Ride Descriptors initialise");
 }
 
 void BLE::sendCompletedRide()
@@ -221,4 +275,6 @@ void BLE::sendCompletedRide()
     this->_CRNbPointsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints).c_str());
     this->_CRNbFallsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbFalls).c_str());
     this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
+    this->_CRIsReceivedCaracteristic->notify();
+    Serial.println("Completed Ride envoye");
 }
