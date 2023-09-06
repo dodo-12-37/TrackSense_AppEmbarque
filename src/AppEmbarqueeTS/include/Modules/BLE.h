@@ -32,6 +32,9 @@ private:
     BLEDescriptor* _CRPointNumberDescriptor;
     BLEDescriptor* _CRIsReadyDescriptor;
 
+    unsigned long _lastTimeStatsSent;
+    unsigned long _lastTimePointSent;
+
     void initBLE();
     void initAdvertising();
     void initCompletedRideService();

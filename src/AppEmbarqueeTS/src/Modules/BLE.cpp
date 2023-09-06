@@ -11,9 +11,9 @@
 
 /*----- Definition des membres statics -----*/
 bool BLE::isDeviceConnected = false;
-bool BLE::isCompletedRideStatsSending = false;
+// bool BLE::isCompletedRideStatsSending = false;
 bool BLE::isCompletedRideStatsReceived = false;
-bool BLE::isCompletedRidePointSending = false;
+// bool BLE::isCompletedRidePointSending = false;
 bool BLE::isCompletedRidePointReceived = false;
 
 /*----- CallBacks -----*/
@@ -44,7 +44,7 @@ class CompletedRideReceiveStatsCallbacks
         if (receivedData.compare(falseString) == 0)
         {
             BLE::isCompletedRideStatsReceived = true;
-            BLE::isCompletedRideStatsSending = false;
+            // BLE::isCompletedRideStatsSending = false;
         }
     }
 };
@@ -61,7 +61,7 @@ class CompletedRideReceivePointCallbacks
         {
             p_characteristic->setValue("");
             BLE::isCompletedRidePointReceived = true;
-            BLE::isCompletedRidePointSending = false;
+            // BLE::isCompletedRidePointSending = false;
         }
     }
 };
@@ -79,7 +79,9 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     _CRStatsDescriptor(nullptr),
     _CRPointDescriptor(nullptr),
     _CRPointNumberDescriptor(nullptr),
-    _CRIsReadyDescriptor(nullptr)
+    _CRIsReadyDescriptor(nullptr),
+    _lastTimeStatsSent(0),
+    _lastTimePointSent(0)
 {
     this->initBLE();
     this->initCompletedRideService();
@@ -100,7 +102,7 @@ void BLE::tick()
     {
         if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
         {
-            if (!BLE::isCompletedRideStatsReceived && !BLE::isCompletedRideStatsSending)
+            if (!BLE::isCompletedRideStatsReceived) // Renvoie les stats tant qu'on a pas la confirmation de reception
             {
                 this->sendCompletedRideStats();
             }
@@ -225,16 +227,24 @@ void BLE::initCompletedRideDescriptors()
 
 void BLE::sendCompletedRideStats()
 {
-    this->_CRStatsCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._stats.c_str());
-    this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
-    this->_CRIsReadyCaracteristic->notify();
-    BLE::isCompletedRideStatsSending = true;
-    BLE::isCompletedRideStatsReceived = false;
-    Serial.println("Completed Ride envoyed");
+    unsigned long currentTime = millis();
+
+    if (currentTime - this->_lastTimeStatsSent > BLE_DELAY_SEND_STATS_MS)
+    {
+        this->_lastTimeStatsSent = currentTime;
+        this->_CRStatsCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._stats.c_str());
+        this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
+        this->_CRIsReadyCaracteristic->notify();
+        // BLE::isCompletedRideStatsSending = true;
+        BLE::isCompletedRideStatsReceived = false;
+        Serial.println("Completed Ride envoyed");
+    }
 }
 
 void BLE::sendCompletedRideCurrentPoint()
 {
+    unsigned long currentTime = millis();
+
     if (BLE::isCompletedRidePointReceived)
     {
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
@@ -242,12 +252,13 @@ void BLE::sendCompletedRideCurrentPoint()
         BLE::isCompletedRidePointReceived = false;
         Serial.println("Completed Ride Point received");
     }
-    else if (!BLE::isCompletedRidePointSending)
+    else if (currentTime - this->_lastTimePointSent > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
     {
+        this->_lastTimePointSent = currentTime;
         this->_CRPointCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._point.c_str());
         this->_CRPointNumberCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint).c_str());
         this->_CRPointNumberCaracteristic->notify();
-        BLE::isCompletedRidePointSending = true;
+        // BLE::isCompletedRidePointSending = true;
         BLE::isCompletedRidePointReceived = false;
 
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
