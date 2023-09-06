@@ -111,7 +111,7 @@ void ControlerButtons::tick()
 void ControlerButtons::changePageUp()
 {
     // this->_trackSenseProperties->PropertiesScreen.nextPage();
-    this->_trackSenseProperties->PropertiesScreen.setActivePage(1);
+    // this->_trackSenseProperties->PropertiesScreen.setActivePage(1);
 }
 
 void ControlerButtons::changePageDown()
@@ -147,5 +147,15 @@ void ControlerButtons::makeNoiseBuzzer()
 
 void ControlerButtons::goHome()
 {
-    this->_trackSenseProperties->PropertiesScreen._isHomePage = true;
+    /*
+            1 : Home Page
+            2 : Compass Page
+            3 : Ride Direction Page
+            4 : Ride Page
+            5 : Global Statistics Page
+            6 : Go Home Page
+            7 : Ride Statistics Page
+            0 : No Page (error)
+        */
+    this->_trackSenseProperties->PropertiesScreen._activeScreen = 6;
 }
