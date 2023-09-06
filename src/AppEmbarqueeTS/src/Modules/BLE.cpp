@@ -73,7 +73,10 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     this->initBLE();
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
+    this->initCompletedRideDescriptors();
+    this->_completedRideService->start();
     this->initAdvertising();
+    this->_serverBLE->startAdvertising();
 }
 
 BLE::~BLE()
@@ -117,13 +120,11 @@ void BLE::initAdvertising()
     advertising->setScanResponse(true);
     advertising->setMinPreferred(0x06);
     advertising->setMinPreferred(0x12);
-    advertising->start();
 }
 
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
-    this->_completedRideService->start();
 };
 
 void BLE::initCompletedRideCaracteristics()
