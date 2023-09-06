@@ -81,6 +81,7 @@ void setup()
     if (!modem.restart())
     {
         Serial.println("Failed to restart modem, attempting to continue without restarting");
+        // modem.init();
     }
 
     // Print modem info

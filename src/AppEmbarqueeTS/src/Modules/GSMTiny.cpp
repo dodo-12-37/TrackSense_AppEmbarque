@@ -1,36 +1,50 @@
 #include "Modules/GSMTiny.h"
 
-
-
 GSMTiny::GSMTiny(TrackSenseProperties *trackSenseProperties) : _trackSenseProperties(trackSenseProperties), modem(nullptr)
 {
     this->modem = new TinyGsm(SerialAT);
-    Serial1.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
-
-    this->gpsPowerOn();
+    // Set GSM module baud rate
+    SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
 }
 
 GSMTiny::~GSMTiny()
 {
 }
 
+void GSMTiny::init()
+{
+    // Set GSM module baud rate
+    SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
+
+    // Restart takes quite some time
+    // To skip it, call init() instead of restart()
+    Serial.println("Initializing modem...");
+    if (!this->modem->restart())
+    {
+        Serial.println("Failed to restart modem, attempting to continue without restarting");
+        // this->modem.init();
+    }
+
+    this->gpsPowerOn();
+    modem->enableGPS();
+}
+
 void GSMTiny::tick()
 {
-
     if (this->readDatas())
     {
         Serial.println("Write GPS");
 
         // if (this->_GPS->location.isValid())
         // {
-            this->_trackSenseProperties->PropertiesGPS._locationIsValid = true;
+        this->_trackSenseProperties->PropertiesGPS._locationIsValid = true;
 
-            // Serial.println("Write GPS : Location is Valid");
-            this->_trackSenseProperties->PropertiesGPS._latitude = this->modem->location.lat();
-            this->_trackSenseProperties->PropertiesGPS._longitude = this->modem->location.lng();
-            this->_trackSenseProperties->PropertiesGPS._altitude = this->modem->altitude.meters();
-            this->_trackSenseProperties->PropertiesGPS._speed = this->modem->speed.kmph();
-            
+        // Serial.println("Write GPS : Location is Valid");
+        // this->_trackSenseProperties->PropertiesGPS._latitude = this->modem->location.lat();
+        // this->_trackSenseProperties->PropertiesGPS._longitude = this->modem->location.lng();
+        // this->_trackSenseProperties->PropertiesGPS._altitude = this->modem->altitude.meters();
+        // this->_trackSenseProperties->PropertiesGPS._speed = this->modem->speed.kmph();
+
         // }
     }
     else
@@ -40,17 +54,16 @@ void GSMTiny::tick()
     }
 }
 
-bool GSMTiny::readDatas() const
+bool GSMTiny::readDatas()
 {
     bool result = false;
 
-    // while (Serial2.available() > 0)
-    // {
-    //     result = this->modem->encode(Serial2.read());
-    // }
+    if (this->modem->getGPS(&this->_lat, &this->_long, &this->_speed, &this->_alt, &this->_vsat, &this->_usat,
+                            &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_min, &this->_sec))
+    {
+        result = true;
+    }
 
-    Serial.print("Reading GPS : ");
-    Serial.println(result);
     return result;
 }
 

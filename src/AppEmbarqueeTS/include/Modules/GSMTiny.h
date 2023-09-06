@@ -13,17 +13,30 @@ private:
     TrackSenseProperties *_trackSenseProperties;
     TinyGsm *modem;
 
-    // TinyGsm modem(SerialAT);
+    float _lat;
+    float _long;
+    float _speed;
+    float _alt;
+    int _vsat;
+    int _usat;
+    float _accuracy;
+    int _year;
+    int _month;
+    int _day;
+    int _hour;
+    int _min;
+    int _sec;
 
-    bool readDatas() const;
+    bool readDatas();
+    void gpsPowerOn();
+    void gpsPowerOff();
+    void gpsRestart();
 
 public:
     GSMTiny(TrackSenseProperties *trackSenseProperties);
     ~GSMTiny();
 
+    void init();
     void tick() override;
 
-    void gpsPowerOn() override;
-    void gpsPowerOff() override;
-    void gpsRestart() override;
 };
