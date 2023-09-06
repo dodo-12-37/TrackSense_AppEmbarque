@@ -4,8 +4,8 @@ ScreenGC9A01::ScreenGC9A01(TrackSenseProperties *trackSenseProperties) : _trackS
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
     this->tft->begin();
-    this->tft->fillScreen(GC9A01A_BLACK);
-    this->tft->setRotation(0);
+    this->drawBackgroundColor();
+    this->tft->setRotation(this->_trackSenseProperties->PropertiesScreen._screenRotation);
 }
 
 ScreenGC9A01::~ScreenGC9A01()
@@ -26,6 +26,12 @@ ScreenGC9A01::~ScreenGC9A01()
 */
 void ScreenGC9A01::tick()
 {
+    if (this->_trackSenseProperties->PropertiesScreen._isNewActivePage)
+    {
+        this->drawBackgroundColor();
+        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = false;
+    }
+
     switch (this->_trackSenseProperties->PropertiesScreen._activeScreen)
     {
     case 0:
@@ -73,7 +79,6 @@ void ScreenGC9A01::tick()
 
 void ScreenGC9A01::drawInitTSPage0()
 {
-    this->drawBackgroundColor();
     this->tft->setRotation(this->_trackSenseProperties->PropertiesScreen._screenRotation);
     this->setTextColor();
     /*
@@ -114,6 +119,7 @@ void ScreenGC9A01::drawRideDirectionPage3()
 
 void ScreenGC9A01::drawRidePage4()
 {
+    ;
     char *formatChar = (char *)"%-19s";
     bool locationIsValid = false;
 

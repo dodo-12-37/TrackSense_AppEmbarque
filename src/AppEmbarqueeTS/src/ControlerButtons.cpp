@@ -127,6 +127,7 @@ void ControlerButtons::tick()
 void ControlerButtons::changePageUp()
 {
     this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
+    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
 }
 
 /*
@@ -143,28 +144,41 @@ void ControlerButtons::changePageUp()
 void ControlerButtons::changePageDown()
 {
     this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
+    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
 }
 
 void ControlerButtons::startRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
-    this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted == false)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+    }
 }
 
 void ControlerButtons::finishRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
-    // this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+    }
 }
 
 void ControlerButtons::pauseRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = true;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = true;
+    }
 }
 
 void ControlerButtons::restartRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
+    }
 }
 
 void ControlerButtons::makeNoiseBuzzer()

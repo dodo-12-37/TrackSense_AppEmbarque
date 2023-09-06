@@ -57,6 +57,7 @@ public:
             -1 : No Page (error)
         */
         uint8_t _activeScreen;
+        bool _isNewActivePage;
         bool _isDarkMode;
 
         /*
@@ -64,6 +65,11 @@ public:
             1 : Pins vers la droite (???)
             2 : Pins vers le bas (???)
             3 : Pins vers la gauche (???)
+
+            0 : Right to left
+            1 : Reverse Mode
+            2 : Bottom to top
+            3 : 
         */
        uint8_t _screenRotation;
         

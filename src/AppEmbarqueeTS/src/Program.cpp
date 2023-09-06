@@ -16,11 +16,14 @@ Program::Program() :
     _buzzer(nullptr)
 {
     this->_trackSenseProperties = new TrackSenseProperties();
-    this->_controlerButtons = new ControlerButtons(this->_trackSenseProperties);
+    this->initProperties();
+
+
     this->_screen = new ScreenGC9A01(this->_trackSenseProperties);
+    this->_controlerButtons = new ControlerButtons(this->_trackSenseProperties);
     this->_ble = new BLE(this->_trackSenseProperties);
-    this->_gsm = new GSMTiny(this->_trackSenseProperties);
     this->_sdCard = new SDCard(this->_trackSenseProperties);
+    this->_gsm = new GSMTiny(this->_trackSenseProperties);
     // this->_gps = new GPSTinyPlus(this->_trackSenseProperties);
     // this->_lte = new LTE(this->_trackSenseProperties);
     this->_gyroscope = new GyroscopeMPU6050(this->_trackSenseProperties);
@@ -28,7 +31,8 @@ Program::Program() :
     this->_accelerometer = new AccelerometerMPU6050(this->_trackSenseProperties);
     this->_buzzer = new Buzzer(this->_trackSenseProperties);
 
-    this->initProperties();
+    this->_screen->tick();
+    this->_gsm->init();
 
 }
 
@@ -63,6 +67,8 @@ void Program::initProperties()
     // Screen
     this->_trackSenseProperties->PropertiesScreen._activeScreen = 0;
     this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
+    this->_trackSenseProperties->PropertiesScreen._screenRotation = 0;
+    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
 
     // Ride
     this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
