@@ -9,9 +9,14 @@
   copies or substantial portions of the Software.
 */
 
+void printGPSOnScreen(float lat, float lon, float speed, float alt, int counter);
+// void printCounterOnScreen(float lat, float lon, int counter);
+
+
 #define TINY_GSM_MODEM_SIM7000
 #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
 
+#include <Arduino.h>
 #include <TinyGsmClient.h>
 #include <SPI.h>
 #include <Adafruit_GFX.h>
@@ -34,17 +39,15 @@
 TinyGsm modem(SerialAT);
 
 /* Screen */
-#define TFT_BL_BLK -1      
-#define TFT_CS_SS 05       
-#define TFT_DC 00          
-#define TFT_RES_RST -1     
+#define TFT_BL_BLK -1
+#define TFT_CS_SS 05
+#define TFT_DC 00
+#define TFT_RES_RST -1
 #define TFT_SDA_DIN_MOSI 23
-#define TFT_SCL_CLK_SCK 18 
-// #define TFT_MISO 19     
+#define TFT_SCL_CLK_SCK 18
+// #define TFT_MISO 19
 
 Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
-
-
 
 void setup()
 {
@@ -53,9 +56,12 @@ void setup()
     tft.fillScreen(GC9A01A_BLACK);
     tft.setRotation(0);
 
-
     SerialMon.begin(115200);
     SerialMon.println("Place your board outside to catch satelite signal");
+    tft.setTextColor(GC9A01A_DARKGREEN, GC9A01A_YELLOW);
+    tft.setCursor(0, 90);
+    tft.setTextSize(2);
+    tft.printf("%-50s", "Place your board outside to catch satelite signal");
 
     // Set LED OFF
     pinMode(LED_PIN, OUTPUT);
@@ -88,6 +94,10 @@ void setup()
     String modemInfo = modem.getModemInfo();
     delay(500);
     SerialMon.println("Modem Info: " + modemInfo);
+
+    // Init String on Screen
+    tft.fillScreen(GC9A01A_BLACK);
+    printGPSOnScreen(0, 0, 0, 0, -1);
 }
 
 void loop()
@@ -118,8 +128,17 @@ void loop()
     int min = 0;
     int sec = 0;
 
+    modem.getGsmLocation();
+    SerialMon.print("GSM Based Location: ");
+    SerialMon.println(modem.getGsmLocation());
+
+    int counter = 15;
+
     for (int8_t i = 15; i; i--)
     {
+        // printGPSOnScreen(0, 0, 0, 0, counter);
+        printGPSOnScreen(lat, lon, speed, alt, counter);
+
         SerialMon.println("Requesting current GPS/GNSS/GLONASS location");
         if (modem.getGPS(&lat, &lon, &speed, &alt, &vsat, &usat, &accuracy,
                          &year, &month, &day, &hour, &min, &sec))
@@ -132,22 +151,8 @@ void loop()
             SerialMon.println("Hour: " + String(hour) + "\tMinute: " + String(min) + "\tSecond: " + String(sec));
 
             /* Print on LCD Screen */
-            tft.setCursor(20, 140);
-            tft.setTextSize(2);
-            tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
-            tft.printf("%-28s", "Latitude : %f", String(lat, 8));
-            tft.setCursor(20, 160);
-            tft.setTextSize(2);
-            tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
-            tft.printf("%-28s", "Longitude : %f", this->_trackSenseProperties->PropertiesGPS._longitude);
-            tft.setCursor(20, 180);
-            tft.setTextSize(2);
-            tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
-            tft.printf("%-28s", "Altitude : %f", this->_trackSenseProperties->PropertiesGPS._altitude);
-            tft.setCursor(20, 200);
-            tft.setTextSize(2);
-            tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
-            tft.printf("%-28s", "Speed : %f", this->_trackSenseProperties->PropertiesGPS._speed);
+            printGPSOnScreen(lat, lon, speed, alt, counter);
+            counter--;
             break;
         }
         else
@@ -156,6 +161,7 @@ void loop()
             delay(15000L);
         }
     }
+
     SerialMon.println("Retrieving GPS/GNSS/GLONASS location again as a string");
     String gps_raw = modem.getGPSraw();
     SerialMon.println("GPS/GNSS Based Location String: " + gps_raw);
@@ -178,3 +184,74 @@ void loop()
         modem.maintain();
     }
 }
+
+void printGPSOnScreen(float lat, float lon, float speed, float alt, int counter)
+{
+    char *formatChar = (char *)"%-29s";
+    bool locationIsValid = false;
+
+    if (lat != 0 && lon != 0)
+    {
+        locationIsValid = true;
+    }
+
+    if (locationIsValid)
+    {
+        tft.setTextColor(GC9A01A_GREEN, GC9A01A_BLACK);
+    }
+    else
+    {
+        tft.setTextColor(GC9A01A_RED, GC9A01A_BLACK);
+    }
+
+    tft.setTextSize(2);
+
+    tft.setCursor(30, 60);
+    String strIsValid = "IsValid : " + String(locationIsValid ? "true" : "false");
+    tft.printf(formatChar, strIsValid.c_str());
+
+    tft.setCursor(20, 90);
+    String strLatitude = "Lat : " + String(lat, 8);
+    tft.printf(formatChar, strLatitude.c_str());
+
+    tft.setCursor(20, 110);
+    String strLongitude = "Long : " + String(lon, 8);
+    tft.printf(formatChar, strLongitude.c_str());
+
+    tft.setCursor(20, 130);
+    String strAltitude = "Alt : " + String(alt, 8);
+    tft.printf(formatChar, strAltitude.c_str());
+
+    tft.setCursor(20, 150);
+    String strSpeed = "Speed : " + String(speed, 4);
+    tft.printf(formatChar, strSpeed.c_str());
+
+    tft.setCursor(30, 40);
+    String strCounter = "Counter : " + String(counter);
+    tft.printf("%-13s", strCounter.c_str());
+}
+
+// void printCounterOnScreen(float lat, float lon, int counter)
+// {
+//     char *formatChar = (char *)"%-14s";
+//     bool locationIsValid = false;
+
+//     if (lat != 0 && lon != 0)
+//     {
+//         locationIsValid = true;
+//     }
+
+//     if (locationIsValid)
+//     {
+//         tft.setTextColor(GC9A01A_GREEN, GC9A01A_BLACK);
+//     }
+//     else
+//     {
+//         tft.setTextColor(GC9A01A_RED, GC9A01A_BLACK);
+//     }
+
+//     tft.setTextSize(2);
+//     tft.setCursor(30, 40);
+//     String strCounter = "Counter : " + String(counter);
+//     tft.printf(formatChar, strCounter.c_str());
+// }
