@@ -208,6 +208,9 @@ public:
         double _longitude;
         double _altitude;
         double _speed;
+        String _date;
+        String _time;
+        bool _locationIsValid;
 
         double mph() { return 0.621371 * _speed; }
         double miles() { return 0.00062137112 * _altitude; }

@@ -20,14 +20,22 @@ void GPSTinyPlus::tick()
     {
         Serial.println("Write GPS");
 
-        if (this->_GPS->location.isValid())
-        {
-            Serial.println("Write GPS : Location is Valid");
+        // if (this->_GPS->location.isValid())
+        // {
+            this->_trackSenseProperties->PropertiesGPS._locationIsValid = true;
+
+            // Serial.println("Write GPS : Location is Valid");
             this->_trackSenseProperties->PropertiesGPS._latitude = this->_GPS->location.lat();
             this->_trackSenseProperties->PropertiesGPS._longitude = this->_GPS->location.lng();
             this->_trackSenseProperties->PropertiesGPS._altitude = this->_GPS->altitude.meters();
             this->_trackSenseProperties->PropertiesGPS._speed = this->_GPS->speed.kmph();
-        }
+            
+        // }
+    }
+    else
+    {
+        // Serial.println("Write GPS : Location is not Valid");
+        this->_trackSenseProperties->PropertiesGPS._locationIsValid = false;
     }
 }
 
