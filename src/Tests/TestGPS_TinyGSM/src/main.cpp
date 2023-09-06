@@ -61,8 +61,10 @@ void setup()
     tft.setCursor(30, 40);
     tft.setTextSize(3);
     tft.printf("%-11s", "TrackSense");
-    tft.setCursor(30, 150);
-    tft.printf("%-17s", "GPS Initializing");
+    tft.setCursor(10, 150);
+    tft.printf("%-13s", "Initializing");
+    tft.setCursor(90, 180);
+    tft.printf("%-4s", "GPS");
 
     SerialMon.begin(115200);
     SerialMon.println("Place your board outside to catch satelite signal");
@@ -229,31 +231,32 @@ void printGPSOnScreen(float lat, float lon, float speed, float alt, int counterT
 
     tft.setTextSize(2);
 
-    tft.setCursor(30, 70);
-    String strIsValid = "IsValid : " + String(locationIsValid ? "true" : "false");
-    tft.printf(formatChar, strIsValid.c_str());
-
-    tft.setCursor(20, 100);
-    String strLatitude = "Lat : " + String(lat, 8);
-    tft.printf(formatChar, strLatitude.c_str());
-
-    tft.setCursor(20, 120);
-    String strLongitude = "Long : " + String(lon, 8);
-    tft.printf(formatChar, strLongitude.c_str());
-
-    tft.setCursor(20, 140);
-    String strAltitude = "Alt : " + String(alt, 8);
-    tft.printf(formatChar, strAltitude.c_str());
-
-    tft.setCursor(20, 160);
-    String strSpeed = "Speed : " + String(speed, 4);
-    tft.printf(formatChar, strSpeed.c_str());
-
-    tft.setCursor(30, 50);
+    tft.setCursor(40, 40);
+    String strCounterGoodValue = "Good : " + String(counterGoodValue);
+    tft.printf("%-15s", strCounterGoodValue.c_str());
+    
+    tft.setCursor(30, 60);
     String strCounterTotal = "Total : " + String(counterTotal);
     tft.printf("%-11s", strCounterTotal.c_str());
 
-    tft.setCursor(50, 30);
-    String strCounterGoodValue = "Good : " + String(counterGoodValue);
-    tft.printf("%-15s", strCounterGoodValue.c_str());
+    tft.setCursor(30, 90);
+    String strIsValid = "IsValid : " + String(locationIsValid ? "true" : "false");
+    tft.printf(formatChar, strIsValid.c_str());
+
+    tft.setCursor(20, 110);
+    String strLatitude = "Lat : " + String(lat, 8);
+    tft.printf(formatChar, strLatitude.c_str());
+
+    tft.setCursor(20, 130);
+    String strLongitude = "Long : " + String(lon, 8);
+    tft.printf(formatChar, strLongitude.c_str());
+
+    tft.setCursor(20, 150);
+    String strAltitude = "Alt : " + String(alt, 8);
+    tft.printf(formatChar, strAltitude.c_str());
+
+    tft.setCursor(20, 170);
+    String strSpeed = "Speed : " + String(speed, 4);
+    tft.printf(formatChar, strSpeed.c_str());
+
 }
