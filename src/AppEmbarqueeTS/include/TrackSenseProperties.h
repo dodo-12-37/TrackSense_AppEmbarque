@@ -257,19 +257,27 @@ public:
     } PropertiesBuzzer;
 
     /* datas CompletedRide to send */
+    // struct TrackSensePropertiesCompletedRideToSend
+    // {
+    //     String _completedRideId;
+    //     String _routeId;
+    //     double _maxSpeed;
+    //     double _avgSpeed;
+    //     double _distance;
+    //     double _duration;
+    //     String _dateBegin;
+    //     String _dateEnd;
+    //     String _points;
+    //     int _nbPoints;
+    //     int _nbFalls;
+    //     bool _isReady;
+    //     bool _isReceived;
+    // } PropertiesCompletedRideToSend;
+    /* datas CompletedRide to send */
     struct TrackSensePropertiesCompletedRideToSend
     {
-        String _completedRideId;
-        String _routeId;
-        double _maxSpeed;
-        double _avgSpeed;
-        double _distance;
-        double _duration;
-        String _dateBegin;
-        String _dateEnd;
+        String _stats;
         String _points;
-        int _nbPoints;
-        int _nbFalls;
         bool _isReady;
         bool _isReceived;
     } PropertiesCompletedRideToSend;

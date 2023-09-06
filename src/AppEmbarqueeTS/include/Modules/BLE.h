@@ -20,17 +20,18 @@ private:
     BLEServer* _serverBLE;
 
     BLEService* _completedRideService;
-    BLECharacteristic* _CRIdCaracteristic;
-    BLECharacteristic* _CRRouteIdCaracteristic;
-    BLECharacteristic* _CRMaxSpeedCaracteristic;
-    BLECharacteristic* _CRAVGSpeedCaracteristic;
-    BLECharacteristic* _CRDistanceCaracteristic;
-    BLECharacteristic* _CRDurationCaracteristic;
-    BLECharacteristic* _CRDateBeginCaracteristic;
-    BLECharacteristic* _CRDateEndCaracteristic;
+    BLECharacteristic* _CRStatsCaracteristic;
+    // BLECharacteristic* _CRIdCaracteristic;
+    // BLECharacteristic* _CRRouteIdCaracteristic;
+    // BLECharacteristic* _CRMaxSpeedCaracteristic;
+    // BLECharacteristic* _CRAVGSpeedCaracteristic;
+    // BLECharacteristic* _CRDistanceCaracteristic;
+    // BLECharacteristic* _CRDurationCaracteristic;
+    // BLECharacteristic* _CRDateBeginCaracteristic;
+    // BLECharacteristic* _CRDateEndCaracteristic;
     BLECharacteristic* _CRPointsCaracteristic;
-    BLECharacteristic* _CRNbPointsCaracteristic;
-    BLECharacteristic* _CRNbFallsCaracteristic;
+    // BLECharacteristic* _CRNbPointsCaracteristic;
+    // BLECharacteristic* _CRNbFallsCaracteristic;
     BLECharacteristic* _CRIsReadyCaracteristic;
     BLECharacteristic* _CRIsReceivedCaracteristic;
 
