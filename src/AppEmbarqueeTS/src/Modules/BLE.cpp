@@ -1,8 +1,9 @@
+#include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
-#include <BLESecurity.h>
-#include <BLE2902.h>
+// #include <BLESecurity.h>
+// #include <BLE2902.h>
 
 #include "Modules/BLE.h"
 #include "Configurations.h"
@@ -11,8 +12,6 @@
 /*----- Definition des membres statics -----*/
 bool BLE::isDeviceConnected = false;
 bool BLE::isCompletedRideReceived = false;
-
-
 
 /*----- CallBacks -----*/
 class ServerBLECallbacks
@@ -47,11 +46,7 @@ class CompletedRideReceiveCallbacks
     }
 };
 
-
-
-
 /*----- BLE -----*/
-
 BLE::BLE(TrackSenseProperties* trackSenseProperties) 
     : _trackSenseProperties(trackSenseProperties),
     _serverBLE(nullptr),
@@ -76,6 +71,9 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     // _CRNbPointsCaracteristic(nullptr),
     // _CRNbFallsCaracteristic(nullptr),
 {
+    BLE::isDeviceConnected = false;
+    BLE::isCompletedRideReceived = false;
+
     this->initBLE();
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
@@ -118,6 +116,17 @@ void BLE::tick()
     } 
     else if (!BLE::isCompletedRideReceived)
     {
+        String val = this->_CRIsReadyCaracteristic->getValue().c_str();
+
+        if (val == String("false"))
+        {
+            this->_CRIsReadyCaracteristic->setValue("true");
+        }
+        else
+        {
+            this->_CRIsReadyCaracteristic->setValue("false");
+        }
+
         Serial.println(this->_CRIsReadyCaracteristic->getValue().c_str());
         Serial.println(this->_completedRideService->getServer()->getConnectedCount());
         this->_CRIsReadyCaracteristic->notify();
@@ -127,8 +136,6 @@ void BLE::tick()
 
 void BLE::initBLE()
 {
-    BLE::isDeviceConnected = false;
-    BLE::isCompletedRideReceived = false;
     BLEDevice::init(BLE_DEVICE_NAME);
 
     this->_serverBLE = BLEDevice::createServer();
@@ -140,49 +147,43 @@ void BLE::initBLE()
 void BLE::initAdvertising()
 {
     this->_advertisingBLE = this->_serverBLE->getAdvertising();
-    this->_advertisingBLE->addServiceUUID(BLE_COMPLETED_RIDE_SERVICE_UUID);
     this->_advertisingBLE->setScanResponse(true);
     this->_advertisingBLE->setMinPreferred(0x06);
     this->_advertisingBLE->setMinPreferred(0x12);
+    this->_advertisingBLE->setAppearance(0x0000);
+
+    this->_advertisingBLE->addServiceUUID(BLE_COMPLETED_RIDE_SERVICE_UUID);
+    this->_advertisingBLE->start();
     Serial.println("Advertising initialised");
 }
 
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
-    this->initCompletedRideCaracteristics();
-    this->initCompletedRideDescriptors();
     this->_completedRideService->start();
     Serial.println("Completed Ride Service initialised");
 };
 
 void BLE::initCompletedRideCaracteristics()
 {
-    this->_CRStatsCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CARACTRISTIC_STATS,
-        BLECharacteristic::PROPERTY_READ
-    );
+    this->_CRStatsCaracteristic = this->_completedRideService->
+        createCharacteristic(BLE_COMPLETED_RIDE_CARACTRISTIC_STATS, BLECharacteristic::PROPERTY_READ);
+    // this->_CRStatsCaracteristic->setValue("csv");
     this->_CRStatsCaracteristic->setValue("id;plannedRideId;maxSpeed;avgSpeed;distance;duration;dateBegin;dateEnd;nbPoints;nbFalls");
 
-    this->_CRPointsCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
-        BLECharacteristic::PROPERTY_READ
-    );
+    this->_CRPointsCaracteristic = this->_completedRideService->
+        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS, BLECharacteristic::PROPERTY_READ);
+    this->_CRPointsCaracteristic->setValue("csv");
     // TEST LONGUEUR DE LA CHAINES DE CARACTERES
-    this->_CRPointsCaracteristic->setValue("id;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\n");
-    // this->_CRPointsCaracteristic->setValue("id;lat;long;alt;tmp;speed;date;effectiveTime");
-    
-    this->_CRIsReadyCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_READY,
-        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
-    );
-    this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
+    // this->_CRPointsCaracteristic->setValue("id;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\n");
+   
+    this->_CRIsReadyCaracteristic = this->_completedRideService->
+        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_READY, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+    this->_CRIsReadyCaracteristic->setValue("false");
 
-    this->_CRIsReceivedCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_RECEIVED,
-        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
-    );
-    this->_CRIsReceivedCaracteristic->setValue(BLE_FALSE);
+    this->_CRIsReceivedCaracteristic = this->_completedRideService->
+        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_RECEIVED, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    this->_CRIsReceivedCaracteristic->setValue("false");
 
     Serial.println("Completed Ride Caracteristics initialised");
 
