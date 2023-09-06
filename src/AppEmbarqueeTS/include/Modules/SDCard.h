@@ -16,10 +16,16 @@ private:
 
     int _nbFiles;
     bool _isRideStarted;
-    File _currentFile;
-    String _currentRideId;
+    File _currentPointsFile;
+    String _currentPointsFileName;
+    String _currentStatsFileName;
 
     void checkFiles();
+    void createRideFiles();
+    void writeStatsFile();
+    void writePoint();
+    void setStatsToSendFromFile();
+    void setPointsToSendFromFile();
 
 public:
     SDCard(TrackSenseProperties* trackSenseProperties);

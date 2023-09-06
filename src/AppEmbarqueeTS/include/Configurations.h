@@ -40,6 +40,8 @@
 
 #define SDCARD_ROOT_PATH "/rd"
 #define SDCARD_FILE_EXTENSION ".csv"
+#define SDCARD_FILE_STATS_NAME "_stats"
+#define SDCARD_FILE_POINTS_NAME "_points"
 
 /*----- LilyGO T-SIM7000G (GPS, LTE) -----*/
 #define GPS_UART_BAUD   115200

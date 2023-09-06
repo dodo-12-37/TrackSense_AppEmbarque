@@ -5,8 +5,10 @@
 SDCard::SDCard(TrackSenseProperties* trackSenseProperties) 
     : _trackSenseProperties(trackSenseProperties),
     _nbFiles(0),
-    _currentFile(NULL),
-    _currentRideId("")
+    _isRideStarted(false),
+    _currentPointsFile(),
+    _currentPointsFileName(""),
+    _currentStatsFileName("")
 {
     this->init();
 }
@@ -44,11 +46,33 @@ void SDCard::tick()
 {
     File f = SD.open(SDCARD_ROOT_PATH, FILE_WRITE);
 
-    if (this->_trackSenseProperties->PropertiesCurrentRide._completedRideId != this->_currentRideId)
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted && !this->_isRideStarted)
     {
-        this->_currentRideId = this->_trackSenseProperties->PropertiesCurrentRide._completedRideId;
-        // this->_currentFile = SD.open(SDCARD_ROOT_PATH + "/" + this->_currentRideId + SDCARD_FILE_EXTENSION, FILE_WRITE);
+        this->_isRideStarted = true;
+
+        this->createRideFiles();
+
+        this->_currentPointsFile = SD.open(this->_currentPointsFileName, FILE_WRITE);
     }
+    else if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished && this->_isRideStarted)
+    {
+        this->_isRideStarted = false;
+
+        if (this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave)
+        {
+            this->writePoint();
+        }
+
+        this->writeStatsFile();
+
+        this->_currentPointsFile.close();
+    }
+    
+
+        // this->setPointsToSendFromFile();
+        // this->setStatsToSendFromFile();
+        // this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = true;
+
 
 
     // Serial.println("SDCard");
@@ -91,4 +115,47 @@ void SDCard::checkFiles()
         file.close();
     }
     root.close();
+}
+
+void SDCard::createRideFiles()
+{
+    this->_currentStatsFileName = 
+            String(SDCARD_ROOT_PATH) + 
+            "/" + 
+            this->_trackSenseProperties->PropertiesTS._currentRideId + 
+            SDCARD_FILE_STATS_NAME + SDCARD_FILE_EXTENSION;
+    this->_currentPointsFileName = 
+        String(SDCARD_ROOT_PATH) + 
+        "/" + 
+        this->_trackSenseProperties->PropertiesTS._currentRideId + 
+        SDCARD_FILE_STATS_NAME + SDCARD_FILE_EXTENSION;
+
+    SD.mkdir(this->_currentStatsFileName);
+    SD.mkdir(this->_currentPointsFileName);
+}
+
+void SDCard::writeStatsFile()
+{
+    String content = 
+        this->_trackSenseProperties->PropertiesCurrentRide._completedRideId + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._routeId + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._maxSpeed + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._avgSpeed + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._dateBegin + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._dateEnd + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._duration + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._distance + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._nbPoints + ";" +
+        this->_trackSenseProperties->PropertiesCurrentRide._nbFalls + ";";
+
+    File file = SD.open(this->_currentStatsFileName, FILE_WRITE);
+
+    file.println(content);
+    file.close();
+}
+
+void SDCard::writePoint()
+{
+    this->_currentPointsFile.println(this->_trackSenseProperties->PropertiesCurrentRide._currentPoint);
+    this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = false;
 }

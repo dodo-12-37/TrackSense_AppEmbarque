@@ -45,7 +45,7 @@ public:
         String _currentPoint;
         int _nbPoints;
         int _nbFalls;
-        bool _isRideReadyToSave;
+        bool _isRideReadyToSave; // Utilisé ??
         bool _isPointReadyToSave;
     } PropertiesCurrentRide;
 
