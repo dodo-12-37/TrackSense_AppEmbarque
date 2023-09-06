@@ -75,7 +75,7 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
     this->initCompletedRideDescriptors();
-    this->_completedRideService->start();
+    // this->_completedRideService->start();
     this->initAdvertising();
     this->_serverBLE->startAdvertising();
 }
@@ -86,21 +86,27 @@ BLE::~BLE()
 
 void BLE::tick() 
 {            
-    if (this->isCompletedRideReceived)
-    {
-        Serial.println("Completed Ride Received");
-        this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
-        this->isCompletedRideReceived = false;
-        this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
-        this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = true;
-    }
-    else if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady && this->isDeviceConnected)
-    {
-        Serial.println("Send Completed Ride");
-        this->sendCompletedRide();
-        this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
-    }
-    else if (!BLE::isDeviceConnected)
+//     if (this->isCompletedRideReceived)
+//     {
+//         Serial.println("Completed Ride Received");
+//         this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
+//         this->isCompletedRideReceived = false;
+//         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
+//         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = true;
+//     }
+//     else if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady && this->isDeviceConnected)
+//     {
+//         Serial.println("Send Completed Ride");
+//         this->sendCompletedRide();
+//         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
+//     }
+//     else if (!BLE::isDeviceConnected)
+//     {
+//         Serial.println("Restart Advertising");
+//         this->_serverBLE->startAdvertising();
+//     }
+
+    if (!BLE::isDeviceConnected)
     {
         Serial.println("Restart Advertising");
         this->_serverBLE->startAdvertising();
@@ -126,12 +132,18 @@ void BLE::initAdvertising()
     advertising->setScanResponse(true);
     advertising->setMinPreferred(0x06);
     advertising->setMinPreferred(0x12);
+    // advertising->start();
+    Serial.println("Advertising initialised");
 }
 
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
-
+    this->initCompletedRideCaracteristics();
+    this->initCompletedRideDescriptors();
+    Serial.println("Dump");
+    Serial.println(this->_completedRideService->toString().c_str());
+    this->_completedRideService->start();
     Serial.println("Completed Ride Service initialised");
 };
 
