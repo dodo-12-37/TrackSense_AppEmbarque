@@ -183,25 +183,25 @@ void BLE::initCompletedRideCaracteristics()
     this->_CRPointsCaracteristic->setValue("id;lat;long;alt;tmp;speed;date;effectiveTime");
 
     this->_CRNbPointsCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_NUMBER_OF_POINTS,
         BLECharacteristic::PROPERTY_READ
     );
     this->_CRNbPointsCaracteristic->setValue("0");
 
     this->_CRNbFallsCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_NUMBER_OF_FALLS,
         BLECharacteristic::PROPERTY_READ
     );
     this->_CRNbFallsCaracteristic->setValue("0");
 
     this->_CRIsReadyCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_READY,
         BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ
     );
     this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
 
     this->_CRIsReceivedCaracteristic = this->_completedRideService->createCharacteristic(
-        BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS,
+        BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_RECEIVED,
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
     );
     this->_CRIsReceivedCaracteristic->setValue(BLE_FALSE);
