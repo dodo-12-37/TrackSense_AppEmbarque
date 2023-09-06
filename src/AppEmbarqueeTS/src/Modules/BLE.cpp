@@ -11,7 +11,10 @@
 
 /*----- Definition des membres statics -----*/
 bool BLE::isDeviceConnected = false;
-bool BLE::isCompletedRideReceived = false;
+bool BLE::isCompletedRideStatsSending = false;
+bool BLE::isCompletedRideStatsReceived = false;
+bool BLE::isCompletedRidePointSending = false;
+bool BLE::isCompletedRidePointReceived = false;
 
 /*----- CallBacks -----*/
 class ServerBLECallbacks
@@ -30,7 +33,7 @@ class ServerBLECallbacks
     }
 };
 
-class CompletedRideReceiveCallbacks
+class CompletedRideReceiveStatsCallbacks
     : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *p_characteristic)
@@ -41,7 +44,25 @@ class CompletedRideReceiveCallbacks
         if (receivedData.compare(trueString) == 0)
         {
             p_characteristic->setValue(BLE_FALSE);
-            BLE::isCompletedRideReceived = true;
+            BLE::isCompletedRideStatsReceived = true;
+            BLE::isCompletedRideStatsSending = false;
+        }
+    }
+};
+
+class CompletedRideReceivePointCallbacks
+    : public BLECharacteristicCallbacks
+{
+    void onWrite(BLECharacteristic *p_characteristic)
+    {
+        std::string receivedData = p_characteristic->getValue();
+        std::string okString = BLE_OK;
+
+        if (receivedData.compare(okString) == 0)
+        {
+            p_characteristic->setValue("");
+            BLE::isCompletedRidePointReceived = true;
+            BLE::isCompletedRidePointSending = false;
         }
     }
 };
@@ -53,27 +74,16 @@ BLE::BLE(TrackSenseProperties* trackSenseProperties)
     _advertisingBLE(nullptr),
     _completedRideService(nullptr),
     _CRStatsCaracteristic(nullptr),
-    _CRPointsCaracteristic(nullptr),
+    _CRPointCaracteristic(nullptr),
+    _CRPointNumberCaracteristic(nullptr),
     _CRIsReadyCaracteristic(nullptr),
     _CRIsReceivedCaracteristic(nullptr),
     _CRStatsDescriptor(nullptr),
-    _CRPointsDescriptor(nullptr),
+    _CRPointDescriptor(nullptr),
+    _CRPointNumberDescriptor(nullptr),
     _CRIsReadyDescriptor(nullptr),
     _CRIsReceivedDescriptor(nullptr)
-    // _CRIdCaracteristic(nullptr),
-    // _CRRouteIdCaracteristic(nullptr),
-    // _CRMaxSpeedCaracteristic(nullptr),
-    // _CRAVGSpeedCaracteristic(nullptr),
-    // _CRDistanceCaracteristic(nullptr),
-    // _CRDurationCaracteristic(nullptr),
-    // _CRDateBeginCaracteristic(nullptr),
-    // _CRDateEndCaracteristic(nullptr),
-    // _CRNbPointsCaracteristic(nullptr),
-    // _CRNbFallsCaracteristic(nullptr),
 {
-    BLE::isDeviceConnected = false;
-    BLE::isCompletedRideReceived = false;
-
     this->initBLE();
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
@@ -89,32 +99,40 @@ BLE::~BLE()
 
 void BLE::tick() 
 {            
-//     if (this->isCompletedRideReceived)
-//     {
-//         Serial.println("Completed Ride Received");
-//         this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
-//         this->isCompletedRideReceived = false;
-//         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
-//         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = true;
-//     }
-//     else if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady && this->isDeviceConnected)
-//     {
-//         Serial.println("Send Completed Ride");
-//         this->sendCompletedRide();
-//         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
-//     }
-//     else if (!BLE::isDeviceConnected)
-//     {
-//         Serial.println("Restart Advertising");
-//         this->_serverBLE->startAdvertising();
-//     }
+    if (BLE::isDeviceConnected)
+    {
+        if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
+        {
+            if (!BLE::isCompletedRideStatsReceived && !BLE::isCompletedRideStatsSending)
+            {
+                this->sendCompletedRideStats();
+            }
+            else if (BLE::isCompletedRideStatsReceived
+                        && this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
+            {
+                this->sendCompletedRideCurrentPoint();
+            }
+        }
+
+
+
+
+
+    }
+    else
+    {
+        Serial.println("Restart Advertising");
+        this->_serverBLE->startAdvertising();
+    }
+
+
 
     if (!BLE::isDeviceConnected)
     {
         Serial.println("Restart Advertising");
         this->_serverBLE->startAdvertising();
     } 
-    else if (!BLE::isCompletedRideReceived)
+    else if (!BLE::isCompletedRideStatsReceived)
     {
         String val = this->_CRIsReadyCaracteristic->getValue().c_str();
 
@@ -160,7 +178,7 @@ void BLE::initAdvertising()
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
-    this->_completedRideService->start();
+    // this->_completedRideService->start();
     Serial.println("Completed Ride Service initialised");
 };
 
@@ -168,75 +186,27 @@ void BLE::initCompletedRideCaracteristics()
 {
     this->_CRStatsCaracteristic = this->_completedRideService->
         createCharacteristic(BLE_COMPLETED_RIDE_CARACTRISTIC_STATS, BLECharacteristic::PROPERTY_READ);
-    // this->_CRStatsCaracteristic->setValue("csv");
     this->_CRStatsCaracteristic->setValue("id;plannedRideId;maxSpeed;avgSpeed;distance;duration;dateBegin;dateEnd;nbPoints;nbFalls");
 
-    this->_CRPointsCaracteristic = this->_completedRideService->
-        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINTS, BLECharacteristic::PROPERTY_READ);
-    this->_CRPointsCaracteristic->setValue("csv");
-    // TEST LONGUEUR DE LA CHAINES DE CARACTERES
-    // this->_CRPointsCaracteristic->setValue("id;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\nid;lat;long;alt;tmp;speed;date;effectiveTime\n");
-   
+    this->_CRPointCaracteristic = this->_completedRideService->
+        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT, BLECharacteristic::PROPERTY_READ);
+    this->_CRPointCaracteristic->setValue("idPoint;lat;long;alt;tmp;speed;date;effectiveTime");
+
+    this->_CRPointNumberCaracteristic = this->_completedRideService->
+        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT, BLECharacteristic::PROPERTY_READ);
+    this->_CRPointNumberCaracteristic->setValue("0");
+    this->_CRPointNumberCaracteristic->setCallbacks(new CompletedRideReceivePointCallbacks());
+ 
     this->_CRIsReadyCaracteristic = this->_completedRideService->
         createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_READY, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-    this->_CRIsReadyCaracteristic->setValue("false");
+    this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
 
     this->_CRIsReceivedCaracteristic = this->_completedRideService->
-        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_RECEIVED, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    this->_CRIsReceivedCaracteristic->setValue("false");
+        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_STATS_IS_RECEIVED, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    this->_CRIsReceivedCaracteristic->setValue(BLE_FALSE);
+    this->_CRIsReceivedCaracteristic->setCallbacks(new CompletedRideReceiveStatsCallbacks());
 
     Serial.println("Completed Ride Caracteristics initialised");
-
-    // this->_CRIdCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_ID,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRIdCaracteristic->setValue("00000000-0000-0000-0000-000000000000");
-    // this->_CRRouteIdCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_ROUTE_ID,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRRouteIdCaracteristic->setValue("00000000-0000-0000-0000-000000000000");
-    // this->_CRMaxSpeedCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_MAX_SPEED,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRMaxSpeedCaracteristic->setValue("0.0");
-    // this->_CRAVGSpeedCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_AVG_SPEED,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRAVGSpeedCaracteristic->setValue("0.0");
-    // this->_CRDateBeginCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_DATE_BEGIN,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRDateBeginCaracteristic->setValue("0000/00/00-00:00:00");
-    // this->_CRDateEndCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_DATE_END,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRDateEndCaracteristic->setValue("0000/00/00-00:00:00");
-    // this->_CRDurationCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_DURATION,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRDurationCaracteristic->setValue("00:00:00");
-    // this->_CRDistanceCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_DISTANCE,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRDistanceCaracteristic->setValue("0.0");
-    // this->_CRNbPointsCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_NUMBER_OF_POINTS,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRNbPointsCaracteristic->setValue("0");
-    // this->_CRNbFallsCaracteristic = this->_completedRideService->createCharacteristic(
-    //     BLE_COMPLETED_RIDE_CHARACTERISTIC_NUMBER_OF_FALLS,
-    //     BLECharacteristic::PROPERTY_READ
-    // );
-    // this->_CRNbFallsCaracteristic->setValue("0");
 }
 
 void BLE::initCompletedRideDescriptors()
@@ -245,57 +215,53 @@ void BLE::initCompletedRideDescriptors()
     this->_CRStatsDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_STATS_NAME);
     this->_CRStatsCaracteristic->addDescriptor(this->_CRStatsDescriptor);
 
-    this->_CRPointsDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_UUID);
-    this->_CRPointsDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINTS_NAME);
-    this->_CRPointsCaracteristic->addDescriptor(this->_CRPointsDescriptor);
+    this->_CRPointDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_UUID);
+    this->_CRPointDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NAME);
+    this->_CRPointCaracteristic->addDescriptor(this->_CRPointDescriptor);
+
+    this->_CRPointNumberDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_UUID);
+    this->_CRPointNumberDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_NAME);
+    this->_CRPointNumberCaracteristic->addDescriptor(this->_CRPointNumberDescriptor);
     
     this->_CRIsReadyDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID);
     this->_CRIsReadyDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_NAME);
     this->_CRIsReadyCaracteristic->addDescriptor(this->_CRIsReadyDescriptor);
 
-    this->_CRIsReceivedDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID);
-    this->_CRIsReceivedDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_NAME);
+    this->_CRIsReceivedDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_STATS_IS_RECEIVED_UUID);
+    this->_CRIsReceivedDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_STATS_IS_RECEIVED_NAME);
     this->_CRIsReceivedCaracteristic->addDescriptor(this->_CRIsReceivedDescriptor);
 
     Serial.println("Completed Ride Descriptors initialised");
-
-    // this->_CRIdCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_UUID));
-    // this->_CRIdCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_ID_NAME);
-    // this->_CRRouteIdCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_UUID));
-    // this->_CRRouteIdCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_ROUTE_ID_NAME);
-    // this->_CRMaxSpeedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_UUID));
-    // this->_CRMaxSpeedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_MAX_SPEED_NAME);
-    // this->_CRAVGSpeedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_UUID));
-    // this->_CRAVGSpeedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_AVG_SPEED_NAME);
-    // this->_CRDateBeginCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_UUID));
-    // this->_CRDateBeginCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_BEGIN_NAME);
-    // this->_CRDateEndCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_UUID));
-    // this->_CRDateEndCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DATE_END_NAME);
-    // this->_CRDurationCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_UUID));
-    // this->_CRDurationCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DURATION_NAME);
-    // this->_CRDistanceCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_UUID));
-    // this->_CRDistanceCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_DISTANCE_NAME);
-    // this->_CRNbPointsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_UUID));
-    // this->_CRNbPointsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_POINTS_NAME);
-    // this->_CRNbFallsCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_UUID));
-    // this->_CRNbFallsCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NUMBER_OF_FALLS_NAME);
 }
 
-void BLE::sendCompletedRide()
+void BLE::sendCompletedRideStats()
 {
     this->_CRStatsCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._stats.c_str());
-    // this->_CRIdCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._completedRideId.c_str());
-    // this->_CRRouteIdCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._routeId.c_str());
-    // this->_CRMaxSpeedCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._maxSpeed).c_str());
-    // this->_CRAVGSpeedCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._avgSpeed).c_str());
-    // this->_CRDistanceCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._distance).c_str());
-    // this->_CRDurationCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._duration).c_str());
-    // this->_CRDateBeginCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._dateBegin.c_str());
-    // this->_CRDateEndCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._dateEnd.c_str());
-    this->_CRPointsCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._points.c_str());
-    // this->_CRNbPointsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints).c_str());
-    // this->_CRNbFallsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbFalls).c_str());
     this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
     this->_CRIsReadyCaracteristic->notify();
+    BLE::isCompletedRideStatsSending = true;
+    BLE::isCompletedRideStatsReceived = false;
     Serial.println("Completed Ride envoyed");
+}
+
+void BLE::sendCompletedRideCurrentPoint()
+{
+    if (BLE::isCompletedRidePointReceived)
+    {
+        this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
+        this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReceived = true;
+        BLE::isCompletedRidePointReceived = false;
+        Serial.println("Completed Ride Point received");
+    }
+    else if (!BLE::isCompletedRidePointSending)
+    {
+        this->_CRPointCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._point.c_str());
+        this->_CRPointNumberCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint).c_str());
+        this->_CRPointNumberCaracteristic->notify();
+        BLE::isCompletedRidePointSending = true;
+        BLE::isCompletedRidePointReceived = false;
+
+        this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
+        Serial.println("Completed Ride Point envoyed");
+    }
 }
