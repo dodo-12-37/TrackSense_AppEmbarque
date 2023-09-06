@@ -10,7 +10,6 @@
 */
 
 void printGPSOnScreen(float lat, float lon, float speed, float alt, int counter);
-// void printCounterOnScreen(float lat, float lon, int counter);
 
 
 #define TINY_GSM_MODEM_SIM7000
@@ -132,9 +131,9 @@ void loop()
     SerialMon.print("GSM Based Location: ");
     SerialMon.println(modem.getGsmLocation());
 
-    int counter = 15;
+    int counter = 0;
 
-    for (int8_t i = 15; i; i--)
+    for (int8_t i = 0; i; i++)
     {
         // printGPSOnScreen(0, 0, 0, 0, counter);
         printGPSOnScreen(lat, lon, speed, alt, counter);
@@ -152,37 +151,37 @@ void loop()
 
             /* Print on LCD Screen */
             printGPSOnScreen(lat, lon, speed, alt, counter);
-            counter--;
+            counter++;
             break;
         }
         else
         {
-            SerialMon.println("Couldn't get GPS/GNSS/GLONASS location, retrying in 15s.");
-            delay(15000L);
+            SerialMon.println("Couldn't get GPS/GNSS/GLONASS location");
+            // delay(15000L);
         }
     }
 
     SerialMon.println("Retrieving GPS/GNSS/GLONASS location again as a string");
     String gps_raw = modem.getGPSraw();
     SerialMon.println("GPS/GNSS Based Location String: " + gps_raw);
-    SerialMon.println("Disabling GPS");
-    modem.disableGPS();
+    // SerialMon.println("Disabling GPS");
+    // modem.disableGPS();
 
     // Set SIM7000G GPIO4 LOW ,turn off GPS power
     // CMD:AT+SGPIO=0,4,1,0
     // Only in version 20200415 is there a function to control GPS power
-    modem.sendAT("+SGPIO=0,4,1,0");
-    if (modem.waitResponse(10000L) != 1)
-    {
-        SerialMon.println(" SGPIO=0,4,1,0 false ");
-    }
+    // modem.sendAT("+SGPIO=0,4,1,0");
+    // if (modem.waitResponse(10000L) != 1)
+    // {
+    //     SerialMon.println(" SGPIO=0,4,1,0 false ");
+    // }
 
-    delay(200);
-    // Do nothing forevermore
-    while (true)
-    {
-        modem.maintain();
-    }
+    // delay(200);
+    // // Do nothing forevermore
+    // while (true)
+    // {
+    //     modem.maintain();
+    // }
 }
 
 void printGPSOnScreen(float lat, float lon, float speed, float alt, int counter)
@@ -230,28 +229,3 @@ void printGPSOnScreen(float lat, float lon, float speed, float alt, int counter)
     String strCounter = "Counter : " + String(counter);
     tft.printf("%-13s", strCounter.c_str());
 }
-
-// void printCounterOnScreen(float lat, float lon, int counter)
-// {
-//     char *formatChar = (char *)"%-14s";
-//     bool locationIsValid = false;
-
-//     if (lat != 0 && lon != 0)
-//     {
-//         locationIsValid = true;
-//     }
-
-//     if (locationIsValid)
-//     {
-//         tft.setTextColor(GC9A01A_GREEN, GC9A01A_BLACK);
-//     }
-//     else
-//     {
-//         tft.setTextColor(GC9A01A_RED, GC9A01A_BLACK);
-//     }
-
-//     tft.setTextSize(2);
-//     tft.setCursor(30, 40);
-//     String strCounter = "Counter : " + String(counter);
-//     tft.printf(formatChar, strCounter.c_str());
-// }
