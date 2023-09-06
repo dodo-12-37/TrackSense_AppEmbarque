@@ -31,6 +31,14 @@
 
 #endif
 
+#define TFT_WIDTH 240
+#define TFT_HEIGHT 240
+// #define TFT_INIT_ROTATION 0
+#define TFT_LIGHT_MODE_BACKGROUND_COLOR GC9A01A_WHITE
+#define TFT_LIGHT_MODE_TEXT_COLOR GC9A01A_BLACK
+#define TFT_DARK_MODE_BACKGROUND_COLOR GC9A01A_BLACK
+#define TFT_DARK_MODE_TEXT_COLOR GC9A01A_WHITE
+
 /*----- SD Card -----*/
 #define PIN_SDCARD_MOSI 15
 #define PIN_SDCARD_SCLK 14
@@ -41,17 +49,18 @@
 #define SDCARD_ROOT_PATH "/rd"
 #define SDCARD_FILE_EXTENSION ".csv"
 
-/*----- LilyGO T-SIM7000G (GPS, LTE) -----*/
+/*----- GSM LilyGO T-SIM7000G (GPS, LTE) -----*/
+#define SerialAT Serial1
 #define GPS_UART_BAUD   115200
-#define PIN_GPS_LTE_DTR 25
-#define PIN_GPS_LTE_TX 27 // 26
-#define PIN_GPS_LTE_RX 26 // 27
-#define PIN_GPS_LTE_PWR 4
-#define TINY_GSM_MODEM_SIM7000  // Utile ???
+#define PIN_GSM_DTR 25
+#define PIN_GSM_TX 27
+#define PIN_GSM_RX 26
+#define PIN_GSM_PWR 4
+#define TINY_GSM_MODEM_SIM7000  // Active le bon processeur
 #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
 #define MINIMUM_DISTANCE_TO_ADD_POSITION 10
 
-/*----- Accelerometer, Gyroscope, Compass, Temperature -----*/
+/*----- I2C : Accelerometer, Gyroscope, Compass, Temperature -----*/
 #define PIN_GY87_SDA 21
 #define PIN_GY87_SCL 22
 
