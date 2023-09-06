@@ -9,22 +9,6 @@ public:
     struct TrackSensePropertiesTS
     {
         String _currentRideId;
-
-        // VRAIMENT NECESSAIRE ?? //
-        // bool _isWIFIConnected;
-        // bool _isBluetoothConnected;
-        // bool _isLTEConnected;
-        // bool _isSDCardConnected;
-        // bool _isScreenConnected;
-        // bool _isGPSConnected;
-        // bool _isCompassConnected;
-        // bool _isGyroscopeConnected;
-        // bool _isAccelerometerConnected;
-        // bool _isTemperatureConnected;
-        // bool _isBatteryConnected;
-        // bool _isButton1Connected;
-        // bool _isButton2Connected;
-        // bool _isBuzzerConnected;
     } PropertiesTS;
 
     /* datas Current ride */
@@ -46,7 +30,7 @@ public:
         int _nbPoints;
         int _nbFalls;
         bool _isRideReadyToSave;
-        bool _isPointReadyToSave;
+        bool _isPointReadyToSave;       
     } PropertiesCurrentRide;
 
     /* datas Buttons */
@@ -62,6 +46,7 @@ public:
     struct TrackSensePropertiesScreen
     {
         /*
+            0 : Init TS Page
             1 : Home Page
             2 : Compass Page
             3 : Ride Direction Page
@@ -69,11 +54,18 @@ public:
             5 : Global Statistics Page
             6 : Go Home Page
             7 : Ride Statistics Page
-            0 : No Page (error)
+            -1 : No Page (error)
         */
         uint8_t _activeScreen;
         bool _isDarkMode;
 
+        /*
+            0 : Pins vers le haut
+            1 : Pins vers la droite (???)
+            2 : Pins vers le bas (???)
+            3 : Pins vers la gauche (???)
+        */
+       uint8_t _screenRotation;
         
     } PropertiesScreen;
 
@@ -107,16 +99,21 @@ public:
     /* datas GPS */
     struct TrackSensePropertiesGPS
     {
-        double _latitude;
-        double _longitude;
-        double _altitude;
-        double _speed;
+        float _latitude;
+        float _longitude;
+        float _altitude;
+        float _speed;
         String _date;
         String _time;
         bool _locationIsValid;
+        int _usedSatellites;
+        float _accuracy;
 
-        double mph() { return 0.621371 * _speed; }
-        double miles() { return 0.00062137112 * _altitude; }
+        float mph() { return 0.621371 * _speed; }
+        float miles() { return 0.00062137112 * _altitude; }
+
+        int _TEST_counterGoodValue;
+        int _TEST_counterTotal;
     } PropertiesGPS;
 
     /* datas Compass */

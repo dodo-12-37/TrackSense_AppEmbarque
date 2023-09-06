@@ -13,45 +13,253 @@ ScreenGC9A01::~ScreenGC9A01()
     delete this->tft;
 }
 
+/*
+    0 : Init TS Page
+    1 : Home Page
+    2 : Compass Page
+    3 : Ride Direction Page
+    4 : Ride Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    7 : Ride Statistics Page
+    -1 : No Page (error)
+*/
 void ScreenGC9A01::tick()
 {
-    char *formatChar = (char *)"%-29s";
-
-    this->testMaisonScreen();
-
-    
-    if (this->_trackSenseProperties->PropertiesGPS._locationIsValid)
+    switch (this->_trackSenseProperties->PropertiesScreen._activeScreen)
     {
-        this->tft->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK);
+    case 0:
+        this->drawInitTSPage0();
+        break;
+
+    case 1:
+        this->drawHomePage1();
+        break;
+
+    case 2:
+        this->drawCompassPage2();
+        break;
+
+    case 3:
+        this->drawRideDirectionPage3();
+        break;
+
+    case 4:
+        this->drawRidePage4();
+        break;
+
+    case 5:
+        this->drawGlobalStatisticsPage5();
+        break;
+
+    case 6:
+        this->drawGoHomePage6();
+        break;
+
+    case 7:
+        this->drawRideStatisticsPage7();
+        break;
+
+    default:
+        this->drawErrorPage();
+        break;
+    }
+}
+
+/*
+    Draw Pages
+*/
+#pragma region DrawPages
+
+void ScreenGC9A01::drawInitTSPage0()
+{
+    this->drawBackgroundColor();
+    this->tft->setRotation(this->_trackSenseProperties->PropertiesScreen._screenRotation);
+    this->setTextColor();
+    /*
+        @brief    Helper to determine size of a PROGMEM string with current
+    font/size. Pass string and a cursor position, returns UL corner and W,H.
+        @param    str     The flash-memory ascii string to measure
+        @param    x       The current cursor X
+        @param    y       The current cursor Y
+        @param    x1      The boundary X coordinate, set by function
+        @param    y1      The boundary Y coordinate, set by function
+        @param    w      The boundary width, set by function
+        @param    h      The boundary height, set by function
+    */
+    // this->tft->getTextBounds("Initializing", 10, 150); // Pour centrer le texte ???
+    this->tft->setTextSize(3);
+    this->tft->setCursor(10, 150);
+    this->tft->printf("%-13s", "Initializing");
+    this->tft->setCursor(30, 40);
+    this->tft->printf("%-11s", "TrackSense");
+    this->tft->setCursor(90, 180);
+    this->tft->printf("%-4s", "GPS");
+}
+
+void ScreenGC9A01::drawHomePage1()
+{
+    testButtonsScreen();
+}
+
+void ScreenGC9A01::drawCompassPage2()
+{
+    ;
+}
+
+void ScreenGC9A01::drawRideDirectionPage3()
+{
+    ;
+}
+
+void ScreenGC9A01::drawRidePage4()
+{
+    char *formatChar = (char *)"%-19s";
+    bool locationIsValid = false;
+
+    if (this->_trackSenseProperties->PropertiesGPS._latitude != 0 && this->_trackSenseProperties->PropertiesGPS._longitude != 0)
+    {
+        locationIsValid = true;
+    }
+
+    if (locationIsValid && this->_trackSenseProperties->PropertiesGPS._usedSatellites >= 4)
+    {
+        this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
+    }
+    else if (locationIsValid && this->_trackSenseProperties->PropertiesGPS._usedSatellites < 4)
+    {
+        this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
     }
     else
     {
-        this->tft->setTextColor(GC9A01A_RED, GC9A01A_BLACK);
+        this->setTextColor(GC9A01A_RED, GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE);
     }
 
-    this->tft->setCursor(30, 60);
-    this->tft->setTextSize(2);
-    String strIsValid = "IsValid : " + String(this->_trackSenseProperties->PropertiesGPS._locationIsValid ? "true" : "false");
-    this->tft->printf(formatChar, strIsValid.c_str());
+    tft->setTextSize(2);
 
-    this->tft->setCursor(25, 140);
-    String strLatitude = "Latitude : " + String(this->_trackSenseProperties->PropertiesGPS._latitude);
-    this->tft->printf(formatChar, strLatitude.c_str());
+    tft->setCursor(40, 40);
+    String strCounterGoodValue = "Good : " + String(this->_trackSenseProperties->PropertiesGPS._TEST_counterGoodValue);
+    tft->printf("%-15s", strCounterGoodValue.c_str());
 
-    this->tft->setCursor(20, 160);
-    String strLongitude = "Longitude : " + String(this->_trackSenseProperties->PropertiesGPS._longitude);
-    this->tft->printf(formatChar, strLongitude.c_str());
+    tft->setCursor(30, 60);
+    String strCounterTotal = "Total : " + String(this->_trackSenseProperties->PropertiesGPS._TEST_counterTotal);
+    tft->printf("%-11s", strCounterTotal.c_str());
 
-    this->tft->setCursor(26, 180);
-    String strAltitude = "Altitude : " + String(this->_trackSenseProperties->PropertiesGPS._altitude);
-    this->tft->printf(formatChar, strAltitude.c_str());
+    tft->setCursor(15, 85);
+    String strUsedSatellite = "Used Sat : " + String(this->_trackSenseProperties->PropertiesGPS._usedSatellites);
+    tft->printf(formatChar, strUsedSatellite.c_str());
 
-    this->tft->setCursor(42, 200);
-    String strSpeed = "Speed : " + String(this->_trackSenseProperties->PropertiesGPS._speed);
-    this->tft->printf(formatChar, strSpeed.c_str());
+    tft->setCursor(2, 110);
+    String strLatitude = "Lat : " + String(this->_trackSenseProperties->PropertiesGPS._latitude, 10);
+    tft->printf(formatChar, strLatitude.c_str());
+
+    tft->setCursor(2, 130);
+    String strLongitude = "Lon : " + String(this->_trackSenseProperties->PropertiesGPS._longitude, 10);
+    tft->printf(formatChar, strLongitude.c_str());
+
+    tft->setCursor(12, 150);
+    String strAltitude = "Alt : " + String(this->_trackSenseProperties->PropertiesGPS._altitude, 8);
+    tft->printf(formatChar, strAltitude.c_str());
+
+    tft->setCursor(20, 170);
+    String strSpeed = "Speed : " + String(this->_trackSenseProperties->PropertiesGPS._speed, 4);
+    tft->printf(formatChar, strSpeed.c_str());
+
+    tft->setCursor(40, 190);
+    String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesGPS._accuracy, 4);
+    tft->printf(formatChar, strAccuracy.c_str());
 }
 
-void ScreenGC9A01::testMaisonScreen()
+void ScreenGC9A01::drawGlobalStatisticsPage5()
+{
+    ;
+}
+
+void ScreenGC9A01::drawGoHomePage6()
+{
+    ;
+}
+
+void ScreenGC9A01::drawRideStatisticsPage7()
+{
+    ;
+}
+
+void ScreenGC9A01::drawErrorPage()
+{
+    this->tft->fillScreen(GC9A01A_RED);
+    this->setTextColor();
+    this->tft->setCursor(100, 120);
+    this->tft->printf("%-5s", "ERROR");
+}
+
+#pragma endregion DrawPages
+
+/*
+    Elements
+*/
+#pragma region Elements
+
+void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
+{
+    double hauteurY = largeurX / 2;
+    double zoneBarreVerteX = largeurX * 0.875;
+    double barreVerteX = zoneBarreVerteX / 3;
+    double barreVerteY = hauteurY * 0.8;
+    double coordBarreVerteX = coordX + (barreVerteX - barreVerteX * 0.875);
+    double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
+
+    // tft.drawRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);  // Contour
+    tft->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
+    tft->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
+
+    tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);                   // niveau #1
+    tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
+    tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
+}
+
+#pragma endregion Elements
+
+/*
+    Drawing Tools
+*/
+#pragma region DrawingTools
+
+void ScreenGC9A01::drawBackgroundColor(int darkModeColor, int lightModeColor)
+{
+    if (this->_trackSenseProperties->PropertiesScreen._isDarkMode)
+    {
+        this->tft->fillScreen(darkModeColor);
+    }
+    else
+    {
+        this->tft->fillScreen(lightModeColor);
+    }
+}
+
+void ScreenGC9A01::setTextColor(int textDarkModeColor,
+                                int backgroundDarkModeColor,
+                                int textLightModeColor,
+                                int backgroundLightModeColor)
+{
+    if (this->_trackSenseProperties->PropertiesScreen._isDarkMode)
+    {
+        this->tft->setTextColor(textDarkModeColor, backgroundDarkModeColor);
+    }
+    else
+    {
+        this->tft->setTextColor(textLightModeColor, backgroundLightModeColor);
+    }
+}
+
+#pragma endregion DrawingTools
+
+/*
+    Test maison
+*/
+#pragma region TestMaison
+
+void ScreenGC9A01::testButtonsScreen()
 {
     char *formatChar = (char *)"%-29s";
 
@@ -133,3 +341,5 @@ void ScreenGC9A01::testMaisonScreen()
         // Serial.println("BUTTONS ERROR !!!");
     }
 }
+
+#pragma endregion TestMaison
