@@ -8,13 +8,6 @@ public:
     /* Datas TrackSense */
     struct TrackSensePropertiesTS
     {
-        bool _isRideStarted;
-        bool _isRidePaused;
-        bool _isRideFinished;
-        
-        // bool _isRideSaved;
-        // bool _isRideDeleted;
-
         String _currentRideId;
 
         // VRAIMENT NECESSAIRE ?? //
@@ -37,6 +30,10 @@ public:
     /* datas Current ride */
     struct TrackSensePropertiesCurrentRide
     {
+        bool _isRideStarted;
+        bool _isRidePaused;
+        bool _isRideFinished;
+
         String _completedRideId;
         String _routeId;
         double _maxSpeed;
@@ -53,12 +50,12 @@ public:
     } PropertiesCurrentRide;
 
     /* datas Buttons */
-    struct TrackSensePropertiesButton
+    struct TrackSensePropertiesButtons
     {
         // bool _isButton1Pressed;
         // bool _isButton2Pressed;
-        int _TEST_Button1State;
-        int _TEST_Button2State;
+        int _button1State;
+        int _button2State;
     } PropertiesButtons;
 
     /* datas Screen */

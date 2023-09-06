@@ -52,8 +52,8 @@ void Program::execute()
 void Program::initProperties()
 {
     // Buttons
-    this->_trackSenseProperties->PropertiesButtons._TEST_Button1State = 0;
-    this->_trackSenseProperties->PropertiesButtons._TEST_Button2State = 0;
+    this->_trackSenseProperties->PropertiesButtons._button1State = 0;
+    this->_trackSenseProperties->PropertiesButtons._button2State = 0;
 
     // Buzzer
     this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = false;
