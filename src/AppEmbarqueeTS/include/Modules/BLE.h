@@ -18,9 +18,18 @@ private:
     TrackSenseProperties* _trackSenseProperties;
 
     BLEServer* _serverBLE;
+    BLEAdvertising* _advertisingBLE;
 
     BLEService* _completedRideService;
     BLECharacteristic* _CRStatsCaracteristic;
+    BLECharacteristic* _CRPointsCaracteristic;
+    BLECharacteristic* _CRIsReadyCaracteristic;
+    BLECharacteristic* _CRIsReceivedCaracteristic;
+    BLEDescriptor* _CRStatsDescriptor;
+    BLEDescriptor* _CRPointsDescriptor;
+    BLEDescriptor* _CRIsReadyDescriptor;
+    BLEDescriptor* _CRIsReceivedDescriptor;
+
     // BLECharacteristic* _CRIdCaracteristic;
     // BLECharacteristic* _CRRouteIdCaracteristic;
     // BLECharacteristic* _CRMaxSpeedCaracteristic;
@@ -29,11 +38,8 @@ private:
     // BLECharacteristic* _CRDurationCaracteristic;
     // BLECharacteristic* _CRDateBeginCaracteristic;
     // BLECharacteristic* _CRDateEndCaracteristic;
-    BLECharacteristic* _CRPointsCaracteristic;
     // BLECharacteristic* _CRNbPointsCaracteristic;
     // BLECharacteristic* _CRNbFallsCaracteristic;
-    BLECharacteristic* _CRIsReadyCaracteristic;
-    BLECharacteristic* _CRIsReceivedCaracteristic;
 
     void initBLE();
     void initAdvertising();

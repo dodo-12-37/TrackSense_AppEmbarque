@@ -15,6 +15,7 @@ private:
     // SD* _sd;
 
     int _nbFiles;
+    bool _isRideStarted;
     File _currentFile;
     String _currentRideId;
 
