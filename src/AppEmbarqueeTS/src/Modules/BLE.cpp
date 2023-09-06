@@ -87,6 +87,7 @@ void BLE::tick()
 {            
     if (this->isCompletedRideReceived)
     {
+        Serial.println("Completed Ride Received");
         this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
         this->isCompletedRideReceived = false;
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
@@ -94,11 +95,13 @@ void BLE::tick()
     }
     else if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady && this->isDeviceConnected)
     {
+        Serial.println("Send Completed Ride");
         this->sendCompletedRide();
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
     }
     else if (!BLE::isDeviceConnected)
     {
+        Serial.println("Restart Advertising");
         this->_serverBLE->startAdvertising();
     }
 }
@@ -111,6 +114,8 @@ void BLE::initBLE()
 
     this->_serverBLE = BLEDevice::createServer();
     this->_serverBLE->setCallbacks(new ServerBLECallbacks());
+
+    Serial.println("BLE initialise");
 }
 
 void BLE::initAdvertising()
@@ -125,6 +130,8 @@ void BLE::initAdvertising()
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
+
+    Serial.println("Completed Ride Service initialise");
 };
 
 void BLE::initCompletedRideCaracteristics()
@@ -206,6 +213,8 @@ void BLE::initCompletedRideCaracteristics()
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
     );
     this->_CRIsReceivedCaracteristic->setValue(BLE_FALSE);
+
+    Serial.println("Completed Ride Caracteristics initialise");
 }
 
 void BLE::initCompletedRideDescriptors()
@@ -248,6 +257,8 @@ void BLE::initCompletedRideDescriptors()
 
     this->_CRIsReceivedCaracteristic->addDescriptor(new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID));
     this->_CRIsReceivedCaracteristic->getDescriptorByUUID(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_UUID)->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_RECEIVED_NAME);
+
+    Serial.println("Completed Ride Descriptors initialise");
 }
 
 void BLE::sendCompletedRide()
@@ -265,4 +276,5 @@ void BLE::sendCompletedRide()
     this->_CRNbFallsCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._nbFalls).c_str());
     this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
     this->_CRIsReceivedCaracteristic->notify();
+    Serial.println("Completed Ride envoye");
 }
