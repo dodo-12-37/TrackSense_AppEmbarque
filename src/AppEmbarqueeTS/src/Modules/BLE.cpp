@@ -105,9 +105,16 @@ void BLE::tick()
                 this->sendCompletedRideStats();
             }
             else if (BLE::isCompletedRideStatsReceived
-                        && this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
+                        && this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady)
             {
                 this->sendCompletedRideCurrentPoint();
+            }
+            else if (BLE::isCompletedRideStatsReceived
+                        && this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints 
+                       == this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint)
+            {
+                this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
+                this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = true;
             }
         }
     }

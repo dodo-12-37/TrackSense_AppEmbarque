@@ -69,4 +69,14 @@ void Program::initProperties()
     // this->_trackSenseProperties->PropertiesScreen._isGoHomePage = false;
     // this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
 
+    //BLE
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._stats = "";
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._point = "";
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint = 0;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints = 0;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReceived = false;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = false;
+
 }
