@@ -118,12 +118,8 @@ void BLE::tick()
     } 
     else if (!BLE::isCompletedRideReceived)
     {
-        Serial.println(this->_CRIsReadyCaracteristic->getLength());
-        Serial.println(this->_CRIsReadyCaracteristic->toString().c_str());
         Serial.println(this->_CRIsReadyCaracteristic->getValue().c_str());
-        Serial.println(this->_serverBLE->getServiceByUUID(BLE_COMPLETED_RIDE_SERVICE_UUID)->toString().c_str());
         Serial.println(this->_completedRideService->getServer()->getConnectedCount());
-        Serial.println(this->_completedRideService->getCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_READY)->toString().c_str());
         this->_CRIsReadyCaracteristic->notify();
         Serial.println("Notified");
     }
