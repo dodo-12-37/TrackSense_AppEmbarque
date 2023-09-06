@@ -29,7 +29,7 @@
     #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
     // #define TFT_MISO 19          // Ne semble pas être utile
 
-    /*!
+    /*
         @brief  Instantiate Adafruit GC9A01A driver with software SPI
         @param  cs    Chip select pin #   05
         @param  dc    Data/Command pin #    19

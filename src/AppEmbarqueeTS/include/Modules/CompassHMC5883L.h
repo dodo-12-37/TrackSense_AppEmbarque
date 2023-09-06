@@ -1,0 +1,19 @@
+#pragma once
+#include <Arduino.h>
+#include "Interfaces/ICompass.h"
+#include "Configurations.h"
+#include "TrackSenseProperties.h"
+
+
+
+class CompassHMC5883L : public ICompass
+{
+private:
+    TrackSenseProperties* _trackSenseProperties;
+
+public:
+    CompassHMC5883L(TrackSenseProperties* trackSenseProperties);
+    ~CompassHMC5883L();
+
+    void tick() override;
+};
