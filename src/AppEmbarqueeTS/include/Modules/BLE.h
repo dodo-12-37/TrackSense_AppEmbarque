@@ -26,13 +26,11 @@ private:
     BLECharacteristic* _CRPointCaracteristic;
     BLECharacteristic* _CRPointNumberCaracteristic;
     BLECharacteristic* _CRIsReadyCaracteristic;
-    BLECharacteristic* _CRIsReceivedCaracteristic;
 
     BLEDescriptor* _CRStatsDescriptor;
     BLEDescriptor* _CRPointDescriptor;
     BLEDescriptor* _CRPointNumberDescriptor;
     BLEDescriptor* _CRIsReadyDescriptor;
-    BLEDescriptor* _CRIsReceivedDescriptor;
 
     void initBLE();
     void initAdvertising();
