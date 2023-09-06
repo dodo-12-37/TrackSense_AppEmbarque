@@ -10,7 +10,7 @@
 */
 #define DISABLE_GPS_AND_MODEM FALSE
 
-void printGPSOnScreen(float lat, float lon, float speed, float alt, int counterTotal, int counterGoodValue);
+void printGPSOnScreen(float lat, float lon, float speed, float alt, float accuracy, int counterTotal, int counterGoodValue);
 void enableGPSAndModem();
 void disableGPSAndModem();
 
@@ -107,7 +107,7 @@ void setup()
 
     // Init String on Screen
     tft.fillScreen(GC9A01A_BLACK);
-    printGPSOnScreen(0, 0, 0, 0, -1, -1);
+    printGPSOnScreen(0, 0, 0, 0, 0, -1, -1);
 
     // Open port 4 for GPS
     void enableGPSAndModem();
@@ -159,7 +159,7 @@ void loop()
         }
 
         /* Print on LCD Screen */
-        printGPSOnScreen(lat, lon, speed, alt, counterTotal, counterGoodValue);
+        printGPSOnScreen(lat, lon, speed, alt, accuracy, counterTotal, counterGoodValue);
         counterTotal++;
 
         SerialMon.println("Retrieving GPS/GNSS/GLONASS location again as a string");
@@ -210,7 +210,7 @@ void disableGPSAndModem()
     }
 }
 
-void printGPSOnScreen(float lat, float lon, float speed, float alt, int counterTotal, int counterGoodValue)
+void printGPSOnScreen(float lat, float lon, float speed, float alt, float accuracy, int counterTotal, int counterGoodValue)
 {
     char *formatChar = (char *)"%-29s";
     bool locationIsValid = false;
@@ -258,5 +258,9 @@ void printGPSOnScreen(float lat, float lon, float speed, float alt, int counterT
     tft.setCursor(20, 170);
     String strSpeed = "Speed : " + String(speed, 4);
     tft.printf(formatChar, strSpeed.c_str());
+
+    tft.setCursor(30, 190);
+    String strAccuracy = "Accu : " + String(accuracy, 4);
+    tft.printf(formatChar, strAccuracy.c_str());
 
 }
