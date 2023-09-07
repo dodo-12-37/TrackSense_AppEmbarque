@@ -60,6 +60,7 @@ void ScreenGC9A01::tick()
         else
         {
             this->_trackSenseProperties->PropertiesScreen._activeScreen = -1;
+            this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true; ////////////////////////////
         }
         break;
 
@@ -114,6 +115,8 @@ void ScreenGC9A01::drawHomePage1()
     this->tft->setTextSize(3);
     this->tft->setCursor(35, 50);
     this->tft->printf("%-10s", "Home Page");
+
+    this->drawBattery(50, 140, 100, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
 
     this->testButtonsScreen();
 }
@@ -184,6 +187,8 @@ void ScreenGC9A01::drawRidePage4()
     tft->setCursor(40, 190);
     String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesCurrentRide._accuracy, 4);
     tft->printf(formatChar, strAccuracy.c_str());
+
+    this->drawBattery(30, 10, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
 }
 
 void ScreenGC9A01::drawGlobalStatisticsPage5()
@@ -204,9 +209,10 @@ void ScreenGC9A01::drawRideStatisticsPage7()
 void ScreenGC9A01::drawErrorPage()
 {
     this->tft->fillScreen(GC9A01A_RED);
-    this->setTextColor();
-    this->tft->setCursor(100, 120);
-    this->tft->printf("%-5s", "ERROR");
+    this->setTextColor(GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE, GC9A01A_RED);
+    this->tft->setTextSize(5);
+    this->tft->setCursor(20, 90);
+    this->tft->printf("%-10s", "ERROR !!!");
 }
 
 #pragma endregion DrawPages
@@ -229,9 +235,36 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     tft->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     tft->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
 
-    tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);                   // niveau #1
-    tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
-    tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
+    switch (pourcentage)
+    {
+    case 0 ... 20:
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_RED); // niveau #1
+        break;
+
+    case 21 ... 40:
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_YELLOW); // niveau #1
+        break;
+
+    case 41 ... 60:
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #1
+        tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
+        break;
+
+    case 61 ... 80:
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #1
+        tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
+        break;
+
+    case 81 ... 100:
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #1
+        tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
+        tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
+        break;
+
+    default:
+        break;
+    }
+    
 }
 
 #pragma endregion Elements

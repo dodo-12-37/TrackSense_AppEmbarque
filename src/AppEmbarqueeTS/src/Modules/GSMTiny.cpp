@@ -20,8 +20,7 @@ GSMTiny::GSMTiny(TrackSenseProperties *trackSenseProperties) : _trackSenseProper
                                                                _seconde(0),
                                                                _isGpsOn(false),
                                                                _isModemOn(false),
-                                                               _isFixIsValid(false),
-                                                               _pointId(0)
+                                                               _isFixIsValid(false)
 {
     this->modem = new TinyGsm(SerialAT);
     // Set GSM module baud rate
@@ -64,6 +63,10 @@ void GSMTiny::init()
 
 void GSMTiny::tick()
 {
+    /* PropertiesBattery */
+    this->_trackSenseProperties->PropertiesBattery._batteryLevel = this->modem->getBattPercent();
+
+
     Serial.println("=======================================");
     // Serial.println("Date Begin : " + this->getDatetime());
     // Serial.println("Date Begin : " + this->modem->getGSMDateTime(DATE_FULL));
@@ -139,7 +142,7 @@ bool GSMTiny::readDatas()
         else
         {
             Serial.println("Couldn't get GPS/GNSS/GLONASS location.");
-            delay(10000L);
+            // delay(10000L);
         }
 
         Serial.println("=======================================");
@@ -164,6 +167,8 @@ bool GSMTiny::isFixValid()
 
 void GSMTiny::saveFixToTSProperties()
 {
+    this->_trackSenseProperties->PropertiesCurrentRide._pointID++;
+
     this->_trackSenseProperties->PropertiesCurrentRide._latitude = this->_latitude;
     this->_trackSenseProperties->PropertiesCurrentRide._longitude = this->_longitude;
     this->_trackSenseProperties->PropertiesCurrentRide._altitude = this->_altitude;
@@ -178,13 +183,21 @@ void GSMTiny::saveFixToTSProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._minute = this->_minute;
     this->_trackSenseProperties->PropertiesCurrentRide._seconde = this->_seconde;
 
-    // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
-    this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->getDatetime();
-    Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
-    this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->modem->getGSMDateTime(DATE_FULL);
-    Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
+    if (this->_trackSenseProperties->PropertiesCurrentRide._dateBegin == "0000-00-00T00:00:00")
+    {
+        // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
+        this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->getDatetime();
+        Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
+        this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
+        Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
+    }
 
-    this->_trackSenseProperties->PropertiesCurrentRide._currentPoint = String(this->_pointId) + ";" +
+    this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = this->getDatetime();
+    Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateEnd);
+    this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
+    Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateEnd);
+
+    this->_trackSenseProperties->PropertiesCurrentRide._currentPoint = String(this->_trackSenseProperties->PropertiesCurrentRide._pointID) + ";" +
                                                                        String(this->_latitude, 10) + ";" +
                                                                        String(this->_longitude, 10) + ";" +
                                                                        String(this->_altitude) + ";" +
@@ -194,7 +207,6 @@ void GSMTiny::saveFixToTSProperties()
                                                                        String(this->_trackSenseProperties->PropertiesCurrentRide._duration);
 
     this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = true;
-    this->_pointId++;
 }
 
 String GSMTiny::getDate()

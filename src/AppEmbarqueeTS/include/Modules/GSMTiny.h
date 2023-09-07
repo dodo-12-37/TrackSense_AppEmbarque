@@ -18,7 +18,7 @@ private:
     bool _isModemOn;
     bool _isFixIsValid; // ???
 
-    int _pointId;
+    // int _pointId;
 
     float _latitude;
     float _longitude;
