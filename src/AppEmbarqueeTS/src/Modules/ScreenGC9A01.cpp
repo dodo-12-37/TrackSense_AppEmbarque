@@ -116,7 +116,7 @@ void ScreenGC9A01::drawHomePage1()
     this->tft->setCursor(35, 50);
     this->tft->printf("%-10s", "Home Page");
 
-    this->drawBattery(50, 140, 100, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(70, 140, 100, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
 
     this->testButtonsScreen();
 }
@@ -188,7 +188,7 @@ void ScreenGC9A01::drawRidePage4()
     String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesCurrentRide._accuracy, 4);
     tft->printf(formatChar, strAccuracy.c_str());
 
-    this->drawBattery(30, 10, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(100, 5, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
 }
 
 void ScreenGC9A01::drawGlobalStatisticsPage5()
@@ -211,8 +211,8 @@ void ScreenGC9A01::drawErrorPage()
     this->tft->fillScreen(GC9A01A_RED);
     this->setTextColor(GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE, GC9A01A_RED);
     this->tft->setTextSize(5);
-    this->tft->setCursor(20, 90);
-    this->tft->printf("%-10s", "ERROR !!!");
+    this->tft->setCursor(15, 110);
+    this->tft->printf("%-8s", "ERROR !");
 }
 
 #pragma endregion DrawPages
