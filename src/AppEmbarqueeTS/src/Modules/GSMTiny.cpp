@@ -202,6 +202,8 @@ void GSMTiny::saveFixToTSProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
     Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateEnd);
 
+    this->_trackSenseProperties->PropertiesCurrentRide._temperature = this->_trackSenseProperties->PropertiesTemperature._temperature;
+
     this->_trackSenseProperties->PropertiesCurrentRide._currentPoint = String(this->_trackSenseProperties->PropertiesCurrentRide._pointID) + ";" +
                                                                        String(this->_latitude, 10) + ";" +
                                                                        String(this->_longitude, 10) + ";" +
