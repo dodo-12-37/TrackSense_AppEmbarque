@@ -50,13 +50,17 @@ void GSMTiny::init()
         }
         else
         {
+            this->gpsRestart();
             Serial.println("Modem initialized.");
+            // TODO : Activer paramètres GLONASS et GALILEO //
             this->_isInitialized = true;
         }
     }
     else
     {
+        this->gpsRestart();
         Serial.println("Modem initialized.");
+        // TODO : Activer paramètres GLONASS et GALILEO //
         this->_isInitialized = true;
     }
 }
@@ -65,7 +69,6 @@ void GSMTiny::tick()
 {
     /* PropertiesBattery */
     this->_trackSenseProperties->PropertiesBattery._batteryLevel = this->modem->getBattPercent();
-
 
     Serial.println("=======================================");
     // Serial.println("Date Begin : " + this->getDatetime());

@@ -57,7 +57,7 @@ public:
     GSMTiny(TrackSenseProperties *trackSenseProperties);
     ~GSMTiny();
 
-    void init();
+    void init() override;
     void tick() override;
 
 };

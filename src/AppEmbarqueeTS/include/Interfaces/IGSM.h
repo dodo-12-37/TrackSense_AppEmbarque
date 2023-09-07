@@ -12,4 +12,8 @@ public:
     // virtual void gpsPowerOn() = 0;
     // virtual void gpsPowerOff() = 0;
     // virtual void gpsRestart() = 0;
+
+    // virtual void modemPowerOn() = 0;
+    // virtual void modemPowerOff() = 0;
+    // virtual void modemRestart() = 0;
 };
