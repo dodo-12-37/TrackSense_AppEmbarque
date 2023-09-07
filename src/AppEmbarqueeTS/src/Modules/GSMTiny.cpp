@@ -53,6 +53,7 @@ void GSMTiny::init()
             this->gpsRestart();
             Serial.println("Modem initialized.");
             // TODO : Activer paramètres GLONASS et GALILEO //
+            this->setWorkModeGPS();
             this->_isInitialized = true;
         }
     }
@@ -61,6 +62,7 @@ void GSMTiny::init()
         this->gpsRestart();
         Serial.println("Modem initialized.");
         // TODO : Activer paramètres GLONASS et GALILEO //
+        this->setWorkModeGPS();
         this->_isInitialized = true;
     }
 }
@@ -301,4 +303,31 @@ void GSMTiny::modemRestart()
     modemPowerOff();
     delay(1000);
     modemPowerOn();
+}
+
+/*
+    Set work mode of SIM7000G GPS with AT Command "AT+CGNSMOD=1,1,1,1"
+
+    Type of commands :
+    Test Command : AT+CGNSMOD=?
+    Read Command : AT+CGNSMOD?
+    Set Command  : AT+CGNSMOD=<GPS mode>,<glonass mode>,<beidou mode>,<galieo mode>
+
+    Parameters :
+    <GPS mode>     : 1 - Enable GPS
+    <glonass mode> : 0 - Disable GLONASS
+                     1 - Enable GLONASS
+    <beidou mode>  : 0 - Disable BeiDou
+                     1 - Enable BeiDou
+    <galieo mode>  : 0 - Disable Galileo
+                     1 - Enable Galileo
+*/
+void GSMTiny::setWorkModeGPS()
+{
+    this->modem->sendAT("+CGNSMOD=1,1,1,1");
+    if (this->modem->waitResponse(10000L) != 1)
+    {
+        Serial.print(" CGNSMOD=1,1,1,1 ");
+        Serial.println(" Activate GPS, GLONASS, BeiDou, Galileo work mode.");
+    }
 }

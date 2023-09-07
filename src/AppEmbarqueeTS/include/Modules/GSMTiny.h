@@ -49,6 +49,7 @@ private:
     void gpsPowerOn();
     void gpsPowerOff();
     void gpsRestart();
+    void setWorkModeGPS();
 
     bool isFixValid();
     void saveFixToTSProperties();
