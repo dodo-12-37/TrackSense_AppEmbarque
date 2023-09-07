@@ -4,6 +4,7 @@
 #include "TrackSenseProperties.h"
 #include "Interfaces/IButton.h"
 #include "Modules/ButtonTactile.h"
+#include <UUID.h>
 
 
 
@@ -13,6 +14,8 @@ private:
     TrackSenseProperties* _trackSenseProperties;
     IButton* _button1;
     IButton* _button2;
+
+    UUID* _guidGenerator;
 
     // bool _isPressedButton1;
     // bool _isPressedButton2;

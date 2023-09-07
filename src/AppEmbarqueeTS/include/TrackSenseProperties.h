@@ -9,22 +9,7 @@ public:
     struct TrackSensePropertiesTS
     {
         String _currentRideId;
-
-        // VRAIMENT NECESSAIRE ?? //
-        // bool _isWIFIConnected;
-        // bool _isBluetoothConnected;
-        // bool _isLTEConnected;
-        // bool _isSDCardConnected;
-        // bool _isScreenConnected;
-        // bool _isGPSConnected;
-        // bool _isCompassConnected;
-        // bool _isGyroscopeConnected;
-        // bool _isAccelerometerConnected;
-        // bool _isTemperatureConnected;
-        // bool _isBatteryConnected;
-        // bool _isButton1Connected;
-        // bool _isButton2Connected;
-        // bool _isBuzzerConnected;
+        bool _isInitializingTS;
     } PropertiesTS;
 
     /* datas Current ride */
@@ -34,19 +19,37 @@ public:
         bool _isRidePaused;
         bool _isRideFinished;
 
-        String _completedRideId;
-        String _routeId;
+        String _completedRideId; 
+        String _routeId;    //
         double _maxSpeed;
         double _avgSpeed;
         double _distance;
         double _duration;
-        String _dateBegin;
-        String _dateEnd;
-        String _currentPoint;
+        String _dateBegin;    //
+        String _dateEnd;    //
+        String _currentPoint;   //
         int _nbPoints;
         int _nbFalls;
-        bool _isRideReadyToSave; // Utilisé ??
-        bool _isPointReadyToSave;
+        bool _isRideReadyToSave;
+        bool _isPointReadyToSave; 
+
+        // datas brute
+        float _latitude;
+        float _longitude;
+        float _altitude;
+        float _speed;
+        int _visibleSatellites;
+        int _usedSatellites;
+        float _accuracy;
+        int _year;
+        int _month;
+        int _day;
+        int _hour;
+        int _minute;
+        int _seconde;
+
+        int _TEST_counterGoodValue;
+        int _TEST_counterTotal;
     } PropertiesCurrentRide;
 
     /* datas Buttons */
@@ -62,6 +65,7 @@ public:
     struct TrackSensePropertiesScreen
     {
         /*
+            0 : Init TS Page
             1 : Home Page
             2 : Compass Page
             3 : Ride Direction Page
@@ -69,11 +73,24 @@ public:
             5 : Global Statistics Page
             6 : Go Home Page
             7 : Ride Statistics Page
-            0 : No Page (error)
+            -1 : No Page (error)
         */
         uint8_t _activeScreen;
+        bool _isNewActivePage;
         bool _isDarkMode;
 
+        /*
+            0 : Pins vers le haut
+            1 : Pins vers la droite (???)
+            2 : Pins vers le bas (???)
+            3 : Pins vers la gauche (???)
+
+            0 : Right to left
+            1 : Reverse Mode
+            2 : Bottom to top
+            3 : 
+        */
+       uint8_t _screenRotation;
         
     } PropertiesScreen;
 
@@ -107,16 +124,26 @@ public:
     /* datas GPS */
     struct TrackSensePropertiesGPS
     {
-        double _latitude;
-        double _longitude;
-        double _altitude;
-        double _speed;
-        String _date;
-        String _time;
-        bool _locationIsValid;
+        // float _latitude;
+        // float _longitude;
+        // float _altitude;
+        // float _speed;
+        // int _visibleSatellites;
+        // int _usedSatellites;
+        // float _accuracy;
+        // int _year;
+        // int _month;
+        // int _day;
+        // int _hour;
+        // int _minute;
+        // int _seconde;
 
-        double mph() { return 0.621371 * _speed; }
-        double miles() { return 0.00062137112 * _altitude; }
+
+        // float mph() { return 0.621371 * _speed; }
+        // float miles() { return 0.00062137112 * _altitude; }
+
+        // int _TEST_counterGoodValue;
+        // int _TEST_counterTotal;
     } PropertiesGPS;
 
     /* datas Compass */

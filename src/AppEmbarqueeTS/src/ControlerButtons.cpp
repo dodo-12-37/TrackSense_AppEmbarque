@@ -6,10 +6,12 @@ ControlerButtons::ControlerButtons(TrackSenseProperties *trackSenseProperties) :
                                                                                  // _isPressedButton1(false),
                                                                                  // _isPressedButton2(false),
                                                                                  _finalStateButton1(0),
-                                                                                 _finalStateButton2(0)
+                                                                                 _finalStateButton2(0),
+                                                                                 _guidGenerator(nullptr)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1);
     this->_button2 = new ButtonTactile(PIN_BUTTON2);
+    this->_guidGenerator = new UUID();
 }
 
 ControlerButtons::~ControlerButtons()
@@ -27,29 +29,27 @@ void ControlerButtons::tick()
     this->_trackSenseProperties->PropertiesButtons._button1State = this->_finalStateButton1;
     this->_trackSenseProperties->PropertiesButtons._button2State = this->_finalStateButton2;
 
-    if (this->_finalStateButton1 == 0 & this->_finalStateButton2 == 0) // not pressed
+    int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
+
+    switch (controlerState)
     {
+    case 0:
+        /* Nothing Happened... */
         Serial.println("No button pressed");
-    }
-    else if (this->_finalStateButton1 == 1 & this->_finalStateButton2 == 0) // short press button 1
-    {
-        /* Change Screen Menu Up */
+        break;
+
+    case 1:
+        /* Change Page Up */
         Serial.println("Button 1 SHORT press");
         this->changePageUp();
-    }
-    else if (this->_finalStateButton1 == 0 & this->_finalStateButton2 == 1) // short press button 2
-    {
-        /* Change Screen Menu Down */
-        Serial.println("Button 2 SHORT press");
-        this->changePageDown();
-    }
-    else if (this->_finalStateButton1 == 2 & this->_finalStateButton2 == 0) // long press button 1
-    {
+        break;
+
+    case 2:
         /* Start/Stop Ride */
         Serial.println("Button 1 LONG press");
 
-        if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished == false)
-        {
+        // if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished == false)
+        // {
             if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
             {
                 this->finishRide();
@@ -58,10 +58,28 @@ void ControlerButtons::tick()
             {
                 this->startRide();
             }
-        }
-    }
-    else if (this->_finalStateButton1 == 0 & this->_finalStateButton2 == 2) // long press button 2
-    {
+        // }
+        break;
+
+    case 3:
+        /* Trigger The Buzzer */
+        Serial.println("Button 1 DOUBLE SHORT press");
+        this->makeNoiseBuzzer();
+        break;
+
+    case 4:
+        /* Change Page Down */
+        Serial.println("Button 2 SHORT press");
+        this->changePageDown();
+        break;
+
+    case 5:
+        /* Activate GoHome Mode */
+        Serial.println("Buttons 1 and 2 SHORT press");
+        this->goHome();
+        break;
+
+    case 8:
         /* Pause/Restart Ride */
         Serial.println("Button 2 LONG press");
 
@@ -76,68 +94,104 @@ void ControlerButtons::tick()
                 this->pauseRide();
             }
         }
-    }
-    else if (this->_finalStateButton1 == 3 & this->_finalStateButton2 == 0) // double short press button 1
-    {
-        /* Trigger The Buzzer */
-        Serial.println("Button 1 DOUBLE SHORT press");
-        this->makeNoiseBuzzer();
-    }
-    else if (this->_finalStateButton1 == 0 & this->_finalStateButton2 == 3) // double short press button 2
-    {
-        /* Trigger The Buzzer */
-        Serial.println("Button 2 DOUBLE SHORT press");
-        this->makeNoiseBuzzer();
-    }
-    else if (this->_finalStateButton1 == 1 & this->_finalStateButton2 == 1) // short press button 1 and 2
-    {
-        /* Activate GoHome Mode */
-        Serial.println("Buttons 1 and 2 SHORT press");
-        this->goHome();
-    }
-    else if (this->_finalStateButton1 == 2 & this->_finalStateButton2 == 2) // long press button 1 and 2
-    {
+        break;
+
+    case 10:
         /* Trigger The Buzzer */
         Serial.println("Buttons 1 and 2 LONG press");
         this->makeNoiseBuzzer();
-    }
-    else
-    {
+        break;
+
+    case 12:
+        /* Trigger The Buzzer */
+        Serial.println("Button 2 DOUBLE SHORT press");
+        this->makeNoiseBuzzer();
+        break;
+
+    default:
         /* Nothing Good Happened... */
         Serial.println("BUTTONS ERROR !!!");
+        break;
     }
 }
 
+/*
+    0 : Init TS Page
+    1 : Home Page
+    2 : Compass Page
+    3 : Ride Direction Page
+    4 : Ride Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    7 : Ride Statistics Page
+    -1 : No Page (error)
+*/
 void ControlerButtons::changePageUp()
 {
-    // this->_trackSenseProperties->PropertiesScreen.nextPage();
-    // this->_trackSenseProperties->PropertiesScreen.setActivePage(1);
+    this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
+    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
 }
 
+/*
+    0 : Init TS Page
+    1 : Home Page
+    2 : Compass Page
+    3 : Ride Direction Page
+    4 : Ride Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    7 : Ride Statistics Page
+    -1 : No Page (error)
+*/
 void ControlerButtons::changePageDown()
 {
+    this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
+    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
 }
 
 void ControlerButtons::startRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
-    this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted == false)
+    {
+        Serial.println("===================== Start Ride =====================");
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+
+        this->_guidGenerator->generate();
+        this->_trackSenseProperties->PropertiesCurrentRide._routeId = this->_guidGenerator->toCharArray();
+
+        this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
+        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+    }
 }
 
 void ControlerButtons::finishRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
-    // this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = true;
+
+        this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
+        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+    }
 }
 
 void ControlerButtons::pauseRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = true;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = true;
+    }
 }
 
 void ControlerButtons::restartRide()
 {
-    this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    {
+        this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
+    }
 }
 
 void ControlerButtons::makeNoiseBuzzer()

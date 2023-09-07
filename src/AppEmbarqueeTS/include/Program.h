@@ -4,8 +4,8 @@
 #include "TrackSenseProperties.h"
 #include "ControlerButtons.h"
 
-#include "Modules/LTE.h"
-#include "Modules/GPSTinyPlus.h"
+// #include "Modules/LTE.h"
+#include "Modules/GSMTiny.h"
 #include "Modules/SDCard.h"
 #include "Modules/GyroscopeMPU6050.h"
 #include "Modules/CompassHMC5883L.h"
@@ -20,8 +20,9 @@ class Program
 {
 private:
     TrackSenseProperties *_trackSenseProperties;
-    ILTE *_lte;
-    IGPS *_gps;
+    // ILTE *_lte;
+    // IGPS *_gps;
+    IGSM *_gsm;
     ISDCard *_sdCard;
     IGyroscope *_gyroscope;
     ICompass *_compass;
