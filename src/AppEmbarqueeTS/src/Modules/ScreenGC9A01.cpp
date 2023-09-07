@@ -246,17 +246,17 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
         break;
 
     case 41 ... 60:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #1
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
         break;
 
     case 61 ... 80:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #1
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
         break;
 
     case 81 ... 100:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #1
+        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);                   // niveau #1
         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
         tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
         break;
@@ -264,7 +264,26 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     default:
         break;
     }
+
+    if (largeurX < 100)
+    {
+        tft->setTextSize(1);
+    }
+    else if (largeurX < 200)
+    {
+        tft->setTextSize(2);
+    }
+    else
+    {
+        tft->setTextSize(3);
+    }
     
+
+    // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
+    this->setTextColor();
+    tft->setCursor((coordBarreVerteX + (barreVerteX)), coordBarreVerteY + hauteurY / 3);
+    String strBatteryLevel = String(this->_trackSenseProperties->PropertiesBattery._batteryLevel, 0) + "%";
+    tft->printf("%-3s", strBatteryLevel.c_str());
 }
 
 #pragma endregion Elements
