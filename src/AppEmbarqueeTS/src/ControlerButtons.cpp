@@ -6,10 +6,12 @@ ControlerButtons::ControlerButtons(TrackSenseProperties *trackSenseProperties) :
                                                                                  // _isPressedButton1(false),
                                                                                  // _isPressedButton2(false),
                                                                                  _finalStateButton1(0),
-                                                                                 _finalStateButton2(0)
+                                                                                 _finalStateButton2(0),
+                                                                                 _guidGenerator(nullptr)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1);
     this->_button2 = new ButtonTactile(PIN_BUTTON2);
+    this->_guidGenerator = new UUID();
 }
 
 ControlerButtons::~ControlerButtons()
@@ -153,6 +155,11 @@ void ControlerButtons::startRide()
     {
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+
+        // this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->_gsm->getDatetime();
+
+        this->_guidGenerator->generate();
+        this->_trackSenseProperties->PropertiesCurrentRide._routeId = this->_guidGenerator->toCharArray();
     }
 }
 

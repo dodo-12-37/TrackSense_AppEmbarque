@@ -4,6 +4,7 @@
 
 /*----- DEBUG -----*/
 #define DEBUG_BUTTONS false
+#define DEBUG_GSM true
 
 
 /*----- Screen -----*/

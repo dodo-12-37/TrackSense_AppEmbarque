@@ -18,19 +18,36 @@ public:
         bool _isRidePaused;
         bool _isRideFinished;
 
-        String _completedRideId;
-        String _routeId;
+        String _completedRideId; 
+        String _routeId;    
         double _maxSpeed;
         double _avgSpeed;
         double _distance;
         double _duration;
-        String _dateBegin;
-        String _dateEnd;
-        String _currentPoint;
+        String _dateBegin;    //
+        String _dateEnd;    //
+        String _currentPoint;   //
         int _nbPoints;
         int _nbFalls;
-        bool _isRideReadyToSave;
-        bool _isPointReadyToSave;       
+        bool _isPointReadyToSave;
+
+
+        float _latitude;
+        float _longitude;
+        float _altitude;
+        float _speed;
+        int _visibleSatellites;
+        int _usedSatellites;
+        float _accuracy;
+        int _year;
+        int _month;
+        int _day;
+        int _hour;
+        int _minute;
+        int _seconde;
+
+        int _TEST_counterGoodValue;
+        int _TEST_counterTotal;
     } PropertiesCurrentRide;
 
     /* datas Buttons */
@@ -105,21 +122,26 @@ public:
     /* datas GPS */
     struct TrackSensePropertiesGPS
     {
-        float _latitude;
-        float _longitude;
-        float _altitude;
-        float _speed;
-        String _date;
-        String _time;
-        bool _locationIsValid;
-        int _usedSatellites;
-        float _accuracy;
+        // float _latitude;
+        // float _longitude;
+        // float _altitude;
+        // float _speed;
+        // int _visibleSatellites;
+        // int _usedSatellites;
+        // float _accuracy;
+        // int _year;
+        // int _month;
+        // int _day;
+        // int _hour;
+        // int _minute;
+        // int _seconde;
 
-        float mph() { return 0.621371 * _speed; }
-        float miles() { return 0.00062137112 * _altitude; }
 
-        int _TEST_counterGoodValue;
-        int _TEST_counterTotal;
+        // float mph() { return 0.621371 * _speed; }
+        // float miles() { return 0.00062137112 * _altitude; }
+
+        // int _TEST_counterGoodValue;
+        // int _TEST_counterTotal;
     } PropertiesGPS;
 
     /* datas Compass */

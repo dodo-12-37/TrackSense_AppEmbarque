@@ -51,7 +51,10 @@ void ScreenGC9A01::tick()
         break;
 
     case 4:
-        this->drawRidePage4();
+        if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+        {
+            this->drawRidePage4();
+        }
         break;
 
     case 5:
@@ -119,20 +122,19 @@ void ScreenGC9A01::drawRideDirectionPage3()
 
 void ScreenGC9A01::drawRidePage4()
 {
-    ;
     char *formatChar = (char *)"%-19s";
     bool locationIsValid = false;
 
-    if (this->_trackSenseProperties->PropertiesGPS._latitude != 0 && this->_trackSenseProperties->PropertiesGPS._longitude != 0)
+    if (this->_trackSenseProperties->PropertiesCurrentRide._latitude != 0 && this->_trackSenseProperties->PropertiesCurrentRide._longitude != 0)
     {
         locationIsValid = true;
     }
 
-    if (locationIsValid && this->_trackSenseProperties->PropertiesGPS._usedSatellites >= 4)
+    if (locationIsValid && this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites >= 4)
     {
         this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
     }
-    else if (locationIsValid && this->_trackSenseProperties->PropertiesGPS._usedSatellites < 4)
+    else if (locationIsValid && this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites < 4)
     {
         this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
     }
@@ -144,35 +146,35 @@ void ScreenGC9A01::drawRidePage4()
     tft->setTextSize(2);
 
     tft->setCursor(40, 40);
-    String strCounterGoodValue = "Good : " + String(this->_trackSenseProperties->PropertiesGPS._TEST_counterGoodValue);
+    String strCounterGoodValue = "Good : " + String(this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue);
     tft->printf("%-15s", strCounterGoodValue.c_str());
 
     tft->setCursor(30, 60);
-    String strCounterTotal = "Total : " + String(this->_trackSenseProperties->PropertiesGPS._TEST_counterTotal);
+    String strCounterTotal = "Total : " + String(this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal);
     tft->printf("%-11s", strCounterTotal.c_str());
 
     tft->setCursor(15, 85);
-    String strUsedSatellite = "Used Sat : " + String(this->_trackSenseProperties->PropertiesGPS._usedSatellites);
+    String strUsedSatellite = "Used Sat : " + String(this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites);
     tft->printf(formatChar, strUsedSatellite.c_str());
 
     tft->setCursor(2, 110);
-    String strLatitude = "Lat : " + String(this->_trackSenseProperties->PropertiesGPS._latitude, 10);
+    String strLatitude = "Lat : " + String(this->_trackSenseProperties->PropertiesCurrentRide._latitude, 10);
     tft->printf(formatChar, strLatitude.c_str());
 
     tft->setCursor(2, 130);
-    String strLongitude = "Lon : " + String(this->_trackSenseProperties->PropertiesGPS._longitude, 10);
+    String strLongitude = "Lon : " + String(this->_trackSenseProperties->PropertiesCurrentRide._longitude, 10);
     tft->printf(formatChar, strLongitude.c_str());
 
     tft->setCursor(12, 150);
-    String strAltitude = "Alt : " + String(this->_trackSenseProperties->PropertiesGPS._altitude, 8);
+    String strAltitude = "Alt : " + String(this->_trackSenseProperties->PropertiesCurrentRide._altitude, 8);
     tft->printf(formatChar, strAltitude.c_str());
 
     tft->setCursor(20, 170);
-    String strSpeed = "Speed : " + String(this->_trackSenseProperties->PropertiesGPS._speed, 4);
+    String strSpeed = "Speed : " + String(this->_trackSenseProperties->PropertiesCurrentRide._speed, 4);
     tft->printf(formatChar, strSpeed.c_str());
 
     tft->setCursor(40, 190);
-    String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesGPS._accuracy, 4);
+    String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesCurrentRide._accuracy, 4);
     tft->printf(formatChar, strAccuracy.c_str());
 }
 
