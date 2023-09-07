@@ -17,6 +17,8 @@ private:
     bool _isGpsOn;
     bool _isFixIsValid; // ???
 
+    int _pointId;
+
     float _latitude;
     float _longitude;
     float _altitude;

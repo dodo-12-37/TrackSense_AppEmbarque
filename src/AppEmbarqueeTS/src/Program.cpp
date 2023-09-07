@@ -109,6 +109,7 @@ void Program::initProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._nbFalls = 0;
     this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = false;
     this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = false;
+    this->_trackSenseProperties->PropertiesCurrentRide._temperature = 0;
 
     this->_trackSenseProperties->PropertiesCurrentRide._latitude = 0;
     this->_trackSenseProperties->PropertiesCurrentRide._longitude = 0;

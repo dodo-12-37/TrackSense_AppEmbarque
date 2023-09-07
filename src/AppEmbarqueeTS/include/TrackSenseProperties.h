@@ -31,9 +31,13 @@ public:
         int _nbPoints;
         int _nbFalls;
         bool _isRideReadyToSave;
-        bool _isPointReadyToSave; 
+        bool _isPointReadyToSave;
+        float _temperature;
 
-        // datas brute
+        unsigned long _startTimeMS;
+        unsigned long _endTimeMS;
+
+        // datas brute GPS
         float _latitude;
         float _longitude;
         float _altitude;

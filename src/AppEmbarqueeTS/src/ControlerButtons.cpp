@@ -157,6 +157,8 @@ void ControlerButtons::startRide()
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
 
+        this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS = millis();
+
         this->_guidGenerator->generate();
         this->_trackSenseProperties->PropertiesCurrentRide._routeId = this->_guidGenerator->toCharArray();
 
@@ -171,6 +173,10 @@ void ControlerButtons::finishRide()
     {
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+        
+        this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS = millis();
+        this->_trackSenseProperties->PropertiesCurrentRide._duration = (this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS - this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS) / 60000;
+
         this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = true;
 
         this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
