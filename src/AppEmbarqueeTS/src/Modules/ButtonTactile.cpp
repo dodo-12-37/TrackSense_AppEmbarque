@@ -21,16 +21,23 @@ int ButtonTactile::getFinalState()
 
     if (actualTime - this->_lastDateChange > this->_durationDebounce)
     {
+        // ajout pour test son bouton
+        if (this->_lastStableStateButton == LOW && this->_buttonState == HIGH)    // faux
+        {
+            tone(PIN_BUZZER, 450, 50);
+        }
 
-        if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange < BUTTON_LONG_PRESS_DURATION_MS)
+        if (this->_lastStableStateButton == HIGH && this->_buttonState == HIGH && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)  // vrai, mais HIGH & LOW
+        {
+            tone(PIN_BUZZER, 550, 100);
+            finalState = 2; // 2 == long press
+        }
+
+        if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange < BUTTON_LONG_PRESS_DURATION_MS)    // vrai
         {
             finalState = 1; // 1 == short press
         }
 
-        if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)
-        {
-            finalState = 2; // 2 == long press
-        }
 
         /* Manque gestion des double pressions longues et courtes ...  */
 

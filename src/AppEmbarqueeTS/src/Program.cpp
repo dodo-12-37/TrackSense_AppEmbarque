@@ -49,6 +49,7 @@ void Program::execute()
     this->_screen->tick();
     this->_ble->tick();
     this->_gsm->tick();
+    this->_controlerButtons->tick(); // double for more reactivity
     this->_sdCard->tick();
     // this->_gps->tick();
     // this->_lte->tick();
