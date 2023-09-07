@@ -4,6 +4,7 @@
 #include "TrackSenseProperties.h"
 #include "Interfaces/IButton.h"
 #include "Modules/ButtonTactile.h"
+#include <UUID.h>
 
 
 
@@ -13,19 +14,27 @@ private:
     TrackSenseProperties* _trackSenseProperties;
     IButton* _button1;
     IButton* _button2;
-    bool _isButton1Pressed;
-    bool _isButton2Pressed;
+
+    UUID* _guidGenerator;
+
+    // bool _isPressedButton1;
+    // bool _isPressedButton2;
+
+    int _finalStateButton1;
+    int _finalStateButton2;    
 
 public:
     ControlerButtons(TrackSenseProperties* trackSenseProperties);
     ~ControlerButtons();
 
-    void changePage();
+    void changePageUp();
+    void changePageDown();
     void startRide();
+    void finishRide();
     void pauseRide();
-    void stopRide();
     void restartRide();
     void makeNoiseBuzzer();
+    void goHome();
 
     void tick();
 };

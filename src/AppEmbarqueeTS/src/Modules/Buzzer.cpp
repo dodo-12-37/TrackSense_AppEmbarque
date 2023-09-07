@@ -11,7 +11,11 @@ Buzzer::~Buzzer()
 {
 }
 
-void Buzzer::tick() const
+void Buzzer::tick()
 {
-    tone(PIN_BUZZER, 500, 100);
+    if (this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn)
+    {
+        tone(PIN_BUZZER, 500, 100);
+        this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = false;
+    }
 }

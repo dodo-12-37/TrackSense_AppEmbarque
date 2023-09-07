@@ -646,6 +646,7 @@ void loop()
             break;
         }
     }
+
     digitalWrite(LED_PIN, HIGH);
 
     Serial.println();
@@ -659,6 +660,36 @@ void loop()
         res.replace(GSM_NL "OK" GSM_NL, "");
         Serial.println(res);
     }
+
+    /* Ajout de DL*/
+    Serial.println("=======================");
+    Serial.print("getNetworkMode: ");
+    Serial.println(modem.getNetworkMode());
+    Serial.println("=======================");
+
+    
+    Serial.println("=======================");
+    modem.sendAT("+CGNSMOD?");
+    if (modem.waitResponse(1000L, res) == 1)
+    {
+        res.replace(GSM_NL "OK" GSM_NL, "");
+        Serial.println(res);
+    }
+
+    // modem.sendAT("+CGNSMOD=1,1,1,1");
+    // if (modem.waitResponse(1000L, res) == 1)
+    // {
+    //     res.replace(GSM_NL "OK" GSM_NL, "");
+    //     Serial.println(res);
+    // }
+
+    modem.sendAT("+CGNSMOD?");
+    if (modem.waitResponse(1000L, res) == 1)
+    {
+        res.replace(GSM_NL "OK" GSM_NL, "");
+        Serial.println(res);
+    }
+    Serial.println("=======================");
 
     Serial.println("/**********************************************************/");
     Serial.println("After the network test is complete, please enter the  ");

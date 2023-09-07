@@ -6,7 +6,7 @@
 
 
 
-class CompassHMC5883L : ICompass
+class CompassHMC5883L : public ICompass
 {
 private:
     TrackSenseProperties* _trackSenseProperties;
@@ -15,5 +15,5 @@ public:
     CompassHMC5883L(TrackSenseProperties* trackSenseProperties);
     ~CompassHMC5883L();
 
-    void tick() const override;
+    void tick() override;
 };

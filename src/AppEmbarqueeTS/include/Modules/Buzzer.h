@@ -6,7 +6,7 @@
 
 
 
-class Buzzer : IBuzzer
+class Buzzer : public IBuzzer
 {
 private:
     TrackSenseProperties* _trackSenseProperties;
@@ -15,5 +15,5 @@ public:
     Buzzer(TrackSenseProperties* trackSenseProperties);
     ~Buzzer();
 
-    void tick() const override;
+    void tick() override;
 };
