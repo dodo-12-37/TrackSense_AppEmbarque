@@ -19,6 +19,7 @@ GSMTiny::GSMTiny(TrackSenseProperties *trackSenseProperties) : _trackSenseProper
                                                                _minute(0),
                                                                _seconde(0),
                                                                _isGpsOn(false),
+                                                               _isModemOn(false),
                                                                _isFixIsValid(false),
                                                                _pointId(0)
 {
@@ -33,6 +34,8 @@ GSMTiny::~GSMTiny()
 
 void GSMTiny::init()
 {
+    this->modemPowerOn();
+
     // Set GSM module baud rate
     SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
 
@@ -42,13 +45,21 @@ void GSMTiny::init()
     if (!this->modem->restart())
     {
         Serial.println("Failed to restart modem, attempting to continue without restarting");
-        // this->modem->init();
+        if (!this->modem->init())
+        {
+            Serial.println("Failed to initialize modem.");
+        }
+        else
+        {
+            Serial.println("Modem initialized.");
+            this->_isInitialized = true;
+        }
     }
-
-    this->gpsPowerOn();
-    // this->modem->enableGPS();
-
-    this->_isInitialized = true;
+    else
+    {
+        Serial.println("Modem initialized.");
+        this->_isInitialized = true;
+    }
 }
 
 void GSMTiny::tick()
@@ -63,6 +74,10 @@ void GSMTiny::tick()
     if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted && this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished == false)
     {
         // Serial.println("Tick GPS");
+        if (this->_isGpsOn == false && this->_isModemOn == true && this->_isInitialized == true)
+        {
+            this->gpsPowerOn();
+        }
 
         if (this->readDatas())
         {
@@ -77,6 +92,14 @@ void GSMTiny::tick()
         {
             Serial.println("Write GPS : Location is not Valid");
             // this->_trackSenseProperties->PropertiesCurrentRide._locationIsValid = false;
+        }
+    }
+    else
+    {
+        Serial.println("Write GPS : Ride is not Started");
+        if (this->_isGpsOn == true && this->_isModemOn == true && this->_isInitialized == true)
+        {
+            this->gpsPowerOff();
         }
     }
 }
@@ -116,7 +139,7 @@ bool GSMTiny::readDatas()
         else
         {
             Serial.println("Couldn't get GPS/GNSS/GLONASS location.");
-            // delay(10000L);
+            delay(10000L);
         }
 
         Serial.println("=======================================");
@@ -172,7 +195,6 @@ void GSMTiny::saveFixToTSProperties()
 
     this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = true;
     this->_pointId++;
-    
 }
 
 String GSMTiny::getDate()
@@ -199,21 +221,35 @@ String GSMTiny::getDatetime()
 
 void GSMTiny::gpsPowerOn()
 {
-    pinMode(PIN_GSM_PWR, OUTPUT);
-    digitalWrite(PIN_GSM_PWR, LOW);
-    delay(1000);
-    digitalWrite(PIN_GSM_PWR, HIGH);
+    // Set SIM7000G GPIO4 HIGH ,turn on GPS power
+    // CMD:AT+SGPIO=0,4,1,1
+    // Only in version 20200415 is there a function to control GPS power
+    this->modem->sendAT("+SGPIO=0,4,1,1");
+    if (this->modem->waitResponse(10000L) != 1)
+    {
+        Serial.println(" SGPIO=0,4,1,1 false ");
+    }
+
     this->modem->enableGPS();
     this->_isGpsOn = true;
+    delay(1000);
 }
 
 void GSMTiny::gpsPowerOff()
 {
+    Serial.println("Disabling GPS");
     this->modem->disableGPS();
-    pinMode(PIN_GSM_PWR, OUTPUT);
-    digitalWrite(PIN_GSM_PWR, LOW);
-    delay(1500);
-    digitalWrite(PIN_GSM_PWR, HIGH);
+
+    // Set SIM7000G GPIO4 LOW ,turn off GPS power
+    // CMD:AT+SGPIO=0,4,1,0
+    // Only in version 20200415 is there a function to control GPS power
+    this->modem->sendAT("+SGPIO=0,4,1,0");
+    if (this->modem->waitResponse(10000L) != 1)
+    {
+        Serial.println(" SGPIO=0,4,1,0 false ");
+    }
+
+    delay(200);
     this->_isGpsOn = false;
 }
 
@@ -222,4 +258,32 @@ void GSMTiny::gpsRestart()
     gpsPowerOff();
     delay(1000);
     gpsPowerOn();
+}
+
+void GSMTiny::modemPowerOn()
+{
+    pinMode(PIN_GSM_PWR, OUTPUT);
+    digitalWrite(PIN_GSM_PWR, LOW);
+    delay(300);
+    digitalWrite(PIN_GSM_PWR, HIGH);
+    // this->modem->enableGPS();
+    this->_isModemOn = true;
+    delay(1000);
+}
+
+void GSMTiny::modemPowerOff()
+{
+    // this->modem->disableGPS();
+    pinMode(PIN_GSM_PWR, OUTPUT);
+    digitalWrite(PIN_GSM_PWR, LOW);
+    delay(300);
+    digitalWrite(PIN_GSM_PWR, HIGH);
+    this->_isModemOn = false;
+}
+
+void GSMTiny::modemRestart()
+{
+    modemPowerOff();
+    delay(1000);
+    modemPowerOn();
 }

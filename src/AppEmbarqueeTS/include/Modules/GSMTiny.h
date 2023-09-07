@@ -15,6 +15,7 @@ private:
 
     bool _isInitialized;
     bool _isGpsOn;
+    bool _isModemOn;
     bool _isFixIsValid; // ???
 
     int _pointId;
@@ -39,6 +40,10 @@ private:
     String getDate();
     String getTime();
     String getDatetime();
+
+    void modemPowerOn();
+    void modemPowerOff();
+    void modemRestart();
 
     bool readDatas();
     void gpsPowerOn();

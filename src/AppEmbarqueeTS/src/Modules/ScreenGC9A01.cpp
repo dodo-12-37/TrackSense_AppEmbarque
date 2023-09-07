@@ -57,6 +57,10 @@ void ScreenGC9A01::tick()
         {
             this->drawRidePage4();
         }
+        else
+        {
+            this->_trackSenseProperties->PropertiesScreen._activeScreen = -1;
+        }
         break;
 
     case 5:
