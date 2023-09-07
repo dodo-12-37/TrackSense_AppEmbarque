@@ -15,9 +15,10 @@ Program::Program() :
     _screen(nullptr), 
     _buzzer(nullptr)
 {
-    this->_trackSenseProperties = new TrackSenseProperties();
     this->initProperties();
 
+    this->_trackSenseProperties = new TrackSenseProperties();
+    this->initProperties();
 
     this->_screen = new ScreenGC9A01(this->_trackSenseProperties);
     this->_controlerButtons = new ControlerButtons(this->_trackSenseProperties);
@@ -33,7 +34,6 @@ Program::Program() :
 
     this->_screen->tick();
     this->_gsm->init();
-
 }
 
 Program::~Program()
@@ -75,3 +75,31 @@ void Program::initProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
     this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
 }
+    // BLE
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._stats = "";
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._point = "";
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint = 0;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints = 0;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReceived = false;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = false;
+
+    // Current Ride
+    this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+    this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
+    this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+    this->_trackSenseProperties->PropertiesCurrentRide._completedRideId = "00000000-0000-0000-0000-000000000000";
+    this->_trackSenseProperties->PropertiesCurrentRide._routeId = "00000000-0000-0000-0000-000000000000";
+    this->_trackSenseProperties->PropertiesCurrentRide._maxSpeed = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._avgSpeed = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._distance = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._duration = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = "0000/00/00-00:00:00";
+    this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = "0000/00/00-00:00:00";
+    this->_trackSenseProperties->PropertiesCurrentRide._currentPoint = "";
+    this->_trackSenseProperties->PropertiesCurrentRide._nbPoints = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._nbFalls = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = false;
+    this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = false;
+}   

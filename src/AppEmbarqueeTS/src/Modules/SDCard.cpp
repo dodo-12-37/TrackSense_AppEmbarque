@@ -53,6 +53,19 @@ void SDCard::tick()
         this->createRideFiles();
 
         this->_currentPointsFile = SD.open(this->_currentPointsFileName, FILE_WRITE);
+
+        if (this->_currentPointsFile) 
+        {
+            Serial.println("Start saving points to file.");
+            _currentPointsFile.println("id;plannedRideId;maxSpeed;avgSpeed;distance;duration;dateBegin;dateEnd;nbPoints;nbFalls");
+
+            // _currentPointsFile.close();
+
+            Serial.println("End saving stats to file.");
+        }
+
+        delay(1000);
+        
     }
     else if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished && this->_isRideStarted)
     {
@@ -130,8 +143,10 @@ void SDCard::createRideFiles()
         this->_trackSenseProperties->PropertiesTS._currentRideId + 
         SDCARD_FILE_STATS_NAME + SDCARD_FILE_EXTENSION;
 
-    SD.mkdir(this->_currentStatsFileName);
-    SD.mkdir(this->_currentPointsFileName);
+    File f = SD.open(this->_currentStatsFileName, FILE_READ);
+    f.close();
+    f = SD.open(this->_currentPointsFileName, FILE_READ);
+    f.close();
 }
 
 void SDCard::writeStatsFile()

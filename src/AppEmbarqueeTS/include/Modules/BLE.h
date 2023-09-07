@@ -21,37 +21,34 @@ private:
     BLEAdvertising* _advertisingBLE;
 
     BLEService* _completedRideService;
-    BLECharacteristic* _CRStatsCaracteristic;
-    BLECharacteristic* _CRPointsCaracteristic;
-    BLECharacteristic* _CRIsReadyCaracteristic;
-    BLECharacteristic* _CRIsReceivedCaracteristic;
-    BLEDescriptor* _CRStatsDescriptor;
-    BLEDescriptor* _CRPointsDescriptor;
-    BLEDescriptor* _CRIsReadyDescriptor;
-    BLEDescriptor* _CRIsReceivedDescriptor;
 
-    // BLECharacteristic* _CRIdCaracteristic;
-    // BLECharacteristic* _CRRouteIdCaracteristic;
-    // BLECharacteristic* _CRMaxSpeedCaracteristic;
-    // BLECharacteristic* _CRAVGSpeedCaracteristic;
-    // BLECharacteristic* _CRDistanceCaracteristic;
-    // BLECharacteristic* _CRDurationCaracteristic;
-    // BLECharacteristic* _CRDateBeginCaracteristic;
-    // BLECharacteristic* _CRDateEndCaracteristic;
-    // BLECharacteristic* _CRNbPointsCaracteristic;
-    // BLECharacteristic* _CRNbFallsCaracteristic;
+    BLECharacteristic* _CRStatsCaracteristic;
+    BLECharacteristic* _CRPointCaracteristic;
+    BLECharacteristic* _CRPointNumberCaracteristic;
+    BLECharacteristic* _CRIsReadyCaracteristic;
+
+    BLEDescriptor* _CRStatsDescriptor;
+    BLEDescriptor* _CRPointDescriptor;
+    BLEDescriptor* _CRPointNumberDescriptor;
+    BLEDescriptor* _CRIsReadyDescriptor;
+
+    unsigned long _lastTimeStatsSent;
+    unsigned long _lastTimePointSent;
 
     void initBLE();
     void initAdvertising();
     void initCompletedRideService();
     void initCompletedRideCaracteristics();
     void initCompletedRideDescriptors();
-    void sendCompletedRide();
-
+    void sendCompletedRideStats();
+    void sendCompletedRideCurrentPoint();
 
 public:
     static bool isDeviceConnected;
-    static bool isCompletedRideReceived;
+    static bool isCompletedRideStatsSending;
+    static bool isCompletedRideStatsReceived;
+    static bool isCompletedRidePointSending;
+    static bool isCompletedRidePointReceived;
 
     BLE(TrackSenseProperties* trackSenseProperties);
     ~BLE();
