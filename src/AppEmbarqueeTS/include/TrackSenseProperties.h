@@ -9,6 +9,7 @@ public:
     struct TrackSensePropertiesTS
     {
         String _currentRideId;
+        bool _isInitializingTS;
     } PropertiesTS;
 
     /* datas Current ride */
@@ -19,7 +20,7 @@ public:
         bool _isRideFinished;
 
         String _completedRideId; 
-        String _routeId;    
+        String _routeId;    //
         double _maxSpeed;
         double _avgSpeed;
         double _distance;
@@ -29,9 +30,10 @@ public:
         String _currentPoint;   //
         int _nbPoints;
         int _nbFalls;
-        bool _isPointReadyToSave;
+        bool _isRideReadyToSave;
+        bool _isPointReadyToSave; 
 
-
+        // datas brute
         float _latitude;
         float _longitude;
         float _altitude;

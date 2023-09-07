@@ -48,8 +48,8 @@ void ControlerButtons::tick()
         /* Start/Stop Ride */
         Serial.println("Button 1 LONG press");
 
-        if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished == false)
-        {
+        // if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished == false)
+        // {
             if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
             {
                 this->finishRide();
@@ -58,7 +58,7 @@ void ControlerButtons::tick()
             {
                 this->startRide();
             }
-        }
+        // }
         break;
 
     case 3:
@@ -153,13 +153,15 @@ void ControlerButtons::startRide()
 {
     if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted == false)
     {
+        Serial.println("===================== Start Ride =====================");
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
 
-        // this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->_gsm->getDatetime();
-
         this->_guidGenerator->generate();
         this->_trackSenseProperties->PropertiesCurrentRide._routeId = this->_guidGenerator->toCharArray();
+
+        this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
+        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
     }
 }
 
@@ -169,6 +171,10 @@ void ControlerButtons::finishRide()
     {
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+        this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = true;
+
+        this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
+        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
     }
 }
 

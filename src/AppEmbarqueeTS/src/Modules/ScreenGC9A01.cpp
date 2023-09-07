@@ -4,8 +4,8 @@ ScreenGC9A01::ScreenGC9A01(TrackSenseProperties *trackSenseProperties) : _trackS
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
     this->tft->begin();
-    this->drawBackgroundColor();
     this->tft->setRotation(this->_trackSenseProperties->PropertiesScreen._screenRotation);
+    this->drawBackgroundColor();
 }
 
 ScreenGC9A01::~ScreenGC9A01()
@@ -26,6 +26,8 @@ ScreenGC9A01::~ScreenGC9A01()
 */
 void ScreenGC9A01::tick()
 {
+    this->tft->setRotation(this->_trackSenseProperties->PropertiesScreen._screenRotation);
+
     if (this->_trackSenseProperties->PropertiesScreen._isNewActivePage)
     {
         this->drawBackgroundColor();
@@ -82,8 +84,6 @@ void ScreenGC9A01::tick()
 
 void ScreenGC9A01::drawInitTSPage0()
 {
-    this->tft->setRotation(this->_trackSenseProperties->PropertiesScreen._screenRotation);
-    this->setTextColor();
     /*
         @brief    Helper to determine size of a PROGMEM string with current
     font/size. Pass string and a cursor position, returns UL corner and W,H.
@@ -96,18 +96,22 @@ void ScreenGC9A01::drawInitTSPage0()
         @param    h      The boundary height, set by function
     */
     // this->tft->getTextBounds("Initializing", 10, 150); // Pour centrer le texte ???
+    this->setTextColor();
     this->tft->setTextSize(3);
-    this->tft->setCursor(10, 150);
+    this->tft->setCursor(10, 90);
     this->tft->printf("%-13s", "Initializing");
-    this->tft->setCursor(30, 40);
+    this->tft->setCursor(30, 120);
     this->tft->printf("%-11s", "TrackSense");
-    this->tft->setCursor(90, 180);
-    this->tft->printf("%-4s", "GPS");
 }
 
 void ScreenGC9A01::drawHomePage1()
 {
-    testButtonsScreen();
+    this->setTextColor();
+    this->tft->setTextSize(3);
+    this->tft->setCursor(35, 50);
+    this->tft->printf("%-10s", "Home Page");
+
+    this->testButtonsScreen();
 }
 
 void ScreenGC9A01::drawCompassPage2()
@@ -273,6 +277,7 @@ void ScreenGC9A01::testButtonsScreen()
 
     this->tft->setCursor(2, 100);
     this->tft->setTextSize(2);
+    this->setTextColor();
 
     // int isButton1Pressed = digitalRead(PIN_BUTTON1); // 33
     int isButton1Pressed = this->_trackSenseProperties->PropertiesButtons._button1State;
@@ -281,70 +286,60 @@ void ScreenGC9A01::testButtonsScreen()
     if (isButton1Pressed == 0 & isButton2Pressed == 0) // not pressed
     {
         /* Nothing */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "No button pressed !");
         // Serial.println("No button pressed");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 0) // short press button 1
     {
         /* Change Screen Menu Up */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Button 1 SHORT press !");
         // Serial.println("Button 1 SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 1) // short press button 2
     {
         /* Change Screen Menu Down */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Button 2 SHORT press !");
         // Serial.println("Button 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 0) // long press button 1
     {
         /* Start/Stop Ride */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Button 1 LONG press !");
         // Serial.println("Button 1 LONG press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 2) // long press button 2
     {
         /* Pause/Restart Ride */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Button 2 LONG press !");
         // Serial.println("Button 2 LONG press");
     }
     else if (isButton1Pressed == 3 & isButton2Pressed == 0) // double short press button 1
     {
         /* Trigger The Buzzer */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Button 1 DOUBLE SHORT press !");
         // Serial.println("Button 1 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 3) // double short press button 2
     {
         /* Trigger The Buzzer */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Button 2 DOUBLE SHORT press !");
         // Serial.println("Button 2 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 1) // short press button 1 and 2
     {
         /* Activate GoHome Mode */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Buttons 1 and 2 SHORT press !");
         // Serial.println("Buttons 1 and 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 2) // long press button 1 and 2
     {
         /* Trigger The Buzzer */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "Buttons 1 and 2 LONG press !");
         // Serial.println("Buttons 1 and 2 LONG press");
     }
     else
     {
         /* Nothing Good Happened... */
-        this->tft->setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
         this->tft->printf(formatChar, "BUTTONS ERROR !!!");
         // Serial.println("BUTTONS ERROR !!!");
     }
