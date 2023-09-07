@@ -113,7 +113,7 @@ void BLE::tick()
             }
             else if (BLE::isCompletedRideStatsReceived
                         && this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints 
-                       == this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint)
+                       >= this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint)
             {
                 this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
                 this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = true;
