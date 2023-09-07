@@ -96,6 +96,8 @@ void Program::initProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
     this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
     this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+
+    // this->_trackSenseProperties->PropertiesCurrentRide.resetCurrentRide();
     this->_trackSenseProperties->PropertiesCurrentRide._completedRideId = "00000000-0000-0000-0000-000000000000";
     this->_trackSenseProperties->PropertiesCurrentRide._routeId = "00000000-0000-0000-0000-000000000000";
     this->_trackSenseProperties->PropertiesCurrentRide._maxSpeed = 0;
@@ -106,6 +108,7 @@ void Program::initProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = "0000-00-00T00:00:00";
     this->_trackSenseProperties->PropertiesCurrentRide._currentPoint = "";
     this->_trackSenseProperties->PropertiesCurrentRide._nbPoints = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._pointID = 0;
     this->_trackSenseProperties->PropertiesCurrentRide._nbFalls = 0;
     this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = false;
     this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = false;
@@ -126,5 +129,7 @@ void Program::initProperties()
     this->_trackSenseProperties->PropertiesCurrentRide._seconde = 0;
     this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue = 0;
     this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS = 0;
+    this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS = 0;
 
 }   

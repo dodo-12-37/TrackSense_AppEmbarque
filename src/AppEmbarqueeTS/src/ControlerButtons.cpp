@@ -173,7 +173,7 @@ void ControlerButtons::finishRide()
     {
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
-        
+
         this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS = millis();
         this->_trackSenseProperties->PropertiesCurrentRide._duration = (this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS - this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS) / 60000;
 
@@ -181,6 +181,12 @@ void ControlerButtons::finishRide()
 
         this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
         this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+
+        this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal = 0;
+        this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue = 0;
+        // this->_trackSenseProperties->PropertiesCurrentRide._pointID = 0;     // TODO : A voir si on reset le pointID ou pas
+        // this->_trackSenseProperties->PropertiesCurrentRide.resetCurrentRide();   // TODO : A voir si on reset tout le currentRide ou pas
+        Serial.println("===================== Finish Ride =====================");
     }
 }
 

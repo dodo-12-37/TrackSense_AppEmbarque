@@ -93,7 +93,7 @@ bool GSMTiny::readDatas()
                                 &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde))
         {
             result = true;
-            this->_TEST_counterGoodValue++;
+            // this->_TEST_counterGoodValue++;
             this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue++;
 
 #if DEBUG_GSM
@@ -120,7 +120,7 @@ bool GSMTiny::readDatas()
         }
 
         Serial.println("=======================================");
-        this->_TEST_counterTotal++;
+        // this->_TEST_counterTotal++;
         this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal++;
     }
 
@@ -171,6 +171,8 @@ void GSMTiny::saveFixToTSProperties()
                                                                        String(this->_trackSenseProperties->PropertiesCurrentRide._duration);
 
     this->_trackSenseProperties->PropertiesCurrentRide._isPointReadyToSave = true;
+    this->_pointId++;
+    
 }
 
 String GSMTiny::getDate()
@@ -201,11 +203,13 @@ void GSMTiny::gpsPowerOn()
     digitalWrite(PIN_GSM_PWR, LOW);
     delay(1000);
     digitalWrite(PIN_GSM_PWR, HIGH);
+    this->modem->enableGPS();
     this->_isGpsOn = true;
 }
 
 void GSMTiny::gpsPowerOff()
 {
+    this->modem->disableGPS();
     pinMode(PIN_GSM_PWR, OUTPUT);
     digitalWrite(PIN_GSM_PWR, LOW);
     delay(1500);
