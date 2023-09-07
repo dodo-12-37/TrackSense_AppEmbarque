@@ -56,41 +56,45 @@ public:
         int _TEST_counterGoodValue;
         int _TEST_counterTotal;
 
-        // void resetCurrentRide()
-        // {
-        //     this->_completedRideId = "00000000-0000-0000-0000-000000000000";
-        //     this->_routeId = "00000000-0000-0000-0000-000000000000";
-        //     this->_maxSpeed = 0;
-        //     this->_avgSpeed = 0;
-        //     this->_distance = 0;
-        //     this->_duration = 0;
-        //     this->_dateBegin = "0000-00-00T00:00:00";
-        //     this->_dateEnd = "0000-00-00T00:00:00";
-        //     this->_currentPoint = "";
-        //     this->_nbPoints = 0;
-        //     this->_pointID = 0;
-        //     this->_nbFalls = 0;
-        //     this->_isRideReadyToSave = false;
-        //     this->_isPointReadyToSave = false;
-        //     this->_temperature = 0;
-        //     this->_latitude = 0;
-        //     this->_longitude = 0;
-        //     this->_altitude = 0;
-        //     this->_speed = 0;
-        //     this->_visibleSatellites = 0;
-        //     this->_usedSatellites = 0;
-        //     this->_accuracy = 0;
-        //     this->_year = 0;
-        //     this->_month = 0;
-        //     this->_day = 0;
-        //     this->_hour = 0;
-        //     this->_minute = 0;
-        //     this->_seconde = 0;
-        //     this->_TEST_counterGoodValue = 0;
-        //     this->_TEST_counterTotal = 0;
-        //     this->_startTimeMS = 0;
-        //     this->_endTimeMS = 0;
-        // }
+        void resetCurrentRide()
+        {
+            this->_isRideStarted = false;
+            this->_isRidePaused = false;
+            this->_isRideFinished = false;
+            
+            this->_completedRideId = "00000000-0000-0000-0000-000000000000";
+            this->_routeId = "00000000-0000-0000-0000-000000000000";
+            this->_maxSpeed = 0;
+            this->_avgSpeed = 0;
+            this->_distance = 0;
+            this->_duration = 0;
+            this->_dateBegin = "0000-00-00T00:00:00";
+            this->_dateEnd = "0000-00-00T00:00:00";
+            this->_currentPoint = "";
+            this->_nbPoints = 0;
+            this->_pointID = 0;
+            this->_nbFalls = 0;
+            this->_isRideReadyToSave = false;
+            this->_isPointReadyToSave = false;
+            this->_temperature = 0;
+            this->_latitude = 0;
+            this->_longitude = 0;
+            this->_altitude = 0;
+            this->_speed = 0;
+            this->_visibleSatellites = 0;
+            this->_usedSatellites = 0;
+            this->_accuracy = 0;
+            this->_year = 0;
+            this->_month = 0;
+            this->_day = 0;
+            this->_hour = 0;
+            this->_minute = 0;
+            this->_seconde = 0;
+            this->_TEST_counterGoodValue = 0;
+            this->_TEST_counterTotal = 0;
+            this->_startTimeMS = 0;
+            this->_endTimeMS = 0;
+        }
     } PropertiesCurrentRide;
 
     /* datas Buttons */

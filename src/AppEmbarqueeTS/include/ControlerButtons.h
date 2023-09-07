@@ -30,8 +30,8 @@ public:
     void changePageUp();
     void changePageDown();
     void startRide();
-    void pauseRide();
     void finishRide();
+    void pauseRide();
     void restartRide();
     void makeNoiseBuzzer();
     void goHome();
