@@ -69,6 +69,7 @@ void Program::initProperties()
     // this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
 
     // BLE
+    this->_trackSenseProperties->PropertiesCompletedRideToSend._completedRideId = "00000000-0000-0000-0000-000000000000";
     this->_trackSenseProperties->PropertiesCompletedRideToSend._stats = "";
     this->_trackSenseProperties->PropertiesCompletedRideToSend._point = "";
     this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint = 0;

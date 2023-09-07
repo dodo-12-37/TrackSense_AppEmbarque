@@ -166,6 +166,7 @@ public:
     /* datas CompletedRide to send */
     struct TrackSensePropertiesCompletedRideToSend
     {
+        String _completedRideId;
         String _stats;
         String _point;
         int _currentPoint;

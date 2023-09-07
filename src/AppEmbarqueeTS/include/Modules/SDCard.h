@@ -20,11 +20,16 @@ private:
     String _currentPointsFileName;
     String _currentStatsFileName;
 
+    File _currentFileSendPoints;
+    unsigned long _positionCursorFileSendPoints;
+    bool _isSendingPoints;
+
     void checkFiles();
     void createRideFiles();
+    void processCurrentRide();
     void writeStatsFile();
     void writePoint();
-    void setStatsToSendFromFile();
+    void setStatsToSend();
     void setPointsToSendFromFile();
 
 public:
