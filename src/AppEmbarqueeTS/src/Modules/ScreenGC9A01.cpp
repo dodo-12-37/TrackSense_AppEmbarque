@@ -26,7 +26,7 @@ ScreenGC9A01::~ScreenGC9A01()
 */
 void ScreenGC9A01::tick()
 {
-    if (this->_trackSenseProperties->PropertiesTS._isInitializedGSM)
+    if (!this->_trackSenseProperties->PropertiesTS._isInitializedGSM)
     {
         this->_trackSenseProperties->PropertiesScreen._activeScreen = -1;
         this->_trackSenseProperties->PropertiesScreen._isNewActivePage = false;
