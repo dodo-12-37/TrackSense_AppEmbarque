@@ -241,6 +241,25 @@ String GSMTiny::getDatetime()
 
 void GSMTiny::gpsPowerOn()
 {
+    /*
+        Parameters : 
+        <operation>
+            0 Set the GPIO function including the GPIO output .
+            1 Read the GPIO level. Please note that only when the gpio is set as input, user can use parameter 1 to read the GPIO level, otherwise the module will return "ERROR".
+
+        <pin>
+            The PIN index you want to be set. (It has relations with the hardware, please refer to the hardware manual)
+
+        <function> 
+            Only when <operation> is set to 0, this option takes effect.
+            0 Set the GPIO to input.
+            1 Set the GPIO to output.
+
+        <level>
+            0 Set the GPIO low level
+            1 Set the GPIO high level
+    */
+
     // Set SIM7000G GPIO4 HIGH ,turn on GPS power
     // CMD:AT+SGPIO=0,4,1,1
     // Only in version 20200415 is there a function to control GPS power
@@ -262,8 +281,11 @@ void GSMTiny::gpsPowerOff()
 
     // Set SIM7000G GPIO4 LOW ,turn off GPS power
     // CMD:AT+SGPIO=0,4,1,0
-    // Only in version 20200415 is there a function to control GPS power
-    this->modem->sendAT("+SGPIO=0,4,1,0");
+    // Only in version 20200415 is there a function to control GPS power.
+    //Version 20200415 (Version 1.1)
+    //Version 20191227 (Version 1.0)
+    //Revision:1529B08SIM7000G
+    this->modem->sendAT("+SGPIO=0,4,1,0"); // devrait pt être "+CGPIO=0,4,1,0"
     if (this->modem->waitResponse(10000L) != 1)
     {
         Serial.println(" SGPIO=0,4,1,0 false ");
