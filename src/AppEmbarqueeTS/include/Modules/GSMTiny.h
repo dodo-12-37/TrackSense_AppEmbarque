@@ -60,5 +60,6 @@ public:
 
     void init() override;
     void tick() override;
+    bool isInitialized() override;
 
 };

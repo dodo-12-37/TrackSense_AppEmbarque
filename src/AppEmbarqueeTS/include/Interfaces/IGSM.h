@@ -8,6 +8,7 @@ class IGSM
 public:
     virtual void init() = 0;
     virtual void tick() = 0;
+    virtual bool isInitialized() = 0;
 
     // virtual void gpsPowerOn() = 0;
     // virtual void gpsPowerOff() = 0;

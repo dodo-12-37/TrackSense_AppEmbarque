@@ -10,6 +10,7 @@ public:
     {
         String _currentRideId;
         bool _isInitializingTS;
+        bool _isInitializedGSM;
     } PropertiesTS;
 
     /* datas Current ride */

@@ -64,6 +64,7 @@ void GSMTiny::init()
         // TODO : Activer paramètres GLONASS et GALILEO //
         this->setWorkModeGPS();
         this->_isInitialized = true;
+        this->_trackSenseProperties->PropertiesTS._isInitializedGSM = true;
     }
 }
 
@@ -316,13 +317,10 @@ void GSMTiny::modemRestart()
     Set Command  : AT+CGNSMOD=<GPS mode>,<glonass mode>,<beidou mode>,<galieo mode>
 
     Parameters :
-    <GPS mode>     : 1 - Enable GPS
-    <glonass mode> : 0 - Disable GLONASS
-                     1 - Enable GLONASS
-    <beidou mode>  : 0 - Disable BeiDou
-                     1 - Enable BeiDou
-    <galieo mode>  : 0 - Disable Galileo
-                     1 - Enable Galileo
+    <GPS mode>     :    1 - Enable GPS
+    <glonass mode> :    0 - Disable GLONASS     1 - Enable GLONASS
+    <beidou mode>  :    0 - Disable BeiDou      1 - Enable BeiDou
+    <galieo mode>  :    0 - Disable Galileo     1 - Enable Galileo
 */
 void GSMTiny::setWorkModeGPS()
 {
@@ -332,4 +330,9 @@ void GSMTiny::setWorkModeGPS()
         Serial.print(" CGNSMOD=1,1,1,1 ");
         Serial.println(" Activate GPS, GLONASS, BeiDou, Galileo work mode.");
     }
+}
+
+bool GSMTiny::isInitialized()
+{
+    return this->_isInitialized;
 }
