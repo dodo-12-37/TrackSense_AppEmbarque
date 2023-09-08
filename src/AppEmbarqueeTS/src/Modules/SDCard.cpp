@@ -48,22 +48,8 @@ void SDCard::init()
 void SDCard::tick()
 {
     this->processCurrentRide();
-
-    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished)
-    {
-        if (!this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
-        {
-            this->setStatsToSend();
-            this->_isSendingPoints = true;
-        }
-        else if (this->_isSendingPoints)
-        {
-            this->setPointsToSendFromFile();
-        }
-    }
-
-
-
+    this->processSendRide();
+    
     // this->setPointsToSendFromFile();
     // this->setStatsToSendFromFile();
     // this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = true;
@@ -249,6 +235,22 @@ void SDCard::setPointsToSendFromFile()
         this->_isSendingPoints = false;
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
         this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReceived = false;
+    }
+}
+
+void SDCard::processSendRide()
+{
+    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished)
+    {
+        if (!this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
+        {
+            this->setStatsToSend();
+            this->_isSendingPoints = true;
+        }
+        else if (this->_isSendingPoints)
+        {
+            this->setPointsToSendFromFile();
+        }
     }
 }
 

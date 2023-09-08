@@ -29,6 +29,7 @@ private:
     void processCurrentRide();
     void writeStatsFile();
     void writePoint();
+    void processSendRide();
     void setStatsToSend();
     void setPointsToSendFromFile();
 
