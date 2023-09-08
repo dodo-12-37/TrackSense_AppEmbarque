@@ -115,13 +115,13 @@ void SDCard::createRideFiles()
     this->_currentStatsFileName = 
         String(SDCARD_ROOT_PATH) 
         + "/" 
-        + this->_trackSenseProperties->PropertiesTS._currentRideId 
+        + this->_trackSenseProperties->PropertiesCurrentRide._completedRideId 
         + SDCARD_FILE_STATS_NAME 
         + SDCARD_FILE_EXTENSION;
     this->_currentPointsFileName = 
         String(SDCARD_ROOT_PATH) 
         + "/" 
-        + this->_trackSenseProperties->PropertiesTS._currentRideId 
+        + this->_trackSenseProperties->PropertiesCurrentRide._completedRideId 
         + SDCARD_FILE_POINTS_NAME 
         + SDCARD_FILE_EXTENSION;
 
