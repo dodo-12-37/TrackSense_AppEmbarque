@@ -164,7 +164,7 @@ void ControlerButtons::startRide()
         this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS = millis();
 
         this->_guidGenerator->generate();
-        this->_trackSenseProperties->PropertiesCurrentRide._routeId = this->_guidGenerator->toCharArray();
+        this->_trackSenseProperties->PropertiesCurrentRide._completedRideId = this->_guidGenerator->toCharArray();
 
         this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
         this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
