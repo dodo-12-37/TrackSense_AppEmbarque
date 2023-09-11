@@ -31,8 +31,6 @@ private:
     void drawLogoTS();
     void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage);
     // void drawSignal();
-    // void drawTime();
-    // void drawDate();
 
     /* Drawing tools */
     void drawBackgroundColor(int darkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR, int lightModeColor = TFT_LIGHT_MODE_BACKGROUND_COLOR);

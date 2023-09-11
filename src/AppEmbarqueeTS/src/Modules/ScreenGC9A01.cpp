@@ -125,6 +125,7 @@ void ScreenGC9A01::drawHomePage1()
     this->tft->printf("%-10s", "Home Page");
 
     this->drawBattery(70, 140, 100, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+    // this->drawBattery(70, 140, 100, 100);
 
     this->testButtonsScreen();
 }
@@ -197,6 +198,7 @@ void ScreenGC9A01::drawRidePage4()
     tft->printf(formatChar, strAccuracy.c_str());
 
     this->drawBattery(100, 5, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+    // this->drawBattery(100, 5, 50, 100);
 }
 
 void ScreenGC9A01::drawGlobalStatisticsPage5()
@@ -262,11 +264,6 @@ void ScreenGC9A01::drawLogoTS()
     tft->setCursor(coordX + width * 4, coordY);
     tft->printf("%-1s", "K");
 
-    // Draw "ENSE"
-    this->setTextColor();
-    tft->setCursor(coordX + width * 1, coordY2);
-    tft->printf("%-4s", "ENSE");
-
     // Draw special "S"
     tft->fillCircle(coordX + width * 0.761904762, coordY2 + height * 0.160714286, 4, GC9A01A_RED);
     tft->fillCircle(coordX + width * 0.547619048, coordY2 + height * 0.053571429, 4, GC9A01A_WHITE);
@@ -278,70 +275,92 @@ void ScreenGC9A01::drawLogoTS()
     tft->fillCircle(coordX + width * 0.547619048, coordY2 + height * 0.803571429, 4, GC9A01A_WHITE);
     tft->fillCircle(coordX + width * 0.285714286, coordY2 + height * 0.839285714, 4, GC9A01A_WHITE);
     tft->fillCircle(coordX + width * 0.095238095, coordY2 + height * 0.714285714, 4, GC9A01A_RED);
-    // tft->fillCircle(coordX + 32, coordY2 + 9 , 4, GC9A01A_RED);
-    // tft->fillCircle(coordX + 23, coordY2 + 3 , 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 12, coordY2 + 5 , 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 6 , coordY2 + 14, 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 13, coordY2 + 22, 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 22, coordY2 + 28, 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 30, coordY2 + 36, 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 23, coordY2 + 45, 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 12, coordY2 + 47, 4, GC9A01A_WHITE);
-    // tft->fillCircle(coordX + 4 , coordY2 + 40, 4, GC9A01A_RED);
+
+    // Draw "ENSE"
+    this->setTextColor();
+    tft->setCursor(coordX + width, coordY2);
+    tft->printf("%-4s", "ENSE");
 
     // Draw circle
     // Comme le nombre de pixel est pair (240), le centre est entre 2 pixels. On ne peut pas mettre de fraction de pixel... Donc pour avoir un cercle centré, il faut dessiner 4 cercles...
     tft->drawCircle(119, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
     tft->drawCircle(120, 120, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
     tft->drawCircle(119, 120, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
-    tft->drawCircle(120, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
-
-
-    // tft->drawPixel(coordX                                   , coordY                        , GC9A01A_RED); // gauche haut "T"
-    // tft->drawPixel(coordX + widthWithoutSpace               , coordY                        , GC9A01A_RED); // droite haut "T" 
-    // tft->drawPixel(coordX                                   , coordY + heightWithoutSpace   , GC9A01A_CYAN); // gauche bas "T"
-    // tft->drawPixel(coordX + widthWithoutSpace               , coordY + heightWithoutSpace   , GC9A01A_CYAN); // droite bas "T"
-
-    // tft->drawPixel(coordX + width * 1                       , coordY                        , GC9A01A_RED); // gauche haut "R"
-    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY                        , GC9A01A_CYAN); // droite haut "R" 
-    // tft->drawPixel(coordX + width * 1                       , coordY + heightWithoutSpace   , GC9A01A_RED); // gauche bas "R"
-    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY + heightWithoutSpace   , GC9A01A_RED); // droite bas "R"
-
-    // tft->drawPixel(coordX + width * 3                       , coordY                        , GC9A01A_CYAN); // gauche haut "C"
-    // tft->drawPixel(coordX + width * 3 + widthWithoutSpace   , coordY                        , GC9A01A_CYAN); // droite haut "C" 
-    // tft->drawPixel(coordX + width * 3                       , coordY + heightWithoutSpace   , GC9A01A_CYAN); // gauche bas "C"
-    // tft->drawPixel(coordX + width * 3 + widthWithoutSpace   , coordY + heightWithoutSpace   , GC9A01A_CYAN); // droite bas "C"
-
-    // tft->drawPixel(coordX + width * 4                       , coordY                        , GC9A01A_RED); // gauche haut "K"
-    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY                        , GC9A01A_RED); // droite haut "K" 
-    // tft->drawPixel(coordX + width * 4                       , coordY + heightWithoutSpace   , GC9A01A_RED); // gauche bas "K"
-    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY + heightWithoutSpace   , GC9A01A_RED); // droite bas "K"
-
-
-
-    // tft->drawPixel(coordX                                   , coordY2                       , GC9A01A_CYAN); // gauche haut "Special S"
-    // tft->drawPixel(coordX + widthWithoutSpace               , coordY2                       , GC9A01A_CYAN); // droite haut "Special S" 
-    // tft->drawPixel(coordX                                   , coordY2 + heightWithoutSpace  , GC9A01A_CYAN); // gauche bas "Special S"
-    // tft->drawPixel(coordX + widthWithoutSpace               , coordY2 + heightWithoutSpace  , GC9A01A_CYAN); // droite bas "Special S"
-
-    // tft->drawPixel(coordX + width * 1                       , coordY2                        , GC9A01A_RED); // gauche haut "premier E"
-    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY2                        , GC9A01A_RED); // droite haut "premier E" 
-    // tft->drawPixel(coordX + width * 1                       , coordY2 + heightWithoutSpace   , GC9A01A_RED); // gauche bas "premier E"
-    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY2 + heightWithoutSpace   , GC9A01A_RED); // droite bas "premier E"
-
-    // tft->drawPixel(coordX + width * 4                       , coordY2                        , GC9A01A_RED); // gauche haut "dernier E"
-    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY2                        , GC9A01A_RED); // droite haut "dernier E" 
-    // tft->drawPixel(coordX + width * 4                       , coordY2 + heightWithoutSpace   , GC9A01A_RED); // gauche bas "dernier E"
-    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY2 + heightWithoutSpace   , GC9A01A_RED); // droite bas "dernier E"
+    tft->drawCircle(120, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
 }
+
+// void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
+// {
+//     double hauteurY = largeurX / 2;
+//     double zoneBarreVerteX = largeurX * 0.875;
+//     double barreVerteX = zoneBarreVerteX / 3;
+//     double barreVerteY = hauteurY * 0.8;
+//     double coordBarreVerteX = coordX + (barreVerteX - barreVerteX * 0.875);
+//     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
+
+//     // tft.drawRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);  // Contour
+//     tft->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
+//     tft->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
+
+//     switch (pourcentage)
+//     {
+//     case 0 ... 20:
+//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_RED); // niveau #1
+//         break;
+
+//     case 21 ... 40:
+//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_YELLOW); // niveau #1
+//         break;
+
+//     case 41 ... 60:
+//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
+//         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
+//         break;
+
+//     case 61 ... 80:
+//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
+//         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
+//         break;
+
+//     case 81 ... 100:
+//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);                   // niveau #1
+//         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
+//         tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
+//         break;
+
+//     default:
+//         break;
+//     }
+
+//     if (largeurX < 100)
+//     {
+//         tft->setTextSize(1);
+//     }
+//     else if (largeurX < 200)
+//     {
+//         tft->setTextSize(2);
+//     }
+//     else
+//     {
+//         tft->setTextSize(3);
+//     }
+    
+
+//     // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
+//     this->setTextColor();
+//     tft->setCursor((coordBarreVerteX + (barreVerteX)), coordBarreVerteY + hauteurY / 3);
+//     String strBatteryLevel = String(this->_trackSenseProperties->PropertiesBattery._batteryLevel, 0) + "%";
+//     tft->printf("%-3s", strBatteryLevel.c_str());
+// }
 
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
 {
     double hauteurY = largeurX / 2;
     double zoneBarreVerteX = largeurX * 0.875;
-    double barreVerteX = zoneBarreVerteX / 3;
+    // double zoneBarreVerteY = hauteurY * 0.8;
+    double barreVerteX = zoneBarreVerteX * 0.9;
     double barreVerteY = hauteurY * 0.8;
-    double coordBarreVerteX = coordX + (barreVerteX - barreVerteX * 0.875);
+    double coordBarreVerteX = coordX + (zoneBarreVerteX - barreVerteX) / 2;
     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
 
     // tft.drawRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);  // Contour
@@ -351,27 +370,15 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     switch (pourcentage)
     {
     case 0 ... 20:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_RED); // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_RED); // niveau #1
         break;
 
     case 21 ... 40:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_YELLOW); // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_YELLOW); // niveau #1
         break;
 
-    case 41 ... 60:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
-        tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
-        break;
-
-    case 61 ... 80:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
-        tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
-        break;
-
-    case 81 ... 100:
-        tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);                   // niveau #1
-        tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
-        tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
+    case 41 ... 100:
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_GREEN);               // niveau #1
         break;
 
     default:
@@ -394,7 +401,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 
     // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
     this->setTextColor();
-    tft->setCursor((coordBarreVerteX + (barreVerteX)), coordBarreVerteY + hauteurY / 3);
+    tft->setCursor((coordBarreVerteX + (barreVerteX / 4)), coordBarreVerteY + hauteurY / 3);
     String strBatteryLevel = String(this->_trackSenseProperties->PropertiesBattery._batteryLevel, 0) + "%";
     tft->printf("%-3s", strBatteryLevel.c_str());
 }
