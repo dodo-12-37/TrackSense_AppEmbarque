@@ -107,12 +107,14 @@ void ScreenGC9A01::drawInitTSPage0()
         @param    h      The boundary height, set by function
     */
     // this->tft->getTextBounds("Initializing", 10, 150); // Pour centrer le texte ???
-    this->setTextColor();
-    this->tft->setTextSize(3);
-    this->tft->setCursor(10, 90);
-    this->tft->printf("%-13s", "Initializing");
-    this->tft->setCursor(30, 120);
-    this->tft->printf("%-11s", "TrackSense");
+    // this->setTextColor();
+    // this->tft->setTextSize(3);
+    // this->tft->setCursor(10, 90);
+    // this->tft->printf("%-13s", "Initializing");
+    // this->tft->setCursor(30, 120);
+    // this->tft->printf("%-11s", "TrackSense");
+
+    this->drawLogoTS();
 }
 
 void ScreenGC9A01::drawHomePage1()
@@ -227,6 +229,111 @@ void ScreenGC9A01::drawErrorPage()
     Elements
 */
 #pragma region Elements
+
+// void ScreenGC9A01::drawLogoTS(int16_t coordX, int16_t coordY, int16_t taille)
+void ScreenGC9A01::drawLogoTS()
+{
+    int16_t coordX = 17;    // "T" coordX = 16
+    int16_t coordY = 65;    // "T" coordX = 65
+
+    tft->setTextSize(7);
+
+    uint16_t width = 42;     // "T" width = 42
+    uint16_t height = 56;    // "T" height = 56
+
+    tft->getTextBounds("T", coordX, coordY, &coordX, &coordY, &width, &height);
+
+    int widthWithoutSpace = width * 0.80952381;    // widthWithoutSpace = 42 * 0.80952381 = 34
+    int heightWithoutSpace = height * 0.875;  // heightWithoutSpace = 56 * 0.875 = 49
+
+    int coordY2 = coordY + height + 1;  // "premier E" coordX = 122     // 65 + 56 = 121
+
+
+    // Draw "TRA"
+    this->setTextColor();
+    tft->setCursor(coordX, coordY);
+    tft->printf("%-3s", "TRA");
+    // Draw "C" of "TRACK"
+    this->setTextColor(GC9A01A_RED, GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE);
+    tft->setCursor(coordX + width * 3, coordY);
+    tft->printf("%-1s", "C");
+    // Draw "K" of "TRACK"
+    this->setTextColor();
+    tft->setCursor(coordX + width * 4, coordY);
+    tft->printf("%-1s", "K");
+
+    // Draw "ENSE"
+    this->setTextColor();
+    tft->setCursor(coordX + width * 1, coordY2);
+    tft->printf("%-4s", "ENSE");
+
+    // Draw special "S"
+    tft->fillCircle(coordX + width * 0.761904762, coordY2 + height * 0.160714286, 4, GC9A01A_RED);
+    tft->fillCircle(coordX + width * 0.547619048, coordY2 + height * 0.053571429, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.285714286, coordY2 + height * 0.089285714, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.142857143, coordY2 + height * 0.250000000, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.309523810, coordY2 + height * 0.392857143, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.523809524, coordY2 + height * 0.500000000, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.714285714, coordY2 + height * 0.642857143, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.547619048, coordY2 + height * 0.803571429, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.285714286, coordY2 + height * 0.839285714, 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.095238095, coordY2 + height * 0.714285714, 4, GC9A01A_RED);
+    // tft->fillCircle(coordX + 32, coordY2 + 9 , 4, GC9A01A_RED);
+    // tft->fillCircle(coordX + 23, coordY2 + 3 , 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 12, coordY2 + 5 , 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 6 , coordY2 + 14, 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 13, coordY2 + 22, 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 22, coordY2 + 28, 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 30, coordY2 + 36, 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 23, coordY2 + 45, 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 12, coordY2 + 47, 4, GC9A01A_WHITE);
+    // tft->fillCircle(coordX + 4 , coordY2 + 40, 4, GC9A01A_RED);
+
+    // Draw circle
+    // Comme le nombre de pixel est pair (240), le centre est entre 2 pixels. On ne peut pas mettre de fraction de pixel... Donc pour avoir un cercle centré, il faut dessiner 4 cercles...
+    tft->drawCircle(119, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+    tft->drawCircle(120, 120, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+    tft->drawCircle(119, 120, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+    tft->drawCircle(120, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
+
+
+    // tft->drawPixel(coordX                                   , coordY                        , GC9A01A_RED); // gauche haut "T"
+    // tft->drawPixel(coordX + widthWithoutSpace               , coordY                        , GC9A01A_RED); // droite haut "T" 
+    // tft->drawPixel(coordX                                   , coordY + heightWithoutSpace   , GC9A01A_CYAN); // gauche bas "T"
+    // tft->drawPixel(coordX + widthWithoutSpace               , coordY + heightWithoutSpace   , GC9A01A_CYAN); // droite bas "T"
+
+    // tft->drawPixel(coordX + width * 1                       , coordY                        , GC9A01A_RED); // gauche haut "R"
+    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY                        , GC9A01A_CYAN); // droite haut "R" 
+    // tft->drawPixel(coordX + width * 1                       , coordY + heightWithoutSpace   , GC9A01A_RED); // gauche bas "R"
+    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY + heightWithoutSpace   , GC9A01A_RED); // droite bas "R"
+
+    // tft->drawPixel(coordX + width * 3                       , coordY                        , GC9A01A_CYAN); // gauche haut "C"
+    // tft->drawPixel(coordX + width * 3 + widthWithoutSpace   , coordY                        , GC9A01A_CYAN); // droite haut "C" 
+    // tft->drawPixel(coordX + width * 3                       , coordY + heightWithoutSpace   , GC9A01A_CYAN); // gauche bas "C"
+    // tft->drawPixel(coordX + width * 3 + widthWithoutSpace   , coordY + heightWithoutSpace   , GC9A01A_CYAN); // droite bas "C"
+
+    // tft->drawPixel(coordX + width * 4                       , coordY                        , GC9A01A_RED); // gauche haut "K"
+    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY                        , GC9A01A_RED); // droite haut "K" 
+    // tft->drawPixel(coordX + width * 4                       , coordY + heightWithoutSpace   , GC9A01A_RED); // gauche bas "K"
+    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY + heightWithoutSpace   , GC9A01A_RED); // droite bas "K"
+
+
+
+    // tft->drawPixel(coordX                                   , coordY2                       , GC9A01A_CYAN); // gauche haut "Special S"
+    // tft->drawPixel(coordX + widthWithoutSpace               , coordY2                       , GC9A01A_CYAN); // droite haut "Special S" 
+    // tft->drawPixel(coordX                                   , coordY2 + heightWithoutSpace  , GC9A01A_CYAN); // gauche bas "Special S"
+    // tft->drawPixel(coordX + widthWithoutSpace               , coordY2 + heightWithoutSpace  , GC9A01A_CYAN); // droite bas "Special S"
+
+    // tft->drawPixel(coordX + width * 1                       , coordY2                        , GC9A01A_RED); // gauche haut "premier E"
+    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY2                        , GC9A01A_RED); // droite haut "premier E" 
+    // tft->drawPixel(coordX + width * 1                       , coordY2 + heightWithoutSpace   , GC9A01A_RED); // gauche bas "premier E"
+    // tft->drawPixel(coordX + width * 1 + widthWithoutSpace   , coordY2 + heightWithoutSpace   , GC9A01A_RED); // droite bas "premier E"
+
+    // tft->drawPixel(coordX + width * 4                       , coordY2                        , GC9A01A_RED); // gauche haut "dernier E"
+    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY2                        , GC9A01A_RED); // droite haut "dernier E" 
+    // tft->drawPixel(coordX + width * 4                       , coordY2 + heightWithoutSpace   , GC9A01A_RED); // gauche bas "dernier E"
+    // tft->drawPixel(coordX + width * 4 + widthWithoutSpace   , coordY2 + heightWithoutSpace   , GC9A01A_RED); // droite bas "dernier E"
+}
 
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
 {

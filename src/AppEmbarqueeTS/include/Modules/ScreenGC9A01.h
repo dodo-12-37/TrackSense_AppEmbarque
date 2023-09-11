@@ -28,6 +28,7 @@ private:
     void drawErrorPage();
 
     /* Elements */
+    void drawLogoTS();
     void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage);
     // void drawSignal();
     // void drawTime();
