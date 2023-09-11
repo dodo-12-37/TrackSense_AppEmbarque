@@ -125,7 +125,6 @@ void ScreenGC9A01::drawHomePage1()
     this->tft->printf("%-10s", "Home Page");
 
     this->drawBattery(70, 140, 100, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
-    // this->drawBattery(70, 140, 100, 100);
 
     this->testButtonsScreen();
 }
@@ -198,7 +197,6 @@ void ScreenGC9A01::drawRidePage4()
     tft->printf(formatChar, strAccuracy.c_str());
 
     this->drawBattery(100, 5, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
-    // this->drawBattery(100, 5, 50, 100);
 }
 
 void ScreenGC9A01::drawGlobalStatisticsPage5()
@@ -289,96 +287,30 @@ void ScreenGC9A01::drawLogoTS()
     tft->drawCircle(120, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
 }
 
-// void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
-// {
-//     double hauteurY = largeurX / 2;
-//     double zoneBarreVerteX = largeurX * 0.875;
-//     double barreVerteX = zoneBarreVerteX / 3;
-//     double barreVerteY = hauteurY * 0.8;
-//     double coordBarreVerteX = coordX + (barreVerteX - barreVerteX * 0.875);
-//     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
-
-//     // tft.drawRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);  // Contour
-//     tft->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
-//     tft->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
-
-//     switch (pourcentage)
-//     {
-//     case 0 ... 20:
-//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_RED); // niveau #1
-//         break;
-
-//     case 21 ... 40:
-//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_YELLOW); // niveau #1
-//         break;
-
-//     case 41 ... 60:
-//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
-//         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
-//         break;
-
-//     case 61 ... 80:
-//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);               // niveau #1
-//         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #2
-//         break;
-
-//     case 81 ... 100:
-//         tft->fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);                   // niveau #1
-//         tft->fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);     // niveau #2
-//         tft->fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN); // niveau #3
-//         break;
-
-//     default:
-//         break;
-//     }
-
-//     if (largeurX < 100)
-//     {
-//         tft->setTextSize(1);
-//     }
-//     else if (largeurX < 200)
-//     {
-//         tft->setTextSize(2);
-//     }
-//     else
-//     {
-//         tft->setTextSize(3);
-//     }
-    
-
-//     // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
-//     this->setTextColor();
-//     tft->setCursor((coordBarreVerteX + (barreVerteX)), coordBarreVerteY + hauteurY / 3);
-//     String strBatteryLevel = String(this->_trackSenseProperties->PropertiesBattery._batteryLevel, 0) + "%";
-//     tft->printf("%-3s", strBatteryLevel.c_str());
-// }
-
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
 {
     double hauteurY = largeurX / 2;
     double zoneBarreVerteX = largeurX * 0.875;
-    // double zoneBarreVerteY = hauteurY * 0.8;
     double barreVerteX = zoneBarreVerteX * 0.9;
     double barreVerteY = hauteurY * 0.8;
     double coordBarreVerteX = coordX + (zoneBarreVerteX - barreVerteX) / 2;
     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
 
-    // tft.drawRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);  // Contour
     tft->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     tft->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
 
     switch (pourcentage)
     {
     case 0 ... 20:
-        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_RED); // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_RED);     // niveau #1
         break;
 
     case 21 ... 40:
-        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_YELLOW); // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_YELLOW);      // niveau #1
         break;
 
     case 41 ... 100:
-        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_GREEN);               // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_GREEN);       // niveau #1
         break;
 
     default:
@@ -401,7 +333,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 
     // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
     this->setTextColor();
-    tft->setCursor((coordBarreVerteX + (barreVerteX / 4)), coordBarreVerteY + hauteurY / 3);
+    tft->setCursor((coordBarreVerteX + barreVerteX / 4), coordBarreVerteY + hauteurY / 4);
     String strBatteryLevel = String(this->_trackSenseProperties->PropertiesBattery._batteryLevel, 0) + "%";
     tft->printf("%-3s", strBatteryLevel.c_str());
 }
