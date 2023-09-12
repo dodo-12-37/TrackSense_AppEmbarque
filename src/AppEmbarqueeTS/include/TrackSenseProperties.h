@@ -39,24 +39,6 @@ public:
         unsigned long _startTimeMS;
         unsigned long _endTimeMS;
 
-        // datas brute GPS
-        float _latitude;
-        float _longitude;
-        float _altitude;
-        float _speed;
-        int _visibleSatellites;
-        int _usedSatellites;
-        float _accuracy;
-        int _year;
-        int _month;
-        int _day;
-        int _hour;
-        int _minute;
-        int _seconde;
-
-        int _TEST_counterGoodValue;
-        int _TEST_counterTotal;
-
         void resetCurrentRide()
         {
             this->_isRideStarted = false;
@@ -78,6 +60,37 @@ public:
             this->_isRideReadyToSave = false;
             this->_isPointReadyToSave = false;
             this->_temperature = 0;
+            this->_startTimeMS = 0;
+            this->_endTimeMS = 0;
+        }
+    } PropertiesCurrentRide;
+
+    /* datas GPS */
+    struct TrackSensePropertiesGPS
+    {
+        // datas brute GPS
+        float _latitude;
+        float _longitude;
+        float _altitude;
+        float _speed;
+        int _visibleSatellites;
+        int _usedSatellites;
+        float _accuracy;
+        int _year;
+        int _month;
+        int _day;
+        int _hour;
+        int _minute;
+        int _seconde;
+
+        int _TEST_counterGoodValue;
+        int _TEST_counterTotal;
+
+        float mph() { return 0.621371 * _speed; }
+        float miles() { return 0.00062137112 * _altitude; }
+
+        void resetGPSValues()
+        {
             this->_latitude = 0;
             this->_longitude = 0;
             this->_altitude = 0;
@@ -93,10 +106,8 @@ public:
             this->_seconde = 0;
             this->_TEST_counterGoodValue = 0;
             this->_TEST_counterTotal = 0;
-            this->_startTimeMS = 0;
-            this->_endTimeMS = 0;
         }
-    } PropertiesCurrentRide;
+    } PropertiesGPS;
 
     /* datas Buttons */
     struct TrackSensePropertiesButtons
@@ -162,29 +173,6 @@ public:
         ;
     } PropertiesWifi;
 
-    /* datas GPS */
-    struct TrackSensePropertiesGPS
-    {
-        // float _latitude;
-        // float _longitude;
-        // float _altitude;
-        // float _speed;
-        // int _visibleSatellites;
-        // int _usedSatellites;
-        // float _accuracy;
-        // int _year;
-        // int _month;
-        // int _day;
-        // int _hour;
-        // int _minute;
-        // int _seconde;
-
-        // float mph() { return 0.621371 * _speed; }
-        // float miles() { return 0.00062137112 * _altitude; }
-
-        // int _TEST_counterGoodValue;
-        // int _TEST_counterTotal;
-    } PropertiesGPS;
 
     /* datas Compass */
     struct TrackSensePropertiesCompass

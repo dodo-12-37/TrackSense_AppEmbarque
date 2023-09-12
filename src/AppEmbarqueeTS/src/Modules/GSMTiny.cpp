@@ -127,7 +127,7 @@ bool GSMTiny::readDatas()
         {
             result = true;
             // this->_TEST_counterGoodValue++;
-            this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue++;
+            this->_trackSenseProperties->PropertiesGPS._TEST_counterGoodValue++;
 
 #if DEBUG_GSM
             Serial.println("Latitude: " + String(this->_latitude, 10) + "\tLongitude: " + String(this->_longitude, 10));
@@ -154,7 +154,7 @@ bool GSMTiny::readDatas()
 
         Serial.println("=======================================");
         // this->_TEST_counterTotal++;
-        this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal++;
+        this->_trackSenseProperties->PropertiesGPS._TEST_counterTotal++;
     }
 
     return result;
@@ -176,19 +176,19 @@ void GSMTiny::saveFixToTSProperties()
 {
     this->_trackSenseProperties->PropertiesCurrentRide._pointID++;
 
-    this->_trackSenseProperties->PropertiesCurrentRide._latitude = this->_latitude;
-    this->_trackSenseProperties->PropertiesCurrentRide._longitude = this->_longitude;
-    this->_trackSenseProperties->PropertiesCurrentRide._altitude = this->_altitude;
-    this->_trackSenseProperties->PropertiesCurrentRide._speed = this->_speed;
-    this->_trackSenseProperties->PropertiesCurrentRide._visibleSatellites = this->_visibleSatellites;
-    this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites = this->_usedSatellites;
-    this->_trackSenseProperties->PropertiesCurrentRide._accuracy = this->_accuracy;
-    this->_trackSenseProperties->PropertiesCurrentRide._year = this->_year;
-    this->_trackSenseProperties->PropertiesCurrentRide._month = this->_month;
-    this->_trackSenseProperties->PropertiesCurrentRide._day = this->_day;
-    this->_trackSenseProperties->PropertiesCurrentRide._hour = this->_hour;
-    this->_trackSenseProperties->PropertiesCurrentRide._minute = this->_minute;
-    this->_trackSenseProperties->PropertiesCurrentRide._seconde = this->_seconde;
+    this->_trackSenseProperties->PropertiesGPS._latitude = this->_latitude;
+    this->_trackSenseProperties->PropertiesGPS._longitude = this->_longitude;
+    this->_trackSenseProperties->PropertiesGPS._altitude = this->_altitude;
+    this->_trackSenseProperties->PropertiesGPS._speed = this->_speed;
+    this->_trackSenseProperties->PropertiesGPS._visibleSatellites = this->_visibleSatellites;
+    this->_trackSenseProperties->PropertiesGPS._usedSatellites = this->_usedSatellites;
+    this->_trackSenseProperties->PropertiesGPS._accuracy = this->_accuracy;
+    this->_trackSenseProperties->PropertiesGPS._year = this->_year;
+    this->_trackSenseProperties->PropertiesGPS._month = this->_month;
+    this->_trackSenseProperties->PropertiesGPS._day = this->_day;
+    this->_trackSenseProperties->PropertiesGPS._hour = this->_hour;
+    this->_trackSenseProperties->PropertiesGPS._minute = this->_minute;
+    this->_trackSenseProperties->PropertiesGPS._seconde = this->_seconde;
 
     if (this->_trackSenseProperties->PropertiesCurrentRide._dateBegin == "0000-00-00T00:00:00")
     {

@@ -14,7 +14,9 @@ private:
     TrackSenseProperties *_trackSenseProperties;
     Adafruit_GC9A01A *tft;
 
+    /* Tests */
     void testButtonsScreen();
+    void testGPS();
 
     /* Pages */
     void drawInitTSPage0();

@@ -154,9 +154,8 @@ void ControlerButtons::startRide()
     if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted == false)
     {
         Serial.println("===================== Start Ride =====================");
-        // initialiser Ride ici
-        // this->_trackSenseProperties->PropertiesCurrentRide._pointID = 0;
-        this->_trackSenseProperties->PropertiesCurrentRide.resetCurrentRide(); 
+        this->_trackSenseProperties->PropertiesCurrentRide.resetCurrentRide();
+        this->_trackSenseProperties->PropertiesGPS.resetGPSValues();
 
         this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
         this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
@@ -187,8 +186,8 @@ void ControlerButtons::finishRide()
         this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
         this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
 
-        this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal = 0;
-        this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue = 0;
+        this->_trackSenseProperties->PropertiesGPS._TEST_counterTotal = 0;
+        this->_trackSenseProperties->PropertiesGPS._TEST_counterGoodValue = 0;
         
         Serial.println("===================== Finish Ride =====================");
     }

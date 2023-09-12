@@ -66,7 +66,7 @@ void ScreenGC9A01::tick()
         else
         {
             this->_trackSenseProperties->PropertiesScreen._activeScreen = -1;
-            this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true; ////////////////////////////
+            // this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true; ////////////////////////////
         }
         break;
 
@@ -89,7 +89,11 @@ void ScreenGC9A01::tick()
 }
 
 /*
+
+
     Draw Pages
+
+
 */
 #pragma region DrawPages
 
@@ -141,62 +145,16 @@ void ScreenGC9A01::drawRideDirectionPage3()
 
 void ScreenGC9A01::drawRidePage4()
 {
-    char *formatChar = (char *)"%-19s";
-    bool locationIsValid = false;
+#if DEBUG_GSM
+    this->testGPS();
+#else
+    this->setTextColor();
+    this->tft->setTextSize(3);
+    this->tft->setCursor(35, 50);
+    this->tft->printf("%-10s", "Ride Page");
 
-    if (this->_trackSenseProperties->PropertiesCurrentRide._latitude != 0 && this->_trackSenseProperties->PropertiesCurrentRide._longitude != 0)
-    {
-        locationIsValid = true;
-    }
-
-    if (locationIsValid && this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites >= 4)
-    {
-        this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
-    }
-    else if (locationIsValid && this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites < 4)
-    {
-        this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
-    }
-    else
-    {
-        this->setTextColor(GC9A01A_RED, GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE);
-    }
-
-    tft->setTextSize(2);
-
-    tft->setCursor(40, 40);
-    String strCounterGoodValue = "Good : " + String(this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterGoodValue);
-    tft->printf("%-15s", strCounterGoodValue.c_str());
-
-    tft->setCursor(30, 60);
-    String strCounterTotal = "Total : " + String(this->_trackSenseProperties->PropertiesCurrentRide._TEST_counterTotal);
-    tft->printf("%-11s", strCounterTotal.c_str());
-
-    tft->setCursor(15, 85);
-    String strUsedSatellite = "Used Sat : " + String(this->_trackSenseProperties->PropertiesCurrentRide._usedSatellites);
-    tft->printf(formatChar, strUsedSatellite.c_str());
-
-    tft->setCursor(2, 110);
-    String strLatitude = "Lat : " + String(this->_trackSenseProperties->PropertiesCurrentRide._latitude, 10);
-    tft->printf(formatChar, strLatitude.c_str());
-
-    tft->setCursor(2, 130);
-    String strLongitude = "Lon : " + String(this->_trackSenseProperties->PropertiesCurrentRide._longitude, 10);
-    tft->printf(formatChar, strLongitude.c_str());
-
-    tft->setCursor(12, 150);
-    String strAltitude = "Alt : " + String(this->_trackSenseProperties->PropertiesCurrentRide._altitude, 8);
-    tft->printf(formatChar, strAltitude.c_str());
-
-    tft->setCursor(20, 170);
-    String strSpeed = "Speed : " + String(this->_trackSenseProperties->PropertiesCurrentRide._speed, 4);
-    tft->printf(formatChar, strSpeed.c_str());
-
-    tft->setCursor(40, 190);
-    String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesCurrentRide._accuracy, 4);
-    tft->printf(formatChar, strAccuracy.c_str());
-
-    this->drawBattery(100, 5, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(70, 140, 100, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+#endif
 }
 
 void ScreenGC9A01::drawGlobalStatisticsPage5()
@@ -226,28 +184,31 @@ void ScreenGC9A01::drawErrorPage()
 #pragma endregion DrawPages
 
 /*
+
+
     Elements
+
+
 */
 #pragma region Elements
 
 // void ScreenGC9A01::drawLogoTS(int16_t coordX, int16_t coordY, int16_t taille)
 void ScreenGC9A01::drawLogoTS()
 {
-    int16_t coordX = 17;    // "T" coordX = 16
-    int16_t coordY = 65;    // "T" coordX = 65
+    int16_t coordX = 17; // "T" coordX = 16
+    int16_t coordY = 65; // "T" coordX = 65
 
     tft->setTextSize(7);
 
-    uint16_t width = 42;     // "T" width = 42
-    uint16_t height = 56;    // "T" height = 56
+    uint16_t width = 42;  // "T" width = 42
+    uint16_t height = 56; // "T" height = 56
 
     tft->getTextBounds("T", coordX, coordY, &coordX, &coordY, &width, &height);
 
-    int widthWithoutSpace = width * 0.80952381;    // widthWithoutSpace = 42 * 0.80952381 = 34
-    int heightWithoutSpace = height * 0.875;  // heightWithoutSpace = 56 * 0.875 = 49
+    int widthWithoutSpace = width * 0.80952381; // widthWithoutSpace = 42 * 0.80952381 = 34
+    int heightWithoutSpace = height * 0.875;    // heightWithoutSpace = 56 * 0.875 = 49
 
-    int coordY2 = coordY + height + 1;  // "premier E" coordX = 122     // 65 + 56 = 121
-
+    int coordY2 = coordY + height + 1; // "premier E" coordX = 122     // 65 + 56 = 121
 
     // Draw "TRA"
     this->setTextColor();
@@ -281,10 +242,10 @@ void ScreenGC9A01::drawLogoTS()
 
     // Draw circle
     // Comme le nombre de pixel est pair (240), le centre est entre 2 pixels. On ne peut pas mettre de fraction de pixel... Donc pour avoir un cercle centré, il faut dessiner 4 cercles...
-    tft->drawCircle(119, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
-    tft->drawCircle(120, 120, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
-    tft->drawCircle(119, 120, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120 
-    tft->drawCircle(120, 119, 120, GC9A01A_WHITE);    // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft->drawCircle(119, 119, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft->drawCircle(120, 120, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft->drawCircle(119, 120, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft->drawCircle(120, 119, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
 }
 
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
@@ -302,15 +263,15 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     switch (pourcentage)
     {
     case 0 ... 20:
-        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_RED);     // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_RED); // niveau #1
         break;
 
     case 21 ... 40:
-        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_YELLOW);      // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_YELLOW); // niveau #1
         break;
 
     case 41 ... 100:
-        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_GREEN);       // niveau #1
+        tft->fillRect(coordBarreVerteX, coordBarreVerteY, (barreVerteX * pourcentage / 100), barreVerteY, GC9A01A_GREEN); // niveau #1
         break;
 
     default:
@@ -329,7 +290,6 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     {
         tft->setTextSize(3);
     }
-    
 
     // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
     this->setTextColor();
@@ -341,7 +301,11 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 #pragma endregion Elements
 
 /*
+
+
     Drawing Tools
+
+
 */
 #pragma region DrawingTools
 
@@ -375,9 +339,73 @@ void ScreenGC9A01::setTextColor(int textDarkModeColor,
 #pragma endregion DrawingTools
 
 /*
-    Test maison
+
+
+    Tests
+
+
 */
-#pragma region TestMaison
+#pragma region Tests
+
+void ScreenGC9A01::testGPS()
+{
+    char *formatChar = (char *)"%-19s";
+    bool locationIsValid = false;
+
+    if (this->_trackSenseProperties->PropertiesGPS._latitude != 0 && this->_trackSenseProperties->PropertiesGPS._longitude != 0)
+    {
+        locationIsValid = true;
+    }
+
+    if (locationIsValid && this->_trackSenseProperties->PropertiesGPS._usedSatellites >= 4)
+    {
+        this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
+    }
+    else if (locationIsValid && this->_trackSenseProperties->PropertiesGPS._usedSatellites < 4)
+    {
+        this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
+    }
+    else
+    {
+        this->setTextColor(GC9A01A_RED, GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE);
+    }
+
+    tft->setTextSize(2);
+
+    tft->setCursor(40, 40);
+    String strCounterGoodValue = "Good : " + String(this->_trackSenseProperties->PropertiesGPS._TEST_counterGoodValue);
+    tft->printf("%-15s", strCounterGoodValue.c_str());
+
+    tft->setCursor(30, 60);
+    String strCounterTotal = "Total : " + String(this->_trackSenseProperties->PropertiesGPS._TEST_counterTotal);
+    tft->printf("%-11s", strCounterTotal.c_str());
+
+    tft->setCursor(15, 85);
+    String strUsedSatellite = "Used Sat : " + String(this->_trackSenseProperties->PropertiesGPS._usedSatellites);
+    tft->printf(formatChar, strUsedSatellite.c_str());
+
+    tft->setCursor(2, 110);
+    String strLatitude = "Lat : " + String(this->_trackSenseProperties->PropertiesGPS._latitude, 10);
+    tft->printf(formatChar, strLatitude.c_str());
+
+    tft->setCursor(2, 130);
+    String strLongitude = "Lon : " + String(this->_trackSenseProperties->PropertiesGPS._longitude, 10);
+    tft->printf(formatChar, strLongitude.c_str());
+
+    tft->setCursor(12, 150);
+    String strAltitude = "Alt : " + String(this->_trackSenseProperties->PropertiesGPS._altitude, 8);
+    tft->printf(formatChar, strAltitude.c_str());
+
+    tft->setCursor(20, 170);
+    String strSpeed = "Speed : " + String(this->_trackSenseProperties->PropertiesGPS._speed, 4);
+    tft->printf(formatChar, strSpeed.c_str());
+
+    tft->setCursor(40, 190);
+    String strAccuracy = "Accu : " + String(this->_trackSenseProperties->PropertiesGPS._accuracy, 4);
+    tft->printf(formatChar, strAccuracy.c_str());
+
+    this->drawBattery(100, 5, 50, this->_trackSenseProperties->PropertiesBattery._batteryLevel);
+}
 
 void ScreenGC9A01::testButtonsScreen()
 {
@@ -453,4 +481,4 @@ void ScreenGC9A01::testButtonsScreen()
     }
 }
 
-#pragma endregion TestMaison
+#pragma endregion Tests
