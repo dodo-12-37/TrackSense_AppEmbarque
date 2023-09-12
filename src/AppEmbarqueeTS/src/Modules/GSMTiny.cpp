@@ -70,6 +70,7 @@ void GSMTiny::init()
 
 void GSMTiny::tick()
 {
+
     /* PropertiesBattery */
     this->_trackSenseProperties->PropertiesBattery._batteryLevel = this->modem->getBattPercent();
 
@@ -194,14 +195,17 @@ void GSMTiny::saveFixToTSProperties()
         // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
         this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->getDatetime();
         Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
-        this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
-        Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
+        // this->_trackSenseProperties->PropertiesCurrentRide._dateBegin = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
+        // Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateBegin);
+        /*
+            Date Begin : 23/09/12,10:20:30-16
+            Date Begin : 10:20:30-16
+            Date Begin : 23/09/12
+        */
     }
 
     this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = this->getDatetime();
-    Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateEnd);
-    this->_trackSenseProperties->PropertiesCurrentRide._dateEnd = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
-    Serial.println("Date Begin : " + this->_trackSenseProperties->PropertiesCurrentRide._dateEnd);
+    Serial.println("Date End : " + this->_trackSenseProperties->PropertiesCurrentRide._dateEnd);
 
     this->_trackSenseProperties->PropertiesCurrentRide._temperature = this->_trackSenseProperties->PropertiesTemperature._temperature;
 
