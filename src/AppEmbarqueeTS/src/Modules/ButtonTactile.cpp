@@ -1,12 +1,12 @@
 #include "Modules/ButtonTactile.h"
 
-ButtonTactile::ButtonTactile(const uint8_t pinButton, TrackSenseProperties *trackSenseProperties) : _pinButton(pinButton),
+ButtonTactile::ButtonTactile(const uint8_t pinButton, TSProperties *TSProperties) : _pinButton(pinButton),
                                                                                                     _lastStateButton(LOW),
                                                                                                     _lastDateChange(0),
                                                                                                     _lastStableStateButton(LOW),
                                                                                                     _durationDebounce(25),
                                                                                                     _buttonState(LOW),
-                                                                                                    _trackSenseProperties(trackSenseProperties)
+                                                                                                    _TSProperties(TSProperties)
 {
     pinMode(this->_pinButton, INPUT);
 }
@@ -27,13 +27,13 @@ int ButtonTactile::getFinalState()
         if (this->_lastStableStateButton == LOW && this->_buttonState == HIGH)
         {
             // tone(PIN_BUZZER, 450, 50);
-            this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true;
+            this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true;
         }
 
         if (this->_lastStableStateButton == HIGH && this->_buttonState == HIGH && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)
         {
             // tone(PIN_BUZZER, 550, 100);
-            this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true;
+            this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true;
             finalState = 2; // 2 == long press
         }
 

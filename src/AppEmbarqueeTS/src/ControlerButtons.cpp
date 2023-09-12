@@ -1,6 +1,6 @@
 #include "ControlerButtons.h"
 
-ControlerButtons::ControlerButtons(TrackSenseProperties *trackSenseProperties) : _trackSenseProperties(trackSenseProperties),
+ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                                  _button1(nullptr),
                                                                                  _button2(nullptr),
                                                                                  // _isPressedButton1(false),
@@ -9,8 +9,8 @@ ControlerButtons::ControlerButtons(TrackSenseProperties *trackSenseProperties) :
                                                                                  _finalStateButton2(0),
                                                                                  _guidGenerator(nullptr)
 {
-    this->_button1 = new ButtonTactile(PIN_BUTTON1, _trackSenseProperties);
-    this->_button2 = new ButtonTactile(PIN_BUTTON2, _trackSenseProperties);
+    this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
+    this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
     this->_guidGenerator = new UUID();
 }
 
@@ -26,8 +26,8 @@ void ControlerButtons::tick()
     this->_finalStateButton1 = this->_button1->getFinalState(); // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     this->_finalStateButton2 = this->_button2->getFinalState();
 
-    this->_trackSenseProperties->PropertiesButtons._button1State = this->_finalStateButton1;
-    this->_trackSenseProperties->PropertiesButtons._button2State = this->_finalStateButton2;
+    this->_TSProperties->PropertiesButtons._button1State = this->_finalStateButton1;
+    this->_TSProperties->PropertiesButtons._button2State = this->_finalStateButton2;
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
 
@@ -48,9 +48,9 @@ void ControlerButtons::tick()
         /* Start/Stop Ride */
         Serial.println("Button 1 LONG press");
 
-        // if (this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished == false)
+        // if (this->_TSProperties->PropertiesCurrentRide._isRideFinished == false)
         // {
-            if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+            if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
             {
                 this->finishRide();
             }
@@ -83,9 +83,9 @@ void ControlerButtons::tick()
         /* Pause/Restart Ride */
         Serial.println("Button 2 LONG press");
 
-        if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+        if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
         {
-            if (this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused)
+            if (this->_TSProperties->PropertiesCurrentRide._isRidePaused)
             {
                 this->restartRide();
             }
@@ -128,8 +128,8 @@ void ControlerButtons::tick()
 */
 void ControlerButtons::changePageUp()
 {
-    this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
-    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+    this->_TSProperties->PropertiesScreen._activeScreen = 1;
+    this->_TSProperties->PropertiesScreen._isNewActivePage = true;
 }
 
 /*
@@ -145,49 +145,49 @@ void ControlerButtons::changePageUp()
 */
 void ControlerButtons::changePageDown()
 {
-    this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
-    this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+    this->_TSProperties->PropertiesScreen._activeScreen = 4;
+    this->_TSProperties->PropertiesScreen._isNewActivePage = true;
 }
 
 void ControlerButtons::startRide()
 {
-    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted == false)
+    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted == false)
     {
         Serial.println("===================== Start Ride =====================");
-        this->_trackSenseProperties->PropertiesCurrentRide.resetCurrentRide();
-        this->_trackSenseProperties->PropertiesGPS.resetGPSValues();
+        this->_TSProperties->PropertiesCurrentRide.resetCurrentRide();
+        this->_TSProperties->PropertiesGPS.resetGPSValues();
 
-        this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = true;
-        this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = false;
+        this->_TSProperties->PropertiesCurrentRide._isRideStarted = true;
+        this->_TSProperties->PropertiesCurrentRide._isRideFinished = false;
 
-        this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS = millis();
+        this->_TSProperties->PropertiesCurrentRide._startTimeMS = millis();
 
         this->_guidGenerator->generate();
-        this->_trackSenseProperties->PropertiesCurrentRide._completedRideId = this->_guidGenerator->toCharArray();
+        this->_TSProperties->PropertiesCurrentRide._completedRideId = this->_guidGenerator->toCharArray();
 
-        this->_trackSenseProperties->PropertiesScreen._activeScreen = 4;
-        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+        this->_TSProperties->PropertiesScreen._activeScreen = 4;
+        this->_TSProperties->PropertiesScreen._isNewActivePage = true;
 
     }
 }
 
 void ControlerButtons::finishRide()
 {
-    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
     {
-        this->_trackSenseProperties->PropertiesCurrentRide._isRideFinished = true;
-        this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted = false;
+        this->_TSProperties->PropertiesCurrentRide._isRideFinished = true;
+        this->_TSProperties->PropertiesCurrentRide._isRideStarted = false;
 
-        this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS = millis();
-        this->_trackSenseProperties->PropertiesCurrentRide._duration = (this->_trackSenseProperties->PropertiesCurrentRide._endTimeMS - this->_trackSenseProperties->PropertiesCurrentRide._startTimeMS) / 60000;
+        this->_TSProperties->PropertiesCurrentRide._endTimeMS = millis();
+        this->_TSProperties->PropertiesCurrentRide._duration = (this->_TSProperties->PropertiesCurrentRide._endTimeMS - this->_TSProperties->PropertiesCurrentRide._startTimeMS) / 60000;
 
-        this->_trackSenseProperties->PropertiesCurrentRide._isRideReadyToSave = true;
+        this->_TSProperties->PropertiesCurrentRide._isRideReadyToSave = true;
 
-        this->_trackSenseProperties->PropertiesScreen._activeScreen = 1;
-        this->_trackSenseProperties->PropertiesScreen._isNewActivePage = true;
+        this->_TSProperties->PropertiesScreen._activeScreen = 1;
+        this->_TSProperties->PropertiesScreen._isNewActivePage = true;
 
-        this->_trackSenseProperties->PropertiesGPS._TEST_counterTotal = 0;
-        this->_trackSenseProperties->PropertiesGPS._TEST_counterGoodValue = 0;
+        this->_TSProperties->PropertiesGPS._TEST_counterTotal = 0;
+        this->_TSProperties->PropertiesGPS._TEST_counterGoodValue = 0;
         
         Serial.println("===================== Finish Ride =====================");
     }
@@ -195,23 +195,23 @@ void ControlerButtons::finishRide()
 
 void ControlerButtons::pauseRide()
 {
-    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
     {
-        this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = true;
+        this->_TSProperties->PropertiesCurrentRide._isRidePaused = true;
     }
 }
 
 void ControlerButtons::restartRide()
 {
-    if (this->_trackSenseProperties->PropertiesCurrentRide._isRideStarted)
+    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
     {
-        this->_trackSenseProperties->PropertiesCurrentRide._isRidePaused = false;
+        this->_TSProperties->PropertiesCurrentRide._isRidePaused = false;
     }
 }
 
 void ControlerButtons::makeNoiseBuzzer()
 {
-    this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true;
+    this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true;
 }
 
 void ControlerButtons::goHome()
@@ -226,5 +226,5 @@ void ControlerButtons::goHome()
             7 : Ride Statistics Page
             0 : No Page (error)
         */
-    this->_trackSenseProperties->PropertiesScreen._activeScreen = 6;
+    this->_TSProperties->PropertiesScreen._activeScreen = 6;
 }

@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "Interfaces/IScreen.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 #include <SPI.h>
 #include <Adafruit_GFX.h>
@@ -11,7 +11,7 @@
 class ScreenGC9A01 : public IScreen
 {
 private:
-    TrackSenseProperties *_trackSenseProperties;
+    TSProperties *_TSProperties;
     Adafruit_GC9A01A *tft;
 
     /* Tests */
@@ -43,7 +43,7 @@ private:
                       int backgroundLightModeColor = TFT_LIGHT_MODE_BACKGROUND_COLOR);
 
 public:
-    ScreenGC9A01(TrackSenseProperties *trackSenseProperties);
+    ScreenGC9A01(TSProperties *TSProperties);
     ~ScreenGC9A01();
 
     /*

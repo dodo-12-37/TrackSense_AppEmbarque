@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "Interfaces/IGSM.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 #include <TinyGsmClient.h>
 
 
@@ -10,7 +10,7 @@
 class GSMTiny : public IGSM
 {
 private:
-    TrackSenseProperties *_trackSenseProperties;
+    TSProperties *_TSProperties;
     TinyGsm *modem;
 
     bool _isInitialized;
@@ -55,7 +55,7 @@ private:
     void saveFixToTSProperties();
 
 public:
-    GSMTiny(TrackSenseProperties *trackSenseProperties);
+    GSMTiny(TSProperties *TSProperties);
     ~GSMTiny();
 
     void init() override;

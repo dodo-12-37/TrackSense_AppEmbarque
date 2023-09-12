@@ -9,13 +9,13 @@
 
 #include "Interfaces/IBLE.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 class BLE 
     : public IBLE
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
     BLEServer* _serverBLE;
     BLEAdvertising* _advertisingBLE;
@@ -50,7 +50,7 @@ public:
     static bool isCompletedRidePointSending;
     static bool isCompletedRidePointReceived;
 
-    BLE(TrackSenseProperties* trackSenseProperties);
+    BLE(TSProperties* TSProperties);
     ~BLE();
 
     void tick() override;

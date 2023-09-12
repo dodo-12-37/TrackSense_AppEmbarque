@@ -1,12 +1,12 @@
 #pragma once
 #include <Arduino.h>
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
-class TrackSenseProperties
+class TSProperties
 {
 public:
     /* Datas TrackSense */
-    struct TrackSensePropertiesTS
+    struct TSPropertiesTS
     {
         String _currentRideId;
         bool _isInitializingTS;
@@ -14,7 +14,7 @@ public:
     } PropertiesTS;
 
     /* datas Current ride */
-    struct TrackSensePropertiesCurrentRide
+    struct TSPropertiesCurrentRide
     {
         bool _isRideStarted;
         bool _isRidePaused;
@@ -66,7 +66,7 @@ public:
     } PropertiesCurrentRide;
 
     /* datas GPS */
-    struct TrackSensePropertiesGPS
+    struct TSPropertiesGPS
     {
         // datas brute GPS
         float _latitude;
@@ -110,7 +110,7 @@ public:
     } PropertiesGPS;
 
     /* datas Buttons */
-    struct TrackSensePropertiesButtons
+    struct TSPropertiesButtons
     {
         // bool _isButton1Pressed;
         // bool _isButton2Pressed;
@@ -119,7 +119,7 @@ public:
     } PropertiesButtons;
 
     /* datas Screen */
-    struct TrackSensePropertiesScreen
+    struct TSPropertiesScreen
     {
         /*
             0 : Init TS Page
@@ -147,13 +147,13 @@ public:
     } PropertiesScreen;
 
     /* datas SD Card */
-    struct TrackSensePropertiesSDCard
+    struct TSPropertiesSDCard
     {
         ;
     } PropertiesSDCard;
 
     /* datas Bluetooth */
-    struct TrackSensePropertiesBluetooth
+    struct TSPropertiesBluetooth
     {
         bool _isDeviceBluetoothConnected;
 
@@ -162,20 +162,20 @@ public:
     } PropertiesBluetooth;
 
     /* datas LTE */
-    struct TrackSensePropertiesLTE
+    struct TSPropertiesLTE
     {
         bool _isDeviceLTEConnected;
     } PropertiesLTE;
 
     /* datas Wifi */
-    struct TrackSensePropertiesWifi
+    struct TSPropertiesWifi
     {
         ;
     } PropertiesWifi;
 
 
     /* datas Compass */
-    struct TrackSensePropertiesCompass
+    struct TSPropertiesCompass
     {
         double _heading_angle; // PositionNord
         double _declinationAngle;
@@ -185,7 +185,7 @@ public:
     } PropertiesCompass;
 
     /* datas Gyroscope */
-    struct TrackSensePropertiesGyroscope
+    struct TSPropertiesGyroscope
     {
         double _roll_angle;  // PositionRoulis
         double _pitch_angle; // PositionTangage
@@ -193,7 +193,7 @@ public:
     } PropertiesGyroscope;
 
     /* datas Accelerometer */
-    struct TrackSensePropertiesAccelerometer
+    struct TSPropertiesAccelerometer
     {
         double _acceleration_x;
         double _acceleration_y;
@@ -201,25 +201,25 @@ public:
     } PropertiesAccelerometer;
 
     /* datas Temperature */
-    struct TrackSensePropertiesTemperature
+    struct TSPropertiesTemperature
     {
         double _temperature;
     } PropertiesTemperature;
 
     /* datas Battery */
-    struct TrackSensePropertiesBattery
+    struct TSPropertiesBattery
     {
         double _batteryLevel;
     } PropertiesBattery;
 
     /* datas Buzzer */
-    struct TrackSensePropertiesBuzzer
+    struct TSPropertiesBuzzer
     {
         bool _isBuzzerOn;
     } PropertiesBuzzer;
 
     /* datas CompletedRide to send */
-    struct TrackSensePropertiesCompletedRideToSend
+    struct TSPropertiesCompletedRideToSend
     {
         String _completedRideId;
         String _stats;
@@ -235,6 +235,6 @@ public:
     } PropertiesCompletedRideToSend;
 
     /* Methods */
-    TrackSenseProperties();
-    ~TrackSenseProperties();
+    TSProperties();
+    ~TSProperties();
 };

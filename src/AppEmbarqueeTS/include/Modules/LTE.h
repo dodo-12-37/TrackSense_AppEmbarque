@@ -2,17 +2,17 @@
 // #include <Arduino.h>
 // #include "Interfaces/ILTE.h"
 // #include "Configurations.h"
-// #include "TrackSenseProperties.h"
+// #include "TSProperties.h"
 
 
 
 // class LTE : public ILTE
 // {
 // private:
-//     const TrackSenseProperties* _trackSenseProperties;
+//     const TSProperties* _TSProperties;
 
 // public:
-//     LTE(TrackSenseProperties* trackSenseProperties);
+//     LTE(TSProperties* TSProperties);
 //     ~LTE();
 
 //     void tick() override;

@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 #include "ControlerButtons.h"
 
 // #include "Modules/LTE.h"
@@ -19,7 +19,7 @@
 class Program
 {
 private:
-    TrackSenseProperties *_trackSenseProperties;
+    TSProperties *_TSProperties;
     // ILTE *_lte;
     // IGPS *_gps;
     IGSM *_gsm;

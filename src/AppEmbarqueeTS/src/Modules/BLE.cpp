@@ -67,8 +67,8 @@ class CompletedRideReceivePointCallbacks
 };
 
 /*----- BLE -----*/
-BLE::BLE(TrackSenseProperties* trackSenseProperties) 
-    : _trackSenseProperties(trackSenseProperties),
+BLE::BLE(TSProperties* TSProperties) 
+    : _TSProperties(TSProperties),
     _serverBLE(nullptr),
     _advertisingBLE(nullptr),
     _completedRideService(nullptr),
@@ -100,23 +100,23 @@ void BLE::tick()
 {            
     if (BLE::isDeviceConnected)
     {
-        if (this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady)
+        if (this->_TSProperties->PropertiesCompletedRideToSend._isReady)
         {
             if (!BLE::isCompletedRideStatsReceived) // Renvoie les stats tant qu'on a pas la confirmation de reception
             {
                 this->sendCompletedRideStats();
             }
             else if (BLE::isCompletedRideStatsReceived
-                        && this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady)
+                        && this->_TSProperties->PropertiesCompletedRideToSend._isPointReady)
             {
                 this->sendCompletedRideCurrentPoint();
             }
             else if (BLE::isCompletedRideStatsReceived
-                        && this->_trackSenseProperties->PropertiesCompletedRideToSend._nbPoints 
-                       >= this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint)
+                        && this->_TSProperties->PropertiesCompletedRideToSend._nbPoints 
+                       >= this->_TSProperties->PropertiesCompletedRideToSend._currentPoint)
             {
-                this->_trackSenseProperties->PropertiesCompletedRideToSend._isReady = false;
-                this->_trackSenseProperties->PropertiesCompletedRideToSend._isReceived = true;
+                this->_TSProperties->PropertiesCompletedRideToSend._isReady = false;
+                this->_TSProperties->PropertiesCompletedRideToSend._isReceived = true;
             }
         }
     }
@@ -232,7 +232,7 @@ void BLE::sendCompletedRideStats()
     if (currentTime - this->_lastTimeStatsSent > BLE_DELAY_SEND_STATS_MS)
     {
         this->_lastTimeStatsSent = currentTime;
-        this->_CRStatsCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._stats.c_str());
+        this->_CRStatsCaracteristic->setValue(this->_TSProperties->PropertiesCompletedRideToSend._stats.c_str());
         this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
         this->_CRIsReadyCaracteristic->notify();
         // BLE::isCompletedRideStatsSending = true;
@@ -247,21 +247,21 @@ void BLE::sendCompletedRideCurrentPoint()
 
     if (BLE::isCompletedRidePointReceived)
     {
-        this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
-        this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReceived = true;
+        this->_TSProperties->PropertiesCompletedRideToSend._isPointReady = false;
+        this->_TSProperties->PropertiesCompletedRideToSend._isPointReceived = true;
         BLE::isCompletedRidePointReceived = false;
         Serial.println("Completed Ride Point received");
     }
     else if (currentTime - this->_lastTimePointSent > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
     {
         this->_lastTimePointSent = currentTime;
-        this->_CRPointCaracteristic->setValue(this->_trackSenseProperties->PropertiesCompletedRideToSend._point.c_str());
-        this->_CRPointNumberCaracteristic->setValue(String(this->_trackSenseProperties->PropertiesCompletedRideToSend._currentPoint).c_str());
+        this->_CRPointCaracteristic->setValue(this->_TSProperties->PropertiesCompletedRideToSend._point.c_str());
+        this->_CRPointNumberCaracteristic->setValue(String(this->_TSProperties->PropertiesCompletedRideToSend._currentPoint).c_str());
         this->_CRPointNumberCaracteristic->notify();
         // BLE::isCompletedRidePointSending = true;
         BLE::isCompletedRidePointReceived = false;
 
-        this->_trackSenseProperties->PropertiesCompletedRideToSend._isPointReady = false;
+        this->_TSProperties->PropertiesCompletedRideToSend._isPointReady = false;
         Serial.println("Completed Ride Point envoyed");
     }
 }
