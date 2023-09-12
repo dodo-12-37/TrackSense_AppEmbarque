@@ -9,8 +9,8 @@ ControlerButtons::ControlerButtons(TrackSenseProperties *trackSenseProperties) :
                                                                                  _finalStateButton2(0),
                                                                                  _guidGenerator(nullptr)
 {
-    this->_button1 = new ButtonTactile(PIN_BUTTON1);
-    this->_button2 = new ButtonTactile(PIN_BUTTON2);
+    this->_button1 = new ButtonTactile(PIN_BUTTON1, _trackSenseProperties);
+    this->_button2 = new ButtonTactile(PIN_BUTTON2, _trackSenseProperties);
     this->_guidGenerator = new UUID();
 }
 

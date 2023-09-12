@@ -1,10 +1,12 @@
 #include "Modules/ButtonTactile.h"
 
-ButtonTactile::ButtonTactile(const uint8_t pinButton) : _pinButton(pinButton),
-                                                        _lastStateButton(LOW),
-                                                        _lastDateChange(0),
-                                                        _lastStableStateButton(LOW),
-                                                        _durationDebounce(25)
+ButtonTactile::ButtonTactile(const uint8_t pinButton, TrackSenseProperties *trackSenseProperties) : _pinButton(pinButton),
+                                                                                                    _lastStateButton(LOW),
+                                                                                                    _lastDateChange(0),
+                                                                                                    _lastStableStateButton(LOW),
+                                                                                                    _durationDebounce(25),
+                                                                                                    _buttonState(LOW),
+                                                                                                    _trackSenseProperties(trackSenseProperties)
 {
     pinMode(this->_pinButton, INPUT);
 }
@@ -22,22 +24,23 @@ int ButtonTactile::getFinalState()
     if (actualTime - this->_lastDateChange > this->_durationDebounce)
     {
         // ajout pour test son bouton
-        if (this->_lastStableStateButton == LOW && this->_buttonState == HIGH)    // faux
+        if (this->_lastStableStateButton == LOW && this->_buttonState == HIGH)
         {
-            tone(PIN_BUZZER, 450, 50);
+            // tone(PIN_BUZZER, 450, 50);
+            this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true;
         }
 
-        if (this->_lastStableStateButton == HIGH && this->_buttonState == HIGH && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)  // vrai, mais HIGH & LOW
+        if (this->_lastStableStateButton == HIGH && this->_buttonState == HIGH && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)
         {
-            tone(PIN_BUZZER, 550, 100);
+            // tone(PIN_BUZZER, 550, 100);
+            this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = true;
             finalState = 2; // 2 == long press
         }
 
-        if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange < BUTTON_LONG_PRESS_DURATION_MS)    // vrai
+        if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange < BUTTON_LONG_PRESS_DURATION_MS)
         {
             finalState = 1; // 1 == short press
         }
-
 
         /* Manque gestion des double pressions longues et courtes ...  */
 

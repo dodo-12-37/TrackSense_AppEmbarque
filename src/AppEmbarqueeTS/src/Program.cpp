@@ -46,17 +46,16 @@ Program::~Program()
 void Program::execute()
 {
     this->_controlerButtons->tick();
+    this->_buzzer->tick();
     this->_screen->tick();
     this->_ble->tick();
     this->_gsm->tick();
-    // this->_controlerButtons->tick(); // double for more reactivity
     this->_sdCard->tick();
     // this->_gps->tick();
     // this->_lte->tick();
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-    this->_buzzer->tick();
 }
 
 void Program::initProperties()

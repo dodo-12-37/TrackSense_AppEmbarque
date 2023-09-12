@@ -21,14 +21,14 @@ public:
         bool _isRideFinished;
 
         String _completedRideId;
-        String _routeId; //
+        String _routeId;
         double _maxSpeed;
         double _avgSpeed;
         double _distance;
         double _duration;
-        String _dateBegin;    //
-        String _dateEnd;      //
-        String _currentPoint; //
+        String _dateBegin;
+        String _dateEnd;
+        String _currentPoint;
         int _nbPoints;
         int _pointID;
         int _nbFalls;
@@ -127,14 +127,9 @@ public:
 
         /*
             0 : Pins vers le haut
-            1 : Pins vers la droite (???)
-            2 : Pins vers le bas (???)
-            3 : Pins vers la gauche (???)
-
-            0 : Right to left
-            1 : Reverse Mode
-            2 : Bottom to top
-            3 :
+            1 : Pins vers la gauche
+            2 : Pins vers le bas
+            3 : Pins vers la droite
         */
         uint8_t _screenRotation;
 

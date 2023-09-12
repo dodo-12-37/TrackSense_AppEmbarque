@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include "TrackSenseProperties.h"
 #include "Interfaces/IButton.h"
 #include "Configurations.h"
 
@@ -8,7 +9,7 @@
 class ButtonTactile : public IButton
 {
 private:
-    // TrackSenseProperties* _trackSenseProperties;
+    TrackSenseProperties* _trackSenseProperties;
     uint8_t _pinButton;
     int _lastStateButton;
     long _lastDateChange;
@@ -17,7 +18,7 @@ private:
     int _buttonState;
 
 public:
-    ButtonTactile(const uint8_t pinButton);
+    ButtonTactile(const uint8_t pinButton, TrackSenseProperties* trackSenseProperties);
     ~ButtonTactile();
 
     int getFinalState() override;    // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
