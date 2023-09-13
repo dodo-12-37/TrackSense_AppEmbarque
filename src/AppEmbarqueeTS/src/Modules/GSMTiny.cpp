@@ -1,26 +1,26 @@
 #include "Modules/GSMTiny.h"
 
 GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
-                                                               modem(nullptr),
-                                                               _isInitialized(false),
-                                                               _TEST_counterGoodValue(0),
-                                                               _TEST_counterTotal(0),
-                                                               _latitude(0),
-                                                               _longitude(0),
-                                                               _speed(0),
-                                                               _altitude(0),
-                                                               _visibleSatellites(0),
-                                                               _usedSatellites(0),
-                                                               _accuracy(0),
-                                                               _year(0),
-                                                               _month(0),
-                                                               _day(0),
-                                                               _hour(0),
-                                                               _minute(0),
-                                                               _seconde(0),
-                                                               _isGpsOn(false),
-                                                               _isModemOn(false),
-                                                               _isFixIsValid(false)
+                                               modem(nullptr),
+                                               _isInitialized(false),
+                                               _TEST_counterGoodValue(0),
+                                               _TEST_counterTotal(0),
+                                               _latitude(0),
+                                               _longitude(0),
+                                               _speed(0),
+                                               _altitude(0),
+                                               _visibleSatellites(0),
+                                               _usedSatellites(0),
+                                               _accuracy(0),
+                                               _year(0),
+                                               _month(0),
+                                               _day(0),
+                                               _hour(0),
+                                               _minute(0),
+                                               _seconde(0),
+                                               _isGpsOn(false),
+                                               _isModemOn(false),
+                                               _isFixIsValid(false)
 {
     this->modem = new TinyGsm(SerialAT);
     // Set GSM module baud rate
@@ -41,31 +41,31 @@ void GSMTiny::init()
     // Restart takes quite some time
     // To skip it, call init() instead of restart()
     Serial.println("Initializing modem...");
-    if (!this->modem->restart())
+
+    if (this->modem->testAT())
     {
-        Serial.println("Failed to restart modem, attempting to continue without restarting");
-        if (!this->modem->init())
-        {
-            Serial.println("Failed to initialize modem.");
-        }
-        else
-        {
-            this->gpsRestart();
-            Serial.println("Modem initialized.");
-            // TODO : Activer paramètres GLONASS et GALILEO //
-            this->setWorkModeGPS();
-            this->_isInitialized = true;
-        }
+        Serial.println("Modem is finally functional");
+        Serial.println("Modem initialized.");
     }
     else
     {
-        this->gpsRestart();
-        Serial.println("Modem initialized.");
-        // TODO : Activer paramètres GLONASS et GALILEO //
-        this->setWorkModeGPS();
-        this->_isInitialized = true;
-        this->_TSProperties->PropertiesTS._isInitializedGSM = true;
+        if (!this->modem->restart())
+        {
+            Serial.println("Failed to restart modem, attempting to continue without restarting");
+
+            if (!this->modem->init())
+            {
+                Serial.println("Failed to initialize modem.");
+            }
+        }
+        Serial.println("Modem is not functional");
+        Serial.println("Modem not initialized.");
     }
+
+    this->gpsRestart();
+    this->setWorkModeGPS(); // TODO : Activer paramètres GLONASS et GALILEO //
+    this->_isInitialized = true;
+    this->_TSProperties->PropertiesTS._isInitializedGSM = true;
 }
 
 void GSMTiny::tick()
@@ -75,15 +75,14 @@ void GSMTiny::tick()
     this->_TSProperties->PropertiesBattery._batteryLevel = this->modem->getBattPercent();
 
     Serial.println("=======================================");
-    // Serial.println("Date Begin : " + this->getDatetime());
-    // Serial.println("Date Begin : " + this->modem->getGSMDateTime(DATE_FULL));
+#if DEBUG_GSM
     Serial.println("Tick GSM");
     Serial.println("_isRideStarted : " + String(this->_TSProperties->PropertiesCurrentRide._isRideStarted));
     Serial.println("_isRideFinished : " + String(this->_TSProperties->PropertiesCurrentRide._isRideFinished));
+#endif
 
     if (this->_TSProperties->PropertiesCurrentRide._isRideStarted && this->_TSProperties->PropertiesCurrentRide._isRideFinished == false)
     {
-        // Serial.println("Tick GPS");
         if (this->_isGpsOn == false && this->_isModemOn == true && this->_isInitialized == true)
         {
             this->gpsPowerOn();
@@ -91,11 +90,14 @@ void GSMTiny::tick()
 
         if (this->readDatas())
         {
-            // Serial.println("Write GPS");
-
             if (this->isFixValid())
             {
                 this->saveFixToTSProperties();
+            }
+            else
+            {
+                this->saveFixToTSProperties();
+                this->_TSProperties->PropertiesCurrentRide._isPointReadyToSave = false;
             }
         }
         else
@@ -194,7 +196,7 @@ void GSMTiny::saveFixToTSProperties()
     {
         // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
         this->_TSProperties->PropertiesCurrentRide._dateBegin = this->getDatetime();
-        Serial.println("Date Begin : " + this->_TSProperties->PropertiesCurrentRide._dateBegin);
+        // Serial.println("Date Begin : " + this->_TSProperties->PropertiesCurrentRide._dateBegin);
         // this->_TSProperties->PropertiesCurrentRide._dateBegin = this->modem->getGSMDateTime(DATE_FULL); // DATE_FULL = 0, DATE_TIME = 1, DATE_DATE = 2
         // Serial.println("Date Begin : " + this->_TSProperties->PropertiesCurrentRide._dateBegin);
         /*
@@ -205,18 +207,18 @@ void GSMTiny::saveFixToTSProperties()
     }
 
     this->_TSProperties->PropertiesCurrentRide._dateEnd = this->getDatetime();
-    Serial.println("Date End : " + this->_TSProperties->PropertiesCurrentRide._dateEnd);
+    // Serial.println("Date End : " + this->_TSProperties->PropertiesCurrentRide._dateEnd);
 
     this->_TSProperties->PropertiesCurrentRide._temperature = this->_TSProperties->PropertiesTemperature._temperature;
 
     this->_TSProperties->PropertiesCurrentRide._currentPoint = String(this->_TSProperties->PropertiesCurrentRide._pointID) + ";" +
-                                                                       String(this->_latitude, 10) + ";" +
-                                                                       String(this->_longitude, 10) + ";" +
-                                                                       String(this->_altitude) + ";" +
-                                                                       String(this->_TSProperties->PropertiesCurrentRide._temperature) + ";" +
-                                                                       String(this->_speed) + ";" +
-                                                                       this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
-                                                                       String(this->_TSProperties->PropertiesCurrentRide._duration);
+                                                               String(this->_latitude, 10) + ";" +
+                                                               String(this->_longitude, 10) + ";" +
+                                                               String(this->_altitude) + ";" +
+                                                               String(this->_TSProperties->PropertiesCurrentRide._temperature) + ";" +
+                                                               String(this->_speed) + ";" +
+                                                               this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
+                                                               String(this->_TSProperties->PropertiesCurrentRide._duration);
 
     this->_TSProperties->PropertiesCurrentRide._isPointReadyToSave = true;
 }
@@ -246,7 +248,7 @@ String GSMTiny::getDatetime()
 void GSMTiny::gpsPowerOn()
 {
     /*
-        Parameters : 
+        Parameters :
         <operation>
             0 Set the GPIO function including the GPIO output .
             1 Read the GPIO level. Please note that only when the gpio is set as input, user can use parameter 1 to read the GPIO level, otherwise the module will return "ERROR".
@@ -254,7 +256,7 @@ void GSMTiny::gpsPowerOn()
         <pin>
             The PIN index you want to be set. (It has relations with the hardware, please refer to the hardware manual)
 
-        <function> 
+        <function>
             Only when <operation> is set to 0, this option takes effect.
             0 Set the GPIO to input.
             1 Set the GPIO to output.
@@ -286,9 +288,9 @@ void GSMTiny::gpsPowerOff()
     // Set SIM7000G GPIO4 LOW ,turn off GPS power
     // CMD:AT+SGPIO=0,4,1,0
     // Only in version 20200415 is there a function to control GPS power.
-    //Version 20200415 (Version 1.1)
-    //Version 20191227 (Version 1.0)
-    //Revision:1529B08SIM7000G
+    // Version 20200415 (Version 1.1)
+    // Version 20191227 (Version 1.0)
+    // Revision:1529B08SIM7000G
     this->modem->sendAT("+SGPIO=0,4,1,0"); // devrait pt être "+CGPIO=0,4,1,0"
     if (this->modem->waitResponse(10000L) != 1)
     {
