@@ -111,6 +111,7 @@ void ScreenGC9A01::drawInitTSPage0()
         @param    h      The boundary height, set by function
     */
     // this->tft->getTextBounds("Initializing", 10, 150); // Pour centrer le texte ???
+    
     // this->setTextColor();
     // this->tft->setTextSize(3);
     // this->tft->setCursor(10, 90);
@@ -373,35 +374,35 @@ void ScreenGC9A01::testGPS()
     tft->setTextSize(2);
 
     tft->setCursor(40, 40);
-    String strCounterGoodValue = "Good : " + String(this->_TSProperties->PropertiesGPS._TEST_counterGoodValue);
+    String strCounterGoodValue = "Good: " + String(this->_TSProperties->PropertiesGPS._TEST_counterGoodValue);
     tft->printf("%-15s", strCounterGoodValue.c_str());
 
     tft->setCursor(30, 60);
-    String strCounterTotal = "Total : " + String(this->_TSProperties->PropertiesGPS._TEST_counterTotal);
+    String strCounterTotal = "Total: " + String(this->_TSProperties->PropertiesGPS._TEST_counterTotal);
     tft->printf("%-11s", strCounterTotal.c_str());
 
     tft->setCursor(15, 85);
-    String strUsedSatellite = "Used Sat : " + String(this->_TSProperties->PropertiesGPS._usedSatellites);
+    String strUsedSatellite = "Used Sat: " + String(this->_TSProperties->PropertiesGPS._usedSatellites);
     tft->printf(formatChar, strUsedSatellite.c_str());
 
     tft->setCursor(2, 110);
-    String strLatitude = "Lat : " + String(this->_TSProperties->PropertiesGPS._latitude, 10);
+    String strLatitude = "Lat: " + String(this->_TSProperties->PropertiesGPS._latitude, 10);
     tft->printf(formatChar, strLatitude.c_str());
 
     tft->setCursor(2, 130);
-    String strLongitude = "Lon : " + String(this->_TSProperties->PropertiesGPS._longitude, 10);
+    String strLongitude = "Lon: " + String(this->_TSProperties->PropertiesGPS._longitude, 10);
     tft->printf(formatChar, strLongitude.c_str());
 
     tft->setCursor(12, 150);
-    String strAltitude = "Alt : " + String(this->_TSProperties->PropertiesGPS._altitude, 8);
+    String strAltitude = "Alt: " + String(this->_TSProperties->PropertiesGPS._altitude, 8);
     tft->printf(formatChar, strAltitude.c_str());
 
     tft->setCursor(20, 170);
-    String strSpeed = "Speed : " + String(this->_TSProperties->PropertiesGPS._speed, 4);
+    String strSpeed = "Speed: " + String(this->_TSProperties->PropertiesGPS._speed, 4);
     tft->printf(formatChar, strSpeed.c_str());
 
     tft->setCursor(40, 190);
-    String strAccuracy = "Accu : " + String(this->_TSProperties->PropertiesGPS._accuracy, 4);
+    String strAccuracy = "Accu: " + String(this->_TSProperties->PropertiesGPS._accuracy, 4);
     tft->printf(formatChar, strAccuracy.c_str());
 
     this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery._batteryLevel);
