@@ -37,7 +37,7 @@ void ScreenGC9A01::tick()
     if (this->_TSProperties->PropertiesScreen._isNewActivePage)
     {
         this->drawBackgroundColor();
-        this->_TSProperties->PropertiesScreen._isNewActivePage = false;
+        // this->_TSProperties->PropertiesScreen._isNewActivePage = false;
     }
 
     switch (this->_TSProperties->PropertiesScreen._activeScreen)
@@ -65,7 +65,7 @@ void ScreenGC9A01::tick()
         }
         else
         {
-            this->_TSProperties->PropertiesScreen._activeScreen = -1;
+            // this->_TSProperties->PropertiesScreen._activeScreen = -1;
             // this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true; ////////////////////////////
         }
         break;
@@ -86,6 +86,8 @@ void ScreenGC9A01::tick()
         this->drawErrorPage();
         break;
     }
+
+    this->_TSProperties->PropertiesScreen._isNewActivePage = false;
 }
 
 /*
@@ -111,7 +113,7 @@ void ScreenGC9A01::drawInitTSPage0()
         @param    h      The boundary height, set by function
     */
     // this->tft->getTextBounds("Initializing", 10, 150); // Pour centrer le texte ???
-    
+
     // this->setTextColor();
     // this->tft->setTextSize(3);
     // this->tft->setCursor(10, 90);
@@ -124,14 +126,26 @@ void ScreenGC9A01::drawInitTSPage0()
 
 void ScreenGC9A01::drawHomePage1()
 {
+#if DEBUG_BUTTONS
     this->setTextColor();
     this->tft->setTextSize(3);
     this->tft->setCursor(35, 50);
     this->tft->printf("%-10s", "Home Page");
 
     this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery._batteryLevel);
-
     this->testButtonsScreen();
+#else
+    this->drawLogoTS();
+    // this->setTextColor();
+    // this->tft->setTextSize(2);
+    // this->tft->setCursor(35, 50);
+    // this->tft->printf("%-10s", "Home Page");
+    int batteryLengthInPixels = 70;
+    this->drawBattery(this->calculateXCoordItemToCenter(batteryLengthInPixels),
+                      20,
+                      batteryLengthInPixels,
+                      this->_TSProperties->PropertiesBattery._batteryLevel);
+#endif
 }
 
 void ScreenGC9A01::drawCompassPage2()
@@ -154,7 +168,7 @@ void ScreenGC9A01::drawRidePage4()
     this->tft->setCursor(35, 50);
     this->tft->printf("%-10s", "Ride Page");
 
-    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery._batteryLevel);
 #endif
 }
 
@@ -310,6 +324,31 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 */
 #pragma region DrawingTools
 
+int ScreenGC9A01::calculateXCoordTextToCenter(String text)
+{
+    /*
+        @brief    Helper to determine size of a PROGMEM string with current
+    font/size. Pass string and a cursor position, returns UL corner and W,H.
+        @param    str     The flash-memory ascii string to measure
+        @param    x       The current cursor X
+        @param    y       The current cursor Y
+        @param    x1      The boundary X coordinate, set by function
+        @param    y1      The boundary Y coordinate, set by function
+        @param    w      The boundary width, set by function
+        @param    h      The boundary height, set by function
+    */
+    uint16_t textWidth, textHeight;
+
+    this->tft->getTextBounds(text, 10, 10, 0, 0, &textWidth, &textHeight);
+
+    return (TFT_WIDTH - textWidth) / 2;
+}
+
+int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)
+{
+    return (TFT_WIDTH - lengthInPixels) / 2;
+}
+
 void ScreenGC9A01::drawBackgroundColor(int darkModeColor, int lightModeColor)
 {
     if (this->_TSProperties->PropertiesScreen._isDarkMode)
@@ -351,18 +390,12 @@ void ScreenGC9A01::setTextColor(int textDarkModeColor,
 void ScreenGC9A01::testGPS()
 {
     char *formatChar = (char *)"%-19s";
-    bool locationIsValid = false;
 
-    if (this->_TSProperties->PropertiesGPS._latitude != 0 && this->_TSProperties->PropertiesGPS._longitude != 0)
-    {
-        locationIsValid = true;
-    }
-
-    if (locationIsValid && this->_TSProperties->PropertiesGPS._usedSatellites >= 4)
+    if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS._usedSatellites >= 4)
     {
         this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
     }
-    else if (locationIsValid && this->_TSProperties->PropertiesGPS._usedSatellites < 4)
+    else if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS._usedSatellites < 4)
     {
         this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
     }

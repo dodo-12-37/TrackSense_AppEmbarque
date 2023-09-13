@@ -35,6 +35,8 @@ private:
     // void drawSignal();
 
     /* Drawing tools */
+    int calculateXCoordTextToCenter(String text);
+    int calculateXCoordItemToCenter(uint16_t lengthInPixels);
     void drawBackgroundColor(int darkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR, int lightModeColor = TFT_LIGHT_MODE_BACKGROUND_COLOR);
     void drawBackgroundImage();
     void setTextColor(int textDarkModeColor = TFT_DARK_MODE_TEXT_COLOR,
