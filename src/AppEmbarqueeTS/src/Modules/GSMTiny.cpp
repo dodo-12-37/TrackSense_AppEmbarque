@@ -93,6 +93,8 @@ void GSMTiny::tick()
             if (this->isFixValid())
             {
                 this->saveFixToTSProperties();
+                // this->_TEST_counterGoodValue++;
+                this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
             }
             else
             {
@@ -128,8 +130,8 @@ bool GSMTiny::readDatas()
                                 &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde))
         {
             result = true;
-            // this->_TEST_counterGoodValue++;
-            this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
+            // // this->_TEST_counterGoodValue++;
+            // this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
 
 #if DEBUG_GSM
             Serial.println("Latitude: " + String(this->_latitude, 10) + "\tLongitude: " + String(this->_longitude, 10));
