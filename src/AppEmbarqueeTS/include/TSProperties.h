@@ -21,7 +21,7 @@ public:
         bool _isRideFinished;
 
         String _completedRideId;
-        String _routeId;
+        String _plannedRideId;
         double _maxSpeed;
         double _avgSpeed;
         double _distance;
@@ -48,7 +48,7 @@ public:
             this->_isRideFinished = false;
             
             this->_completedRideId = "00000000-0000-0000-0000-000000000000";
-            this->_routeId = "00000000-0000-0000-0000-000000000000";
+            this->_plannedRideId = "00000000-0000-0000-0000-000000000000";
             this->_maxSpeed = 0;
             this->_avgSpeed = 0;
             this->_distance = 0;

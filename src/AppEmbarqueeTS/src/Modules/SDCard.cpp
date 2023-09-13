@@ -151,7 +151,7 @@ void SDCard::writeStatsFile()
 {
     String content = 
         this->_TSProperties->PropertiesCurrentRide._completedRideId + ";" +
-        this->_TSProperties->PropertiesCurrentRide._routeId + ";" +
+        this->_TSProperties->PropertiesCurrentRide._plannedRideId + ";" +
         this->_TSProperties->PropertiesCurrentRide._maxSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide._avgSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
@@ -177,7 +177,7 @@ void SDCard::setStatsToSend()
 {
     String content = 
         this->_TSProperties->PropertiesCurrentRide._completedRideId + ";" +
-        this->_TSProperties->PropertiesCurrentRide._routeId + ";" +
+        this->_TSProperties->PropertiesCurrentRide._plannedRideId + ";" +
         this->_TSProperties->PropertiesCurrentRide._maxSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide._avgSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
