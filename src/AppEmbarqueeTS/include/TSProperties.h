@@ -84,6 +84,7 @@ public:
         int _hour;
         int _minute;
         int _seconde;
+        bool IsValid;
 
         int _TEST_counterGoodValue;
         int _TEST_counterTotal;
@@ -108,6 +109,7 @@ public:
             this->_seconde = 0;
             this->_TEST_counterGoodValue = 0;
             this->_TEST_counterTotal = 0;
+            this->IsValid = false;
         }
     } PropertiesGPS;
 
@@ -174,7 +176,6 @@ public:
     {
         ;
     } PropertiesWifi;
-
 
     /* datas Compass */
     struct TSPropertiesCompass
