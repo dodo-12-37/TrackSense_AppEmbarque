@@ -156,7 +156,7 @@ void SDCard::writeStatsFile()
         this->_TSProperties->PropertiesCurrentRide._avgSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
         this->_TSProperties->PropertiesCurrentRide._dateEnd + ";" +
-        this->_TSProperties->PropertiesCurrentRide._duration + ";" +
+        this->_TSProperties->PropertiesCurrentRide._durationS + ";" +
         this->_TSProperties->PropertiesCurrentRide._distance + ";" +
         this->_TSProperties->PropertiesCurrentRide._nbPoints + ";" +
         this->_TSProperties->PropertiesCurrentRide._nbFalls + ";";
@@ -182,7 +182,7 @@ void SDCard::setStatsToSend()
         this->_TSProperties->PropertiesCurrentRide._avgSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
         this->_TSProperties->PropertiesCurrentRide._dateEnd + ";" +
-        this->_TSProperties->PropertiesCurrentRide._duration + ";" +
+        this->_TSProperties->PropertiesCurrentRide._durationS + ";" +
         this->_TSProperties->PropertiesCurrentRide._distance + ";" +
         this->_TSProperties->PropertiesCurrentRide._nbPoints + ";" +
         this->_TSProperties->PropertiesCurrentRide._nbFalls + ";";

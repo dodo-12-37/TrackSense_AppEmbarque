@@ -179,7 +179,7 @@ void ControlerButtons::finishRide()
         this->_TSProperties->PropertiesCurrentRide._isRideStarted = false;
 
         this->_TSProperties->PropertiesCurrentRide._endTimeMS = millis();
-        this->_TSProperties->PropertiesCurrentRide._duration = (this->_TSProperties->PropertiesCurrentRide._endTimeMS - this->_TSProperties->PropertiesCurrentRide._startTimeMS) / 60000;
+        this->_TSProperties->PropertiesCurrentRide._durationS = (this->_TSProperties->PropertiesCurrentRide._endTimeMS - this->_TSProperties->PropertiesCurrentRide._startTimeMS) / 1000;
 
         this->_TSProperties->PropertiesCurrentRide._isRideReadyToSave = true;
 

@@ -220,21 +220,49 @@ void GSMTiny::saveFixToTSProperties()
                                                                String(this->_TSProperties->PropertiesCurrentRide._temperature) + ";" +
                                                                String(this->_speed) + ";" +
                                                                this->_TSProperties->PropertiesCurrentRide._dateBegin + ";" +
-                                                               String(this->_TSProperties->PropertiesCurrentRide._duration);
+                                                               String(this->_TSProperties->PropertiesCurrentRide._durationS);
 
     this->_TSProperties->PropertiesCurrentRide._isPointReadyToSave = true;
 }
 
 String GSMTiny::getDate()
 {
-    String result = String(this->_year) + "-" + String(this->_month) + "-" + String(this->_day);
+    String month = String(this->_month);
+    if (month.length() == 1)
+    {
+        month = "0" + month;
+    }
+    String day = String(this->_day);
+    if (day.length() == 1)
+    {
+        day = "0" + day;
+    }
+
+
+    String result = String(this->_year) + "-" + month + "-" + day;
     Serial.println("Date : " + result);
     return result;
 }
 
 String GSMTiny::getTime()
 {
-    String result = String(this->_hour) + ":" + String(this->_minute) + ":" + String(this->_seconde);
+    String hour = String(this->_hour);
+    if (hour.length() == 1)
+    {
+        hour = "0" + hour;
+    }
+    String minute = String(this->_minute);
+    if (minute.length() == 1)
+    {
+        minute = "0" + minute;
+    }
+    String seconde = String(this->_seconde);
+    if (seconde.length() == 1)
+    {
+        seconde = "0" + seconde;
+    }
+
+    String result = hour + ":" + minute + ":" + seconde;
     Serial.println("Time : " + result);
     return result;
 }

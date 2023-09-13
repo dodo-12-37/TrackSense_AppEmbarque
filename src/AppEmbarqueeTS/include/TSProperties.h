@@ -25,7 +25,11 @@ public:
         double _maxSpeed;
         double _avgSpeed;
         double _distance;
-        double _duration;
+
+        unsigned long _durationS;
+        unsigned long _startTimeMS;
+        unsigned long _endTimeMS;
+        
         String _dateBegin;
         String _dateEnd;
         String _currentPoint;
@@ -36,8 +40,6 @@ public:
         bool _isPointReadyToSave;
         float _temperature;
 
-        unsigned long _startTimeMS;
-        unsigned long _endTimeMS;
 
         void resetCurrentRide()
         {
@@ -50,7 +52,7 @@ public:
             this->_maxSpeed = 0;
             this->_avgSpeed = 0;
             this->_distance = 0;
-            this->_duration = 0;
+            this->_durationS = 0;
             this->_dateBegin = "0000-00-00T00:00:00";
             this->_dateEnd = "0000-00-00T00:00:00";
             this->_currentPoint = "";
