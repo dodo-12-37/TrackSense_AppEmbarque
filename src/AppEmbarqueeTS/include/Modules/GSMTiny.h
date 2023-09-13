@@ -34,8 +34,8 @@ private:
     int _minute;
     int _seconde;
 
-    int _TEST_counterGoodValue;
-    int _TEST_counterTotal;
+    // int _TEST_counterGoodValue;
+    // int _TEST_counterTotal;
 
     String getDate();
     String getTime();

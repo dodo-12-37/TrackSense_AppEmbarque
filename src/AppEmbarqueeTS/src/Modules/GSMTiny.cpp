@@ -3,8 +3,8 @@
 GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                modem(nullptr),
                                                _isInitialized(false),
-                                               _TEST_counterGoodValue(0),
-                                               _TEST_counterTotal(0),
+                                            //    _TEST_counterGoodValue(0),
+                                            //    _TEST_counterTotal(0),
                                                _latitude(0),
                                                _longitude(0),
                                                _speed(0),
@@ -131,8 +131,6 @@ bool GSMTiny::readDatas()
                                 &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde))
         {
             result = true;
-            // // this->_TEST_counterGoodValue++;
-            // this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
 
 #if DEBUG_GSM
             Serial.println("Latitude: " + String(this->_latitude, 10) + "\tLongitude: " + String(this->_longitude, 10));
@@ -196,6 +194,8 @@ void GSMTiny::saveFixToTSProperties()
 
     if (this->_TSProperties->PropertiesGPS.IsValid)
     {
+        this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
+
         if (this->_TSProperties->PropertiesCurrentRide._dateBegin == "0000-00-00T00:00:00")
         {
             this->_TSProperties->PropertiesCurrentRide._dateBegin = this->getDatetime();
