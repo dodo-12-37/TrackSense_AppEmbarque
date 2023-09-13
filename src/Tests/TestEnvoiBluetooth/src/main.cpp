@@ -11,8 +11,8 @@
 #define BLE_FALSE "false"
 #define BLE_OK "ok"
 
-#define BLE_DELAY_SEND_STATS_MS 2000
-#define BLE_DELAY_SEND_POINT_MS 500
+#define BLE_DELAY_SEND_STATS_MS 1000
+#define BLE_DELAY_SEND_POINT_MS 1000
 
 // Service et caracterisiques pour CompletedRide
 #define BLE_COMPLETED_RIDE_SERVICE_UUID "62ffab64-3646-4fb9-88d8-541deb961192"
@@ -36,12 +36,12 @@
 
 // Donnees pour CompletedRide
 #define RIDE_NB_POINTS 5
-#define RIDE_STATS "e3ba4698-d64b-447e-81f5-0bf0e09700eb;00000000-0000-0000-0000-000000000000;0.00;0.00;2023-9-13T12:9:55;2023-9-13T12:41:38;33.00;0.00;0;0;"
-#define RIDE_POINT_1 String("1;46.8423843384;-71.3978271484;95.70;0.00;49.26;2023-09-13T12:09:55;0.00")
-#define RIDE_POINT_2 String("2;46.8425025940;-71.3976898193;99.40;0.00;47.78;2023-09-13T12:09:55;0.00")
-#define RIDE_POINT_3 String("3;46.8427085876;-71.3974456787;101.90;0.00;46.11;2023-09-13T12:09:55;0.00")
-#define RIDE_POINT_4 String("4;46.8428497314;-71.3972473145;102.50;0.00;28.89;2023-09-13T12:09:55;0.00")
-#define RIDE_POINT_5 String("5;46.8428993225;-71.3971862793;101.90;0.00;19.08;2023-09-13T12:09:55;0.00")
+#define RIDE_STATS "e3ba4698-d64b-447e-81f5-0bf0e09700eb;00000000-0000-0000-0000-000000000000;0.00;0.00;2023-09-13T12:09:55;2023-09-13T12:41:38;33.00;0.00;0;0;"
+#define RIDE_POINT_1 String("1;46.8423843384;-71.3978271484;95.70;0.00;49.26;2023-09-13T12:09:55;0")
+#define RIDE_POINT_2 String("2;46.8425025940;-71.3976898193;99.40;0.00;47.78;2023-09-13T12:09:55;0")
+#define RIDE_POINT_3 String("3;46.8427085876;-71.3974456787;101.90;0.00;46.11;2023-09-13T12:09:55;0")
+#define RIDE_POINT_4 String("4;46.8428497314;-71.3972473145;102.50;0.00;28.89;2023-09-13T12:09:55;0")
+#define RIDE_POINT_5 String("5;46.8428993225;-71.3971862793;101.90;0.00;19.08;2023-09-13T12:09:55;0")
 String currentPoint;
 int currentPointNumber = 0;
 bool isPointReady = false;
@@ -98,7 +98,7 @@ public:
 bool BLE::isDeviceConnected = false;
 // bool BLE::isCompletedRideStatsSending = false;
 bool BLE::isCompletedRideStatsReceived = false;
-// bool BLE::isCompletedRidePointSending = false;
+bool BLE::isCompletedRidePointSending = false;
 bool BLE::isCompletedRidePointReceived = false;
 
 /*----- CallBacks -----*/
@@ -126,6 +126,8 @@ class CompletedRideReceiveStatsCallbacks
         std::string receivedData = p_characteristic->getValue();
         std::string falseString = BLE_FALSE;
 
+        Serial.println("Confirmation reception stats");
+
         if (receivedData.compare(falseString) == 0)
         {
             BLE::isCompletedRideStatsReceived = true;
@@ -142,11 +144,14 @@ class CompletedRideReceivePointCallbacks
         std::string receivedData = p_characteristic->getValue();
         std::string okString = BLE_OK;
 
+        Serial.println("Confirmation reception point");
+        Serial.println(receivedData.c_str());
+
         if (receivedData.compare(okString) == 0)
         {
             p_characteristic->setValue("");
             BLE::isCompletedRidePointReceived = true;
-            // BLE::isCompletedRidePointSending = false;
+            BLE::isCompletedRidePointSending = false;
         }
     }
 };
@@ -192,22 +197,36 @@ void BLE::tick()
                 this->sendCompletedRideStats();
             }
             else if (BLE::isCompletedRideStatsReceived
-                        && isPointReady)
+                        && (isPointReady || BLE::isCompletedRidePointSending))
             {
+                // Serial.println("Send Completed Ride Point");
                 this->sendCompletedRideCurrentPoint();
             }
             else if (BLE::isCompletedRideStatsReceived
                         && RIDE_NB_POINTS 
                        >= currentPointNumber)
             {
+                Serial.println("Fin des points");
                 isReady = false;
                 isReceived = true;
             }
+
+            // Serial.println("Fin du tick");
         }
     }
     else
     {
         Serial.println("Restart Advertising");
+
+        isReady = true;
+        currentPoint = RIDE_POINT_1;
+        currentPointNumber = 1;
+        isPointReady = true;
+        BLE::isCompletedRidePointReceived = false;
+        BLE::isCompletedRideStatsReceived = false;
+        BLE::isCompletedRidePointSending = false;
+
+        delay(500);
         this->_serverBLE->startAdvertising();
     }
 }
@@ -290,7 +309,7 @@ void BLE::sendCompletedRideStats()
 {
     unsigned long currentTime = millis();
 
-    if (currentTime - this->_lastTimeStatsSent > BLE_DELAY_SEND_STATS_MS)
+    if ( (currentTime - this->_lastTimeStatsSent) >= BLE_DELAY_SEND_STATS_MS)
     {
         this->_lastTimeStatsSent = currentTime;
         this->_CRStatsCaracteristic->setValue(RIDE_STATS);
@@ -298,7 +317,7 @@ void BLE::sendCompletedRideStats()
         this->_CRIsReadyCaracteristic->notify();
         // BLE::isCompletedRideStatsSending = true;
         BLE::isCompletedRideStatsReceived = false;
-        Serial.println("Completed Ride envoyed");
+        Serial.println("Completed Ride stats sended");
     }
 }
 
@@ -313,17 +332,17 @@ void BLE::sendCompletedRideCurrentPoint()
         BLE::isCompletedRidePointReceived = false;
         Serial.println("Completed Ride Point received");
     }
-    else if (currentTime - this->_lastTimePointSent > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
+    else if ( (currentTime - this->_lastTimePointSent) > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
     {
         this->_lastTimePointSent = currentTime;
         this->_CRPointCaracteristic->setValue(currentPoint.c_str());
         this->_CRPointNumberCaracteristic->setValue(String(currentPointNumber).c_str());
         this->_CRPointNumberCaracteristic->notify();
-        // BLE::isCompletedRidePointSending = true;
+        BLE::isCompletedRidePointSending = true;
         BLE::isCompletedRidePointReceived = false;
 
         isPointReady = false;
-        Serial.println("Completed Ride Point envoyed");
+        Serial.println(String("Completed Ride Point ") + String(currentPointNumber) + String(" sended"));
     }
 }
 
