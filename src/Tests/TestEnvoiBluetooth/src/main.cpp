@@ -86,6 +86,7 @@ public:
     static bool isCompletedRideStatsReceived;
     static bool isCompletedRidePointSending;
     static bool isCompletedRidePointReceived;
+    static bool isAdvertiesingStarted;
 
     BLE();
     ~BLE();
@@ -96,10 +97,11 @@ public:
 
 /*----- Definition des membres statics -----*/
 bool BLE::isDeviceConnected = false;
-// bool BLE::isCompletedRideStatsSending = false;
+bool BLE::isCompletedRideStatsSending = false;
 bool BLE::isCompletedRideStatsReceived = false;
 bool BLE::isCompletedRidePointSending = false;
 bool BLE::isCompletedRidePointReceived = false;
+bool BLE::isAdvertiesingStarted = false;
 
 /*----- CallBacks -----*/
 class ServerBLECallbacks
@@ -108,6 +110,7 @@ class ServerBLECallbacks
     void onConnect(BLEServer *p_server)
     {
         BLE::isDeviceConnected = true;
+        BLE::isAdvertiesingStarted = false;
         Serial.println("Connecte");
     }
 
@@ -124,14 +127,22 @@ class CompletedRideReceiveStatsCallbacks
     void onWrite(BLECharacteristic *p_characteristic)
     {
         std::string receivedData = p_characteristic->getValue();
-        std::string falseString = BLE_FALSE;
+        std::string falseString = BLE_OK;
 
-        Serial.println("Confirmation reception stats");
+        Serial.println("Confirmation reception data");
 
         if (receivedData.compare(falseString) == 0)
         {
-            BLE::isCompletedRideStatsReceived = true;
-            // BLE::isCompletedRideStatsSending = false;
+            if (BLE::isCompletedRideStatsSending)
+            {
+                BLE::isCompletedRideStatsReceived = true;
+                BLE::isCompletedRideStatsSending = false;
+            }
+            else if (BLE::isCompletedRidePointSending)
+            {
+                BLE::isCompletedRidePointReceived = true;
+                BLE::isCompletedRidePointSending = false;
+            }
         }
     }
 };
@@ -192,14 +203,13 @@ void BLE::tick()
     {
         if (isReady)
         {
-            if (!BLE::isCompletedRideStatsReceived) // Renvoie les stats tant qu'on a pas la confirmation de reception
+            if (!BLE::isCompletedRideStatsReceived || BLE::isCompletedRideStatsSending) // Renvoie les stats tant qu'on a pas la confirmation de reception
             {
                 this->sendCompletedRideStats();
             }
             else if (BLE::isCompletedRideStatsReceived
                         && (isPointReady || BLE::isCompletedRidePointSending))
             {
-                // Serial.println("Send Completed Ride Point");
                 this->sendCompletedRideCurrentPoint();
             }
             else if (BLE::isCompletedRideStatsReceived
@@ -210,14 +220,11 @@ void BLE::tick()
                 isReady = false;
                 isReceived = true;
             }
-
-            // Serial.println("Fin du tick");
         }
     }
-    else
+    else if (!BLE::isAdvertiesingStarted)
     {
         Serial.println("Restart Advertising");
-
         isReady = true;
         currentPoint = RIDE_POINT_1;
         currentPointNumber = 1;
@@ -227,6 +234,7 @@ void BLE::tick()
         BLE::isCompletedRidePointSending = false;
 
         delay(500);
+        BLE::isAdvertiesingStarted = true;
         this->_serverBLE->startAdvertising();
     }
 }
@@ -264,22 +272,22 @@ void BLE::initCompletedRideService()
 void BLE::initCompletedRideCaracteristics()
 {
     this->_CRStatsCaracteristic = this->_completedRideService->
-        createCharacteristic(BLE_COMPLETED_RIDE_CARACTRISTIC_STATS, BLECharacteristic::PROPERTY_READ);
+        createCharacteristic(BLE_COMPLETED_RIDE_CARACTRISTIC_STATS, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY);
     this->_CRStatsCaracteristic->setValue("id;plannedRideId;maxSpeed;avgSpeed;distance;duration;dateBegin;dateEnd;nbPoints;nbFalls");
 
-    this->_CRPointCaracteristic = this->_completedRideService->
-        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    this->_CRPointCaracteristic->setValue("idPoint;lat;long;alt;tmp;speed;date;effectiveTime");
-    this->_CRPointCaracteristic->setCallbacks(new CompletedRideReceivePointCallbacks());
+    // this->_CRPointCaracteristic = this->_completedRideService->
+    //     createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    // this->_CRPointCaracteristic->setValue("idPoint;lat;long;alt;tmp;speed;date;effectiveTime");
+    // this->_CRPointCaracteristic->setCallbacks(new CompletedRideReceivePointCallbacks());
 
-    this->_CRPointNumberCaracteristic = this->_completedRideService->
-        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT_NUMBER, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-    this->_CRPointNumberCaracteristic->setValue("0");
+    // this->_CRPointNumberCaracteristic = this->_completedRideService->
+    //     createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT_NUMBER, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+    // this->_CRPointNumberCaracteristic->setValue("0");
  
-    this->_CRIsReadyCaracteristic = this->_completedRideService->
-        createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_STATS_READY, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY);
-    this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
-    this->_CRIsReadyCaracteristic->setCallbacks(new CompletedRideReceiveStatsCallbacks());
+    // this->_CRIsReadyCaracteristic = this->_completedRideService->
+    //     createCharacteristic(BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_STATS_READY, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY);
+    // this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
+    // this->_CRIsReadyCaracteristic->setCallbacks(new CompletedRideReceiveStatsCallbacks());
 
     Serial.println("Completed Ride Caracteristics initialised");
 }
@@ -290,17 +298,17 @@ void BLE::initCompletedRideDescriptors()
     this->_CRStatsDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_STATS_NAME);
     this->_CRStatsCaracteristic->addDescriptor(this->_CRStatsDescriptor);
 
-    this->_CRPointDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_UUID);
-    this->_CRPointDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NAME);
-    this->_CRPointCaracteristic->addDescriptor(this->_CRPointDescriptor);
+    // this->_CRPointDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_UUID);
+    // this->_CRPointDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NAME);
+    // this->_CRPointCaracteristic->addDescriptor(this->_CRPointDescriptor);
 
-    this->_CRPointNumberDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_UUID);
-    this->_CRPointNumberDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_NAME);
-    this->_CRPointNumberCaracteristic->addDescriptor(this->_CRPointNumberDescriptor);
+    // this->_CRPointNumberDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_UUID);
+    // this->_CRPointNumberDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_NAME);
+    // this->_CRPointNumberCaracteristic->addDescriptor(this->_CRPointNumberDescriptor);
     
-    this->_CRIsReadyDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID);
-    this->_CRIsReadyDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_NAME);
-    this->_CRIsReadyCaracteristic->addDescriptor(this->_CRIsReadyDescriptor);
+    // this->_CRIsReadyDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID);
+    // this->_CRIsReadyDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_NAME);
+    // this->_CRIsReadyCaracteristic->addDescriptor(this->_CRIsReadyDescriptor);
 
     Serial.println("Completed Ride Descriptors initialised");
 }
@@ -315,7 +323,7 @@ void BLE::sendCompletedRideStats()
         this->_CRStatsCaracteristic->setValue(RIDE_STATS);
         this->_CRIsReadyCaracteristic->setValue(BLE_TRUE);
         this->_CRIsReadyCaracteristic->notify();
-        // BLE::isCompletedRideStatsSending = true;
+        BLE::isCompletedRideStatsSending = true;
         BLE::isCompletedRideStatsReceived = false;
         Serial.println("Completed Ride stats sended");
     }
@@ -336,8 +344,8 @@ void BLE::sendCompletedRideCurrentPoint()
     {
         this->_lastTimePointSent = currentTime;
         this->_CRPointCaracteristic->setValue(currentPoint.c_str());
-        this->_CRPointNumberCaracteristic->setValue(String(currentPointNumber).c_str());
-        this->_CRPointNumberCaracteristic->notify();
+        this->_CRStatsCaracteristic->setValue(String(currentPointNumber).c_str());
+        this->_CRStatsCaracteristic->notify();
         BLE::isCompletedRidePointSending = true;
         BLE::isCompletedRidePointReceived = false;
 
