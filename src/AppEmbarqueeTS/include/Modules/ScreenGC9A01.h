@@ -49,15 +49,15 @@ public:
     ~ScreenGC9A01();
 
     /*
-        0 : Init TS Page
-        1 : Home Page
-        2 : Ride Page
-        3 : Ride Statistics Page
-        4 : Compass Page
-        5 : Ride Direction Page
-        6 : Global Statistics Page
-        7 : Go Home Page
-        -1 : No Page (error)
+        0 : Home Page
+        1 : Ride Page
+        2 : Ride Statistics Page
+        3 : Compass Page
+        4 : Ride Direction Page
+        5 : Global Statistics Page
+        6 : Go Home Page
+        -1 : Init TS Page
+        -2 : No Page (error)
     */
     void tick() override;
 };

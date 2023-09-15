@@ -42,15 +42,27 @@
 
 
 /*----- Page ID -----*/
-#define INIT_TS_PAGE_ID 0
-#define HOME_PAGE_ID 1
-#define RIDE_PAGE_ID 2
-#define RIDE_STATISTICS_PAGE_ID 3
-#define COMPASS_PAGE_ID 4
-#define RIDE_DIRECTION_PAGE_ID 5
-#define GLOBAL_STATISTICS_PAGE_ID 6
-#define GO_HOME_PAGE_ID 7
-#define ERROR_PAGE_ID -1
+#define NB_ACTIVE_PAGES 3   // 3 == Home Page, Ride Page, Ride Statistics Page
+/*
+    0 : Home Page
+    1 : Ride Page
+    2 : Ride Statistics Page
+    3 : Compass Page
+    4 : Ride Direction Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    -1 : Init TS Page
+    -2 : No Page (error)
+*/
+#define HOME_PAGE_ID 0
+#define RIDE_PAGE_ID 1
+#define RIDE_STATISTICS_PAGE_ID 2
+#define COMPASS_PAGE_ID 3
+#define RIDE_DIRECTION_PAGE_ID 4
+#define GLOBAL_STATISTICS_PAGE_ID 5
+#define GO_HOME_PAGE_ID 6
+#define INIT_TS_PAGE_ID -1
+#define ERROR_PAGE_ID -2
 
 /*----- SD Card -----*/
 #define PIN_SDCARD_MOSI 15

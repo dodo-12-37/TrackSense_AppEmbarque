@@ -14,15 +14,15 @@ ScreenGC9A01::~ScreenGC9A01()
 }
 
 /*
-    0 : Init TS Page
-    1 : Home Page
-    2 : Ride Page
-    3 : Ride Statistics Page
-    4 : Compass Page
-    5 : Ride Direction Page
-    6 : Global Statistics Page
-    7 : Go Home Page
-    -1 : No Page (error)
+    0 : Home Page
+    1 : Ride Page
+    2 : Ride Statistics Page
+    3 : Compass Page
+    4 : Ride Direction Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    -1 : Init TS Page
+    -2 : No Page (error)
 */
 void ScreenGC9A01::tick()
 {
@@ -42,15 +42,15 @@ void ScreenGC9A01::tick()
 
     switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
     {
-    case INIT_TS_PAGE_ID:   // 0
+    case INIT_TS_PAGE_ID: // 0
         this->drawInitTSPage();
         break;
 
-    case HOME_PAGE_ID:  // 1
+    case HOME_PAGE_ID: // 1
         this->drawHomePage();
         break;
 
-    case RIDE_PAGE_ID:  // 2
+    case RIDE_PAGE_ID: // 2
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
             this->drawRidePage();
@@ -62,15 +62,23 @@ void ScreenGC9A01::tick()
         }
         break;
 
-    case RIDE_STATISTICS_PAGE_ID:   // 3
-        this->drawRideStatisticsPage();
+    case RIDE_STATISTICS_PAGE_ID: // 3
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+        {
+            this->drawRideStatisticsPage();
+        }
+        else
+        {
+            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+            this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+        }
         break;
 
-    case COMPASS_PAGE_ID:   // 4
+    case COMPASS_PAGE_ID: // 4
         this->drawCompassPage();
         break;
 
-    case RIDE_DIRECTION_PAGE_ID:    // 5
+    case RIDE_DIRECTION_PAGE_ID: // 5
         this->drawRideDirectionPage();
         break;
 
@@ -78,11 +86,11 @@ void ScreenGC9A01::tick()
         this->drawGlobalStatisticsPage();
         break;
 
-    case GO_HOME_PAGE_ID:   // 7
+    case GO_HOME_PAGE_ID: // 7
         this->drawGoHomePage();
         break;
 
-    default:    // -1
+    default:                   // -1
         this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
         break;
     }
@@ -184,7 +192,11 @@ void ScreenGC9A01::drawGoHomePage()
 
 void ScreenGC9A01::drawRideStatisticsPage()
 {
-    ;
+    int batteryLengthInPixels = 150;
+    this->drawBattery(this->calculateXCoordItemToCenter(batteryLengthInPixels),
+                      100,
+                      batteryLengthInPixels,
+                      this->_TSProperties->PropertiesBattery.BatteryLevel);
 }
 
 void ScreenGC9A01::drawErrorPage()

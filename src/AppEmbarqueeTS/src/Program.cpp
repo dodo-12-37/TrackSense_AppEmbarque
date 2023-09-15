@@ -72,7 +72,7 @@ void Program::initProperties()
     this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = false;
 
     // Screen
-    this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->_TSProperties->PropertiesScreen.IsDarkMode = true;
     this->_TSProperties->PropertiesScreen.ScreenRotation = 0;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;

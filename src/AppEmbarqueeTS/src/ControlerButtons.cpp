@@ -116,36 +116,54 @@ void ControlerButtons::tick()
 }
 
 /*
-    0 : Init TS Page
-    1 : Home Page
-    2 : Ride Page
-    3 : Ride Statistics Page
-    4 : Compass Page
-    5 : Ride Direction Page
-    6 : Global Statistics Page
-    7 : Go Home Page
-    -1 : No Page (error)
+    0 : Home Page
+    1 : Ride Page
+    2 : Ride Statistics Page
+    3 : Compass Page
+    4 : Ride Direction Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    -1 : Init TS Page
+    -2 : No Page (error)
 */
 void ControlerButtons::changePageUp()
 {
-    this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+    // this->_TSProperties->PropertiesScreen.ActiveScreen = this->_TSProperties->PropertiesScreen.ActiveScreen++ % NB_ACTIVE_PAGES;
+
+    this->_TSProperties->PropertiesScreen.ActiveScreen++;
+
+    if (this->_TSProperties->PropertiesScreen.ActiveScreen >= NB_ACTIVE_PAGES)
+    {
+        this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
+    }
+    
+    // this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 /*
-    0 : Init TS Page
-    1 : Home Page
-    2 : Ride Page
-    3 : Ride Statistics Page
-    4 : Compass Page
-    5 : Ride Direction Page
-    6 : Global Statistics Page
-    7 : Go Home Page
-    -1 : No Page (error)
+    0 : Home Page
+    1 : Ride Page
+    2 : Ride Statistics Page
+    3 : Compass Page
+    4 : Ride Direction Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    -1 : Init TS Page
+    -2 : No Page (error)
 */
 void ControlerButtons::changePageDown()
 {
-    this->_TSProperties->PropertiesScreen.ActiveScreen = RIDE_PAGE_ID;
+    // this->_TSProperties->PropertiesScreen.ActiveScreen = this->_TSProperties->PropertiesScreen.ActiveScreen-- % NB_ACTIVE_PAGES;
+
+    this->_TSProperties->PropertiesScreen.ActiveScreen--;
+
+    if (this->_TSProperties->PropertiesScreen.ActiveScreen < 0)
+    {
+        this->_TSProperties->PropertiesScreen.ActiveScreen = NB_ACTIVE_PAGES - 1;
+    }
+
+    // this->_TSProperties->PropertiesScreen.ActiveScreen = RIDE_PAGE_ID;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
@@ -217,15 +235,15 @@ void ControlerButtons::makeNoiseBuzzer()
 void ControlerButtons::goHome()
 {
     /*
-        0 : Init TS Page
-        1 : Home Page
-        2 : Ride Page
-        3 : Ride Statistics Page
-        4 : Compass Page
-        5 : Ride Direction Page
-        6 : Global Statistics Page
-        7 : Go Home Page
-        -1 : No Page (error)
+        0 : Home Page
+        1 : Ride Page
+        2 : Ride Statistics Page
+        3 : Compass Page
+        4 : Ride Direction Page
+        5 : Global Statistics Page
+        6 : Go Home Page
+        -1 : Init TS Page
+        -2 : No Page (error)
     */
     this->_TSProperties->PropertiesScreen.ActiveScreen = GO_HOME_PAGE_ID;
 }
