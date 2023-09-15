@@ -147,25 +147,25 @@ class CompletedRideReceiveStatsCallbacks
     }
 };
 
-class CompletedRideReceivePointCallbacks
-    : public BLECharacteristicCallbacks
-{
-    void onWrite(BLECharacteristic *p_characteristic)
-    {
-        std::string receivedData = p_characteristic->getValue();
-        std::string okString = BLE_OK;
+// class CompletedRideReceivePointCallbacks
+//     : public BLECharacteristicCallbacks
+// {
+//     void onWrite(BLECharacteristic *p_characteristic)
+//     {
+//         std::string receivedData = p_characteristic->getValue();
+//         std::string okString = BLE_OK;
 
-        Serial.println("Confirmation reception point");
-        Serial.println(receivedData.c_str());
+//         Serial.println("Confirmation reception point");
+//         Serial.println(receivedData.c_str());
 
-        if (receivedData.compare(okString) == 0)
-        {
-            p_characteristic->setValue("");
-            BLE::isCompletedRidePointReceived = true;
-            BLE::isCompletedRidePointSending = false;
-        }
-    }
-};
+//         if (receivedData.compare(okString) == 0)
+//         {
+//             p_characteristic->setValue("");
+//             BLE::isCompletedRidePointReceived = true;
+//             BLE::isCompletedRidePointSending = false;
+//         }
+//     }
+// };
 
 /*----- BLE -----*/
 BLE::BLE() 
@@ -343,8 +343,8 @@ void BLE::sendCompletedRideCurrentPoint()
     else if ( (currentTime - this->_lastTimePointSent) > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
     {
         this->_lastTimePointSent = currentTime;
-        this->_CRPointCaracteristic->setValue(currentPoint.c_str());
-        this->_CRStatsCaracteristic->setValue(String(currentPointNumber).c_str());
+        // this->_CRPointCaracteristic->setValue(currentPoint.c_str());
+        this->_CRStatsCaracteristic->setValue(currentPoint.c_str());
         this->_CRStatsCaracteristic->notify();
         BLE::isCompletedRidePointSending = true;
         BLE::isCompletedRidePointReceived = false;
