@@ -12,7 +12,8 @@ Program::Program() :
     _accelerometer(nullptr), 
     _ble(nullptr), 
     _screen(nullptr), 
-    _buzzer(nullptr)
+    _buzzer(nullptr),
+    _controlerButtons(nullptr)
 {
     this->_TSProperties = new TSProperties();
     this->initProperties();

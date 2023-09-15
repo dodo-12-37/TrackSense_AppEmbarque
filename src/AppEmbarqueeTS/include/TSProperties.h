@@ -8,7 +8,6 @@ public:
     /* Datas TrackSense */
     struct TSPropertiesTS
     {
-        String _currentRideId;
         bool _isInitializingTS;
         bool _isInitializedGSM;
     } PropertiesTS;
