@@ -23,10 +23,6 @@ private:
     int _finalStateButton1;
     int _finalStateButton2;    
 
-public:
-    ControlerButtons(TSProperties* TSProperties);
-    ~ControlerButtons();
-
     void changePageUp();
     void changePageDown();
     void startRide();
@@ -35,6 +31,10 @@ public:
     void restartRide();
     void makeNoiseBuzzer();
     void goHome();
+
+public:
+    ControlerButtons(TSProperties* TSProperties);
+    ~ControlerButtons();
 
     void tick();
 };

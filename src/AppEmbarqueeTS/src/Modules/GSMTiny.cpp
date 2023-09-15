@@ -63,7 +63,7 @@ void GSMTiny::init()
     }
 
     this->gpsRestart();
-    this->setWorkModeGPS(); // TODO : Activer paramètres GLONASS et GALILEO //
+    this->setWorkModeGPS();
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
 }

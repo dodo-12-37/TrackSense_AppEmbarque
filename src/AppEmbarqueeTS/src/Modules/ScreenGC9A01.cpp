@@ -16,21 +16,21 @@ ScreenGC9A01::~ScreenGC9A01()
 /*
     0 : Init TS Page
     1 : Home Page
-    2 : Compass Page
-    3 : Ride Direction Page
-    4 : Ride Page
-    5 : Global Statistics Page
-    6 : Go Home Page
-    7 : Ride Statistics Page
+    2 : Ride Page
+    3 : Ride Statistics Page
+    4 : Compass Page
+    5 : Ride Direction Page
+    6 : Global Statistics Page
+    7 : Go Home Page
     -1 : No Page (error)
 */
 void ScreenGC9A01::tick()
 {
-    // if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
-    // {
-    //     this->_TSProperties->PropertiesScreen.ActiveScreen = -1;
-    //     this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    // }
+    if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
+    {
+        this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
+        this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+    }
 
     this->tft->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
@@ -42,48 +42,48 @@ void ScreenGC9A01::tick()
 
     switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
     {
-    case 0:
-        this->drawInitTSPage0();
+    case INIT_TS_PAGE_ID:   // 0
+        this->drawInitTSPage();
         break;
 
-    case 1:
-        this->drawHomePage1();
+    case HOME_PAGE_ID:  // 1
+        this->drawHomePage();
         break;
 
-    case 2:
-        this->drawCompassPage2();
-        break;
-
-    case 3:
-        this->drawRideDirectionPage3();
-        break;
-
-    case 4:
+    case RIDE_PAGE_ID:  // 2
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
-            this->drawRidePage4();
+            this->drawRidePage();
         }
         else
         {
-            // this->_TSProperties->PropertiesScreen.ActiveScreen = -1;
-            // this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true; ////////////////////////////
+            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+            this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
         }
         break;
 
-    case 5:
-        this->drawGlobalStatisticsPage5();
+    case RIDE_STATISTICS_PAGE_ID:   // 3
+        this->drawRideStatisticsPage();
         break;
 
-    case 6:
-        this->drawGoHomePage6();
+    case COMPASS_PAGE_ID:   // 4
+        this->drawCompassPage();
         break;
 
-    case 7:
-        this->drawRideStatisticsPage7();
+    case RIDE_DIRECTION_PAGE_ID:    // 5
+        this->drawRideDirectionPage();
         break;
 
-    default:
-        this->drawErrorPage();
+    case GLOBAL_STATISTICS_PAGE_ID: // 6
+        this->drawGlobalStatisticsPage();
+        break;
+
+    case GO_HOME_PAGE_ID:   // 7
+        this->drawGoHomePage();
+        break;
+
+    default:    // -1
+        this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
         break;
     }
 
@@ -99,7 +99,7 @@ void ScreenGC9A01::tick()
 */
 #pragma region DrawPages
 
-void ScreenGC9A01::drawInitTSPage0()
+void ScreenGC9A01::drawInitTSPage()
 {
     /*
         @brief    Helper to determine size of a PROGMEM string with current
@@ -124,7 +124,7 @@ void ScreenGC9A01::drawInitTSPage0()
     this->drawLogoTS();
 }
 
-void ScreenGC9A01::drawHomePage1()
+void ScreenGC9A01::drawHomePage()
 {
 #if DEBUG_BUTTONS
     this->setTextColor();
@@ -148,17 +148,17 @@ void ScreenGC9A01::drawHomePage1()
 #endif
 }
 
-void ScreenGC9A01::drawCompassPage2()
+void ScreenGC9A01::drawCompassPage()
 {
     ;
 }
 
-void ScreenGC9A01::drawRideDirectionPage3()
+void ScreenGC9A01::drawRideDirectionPage()
 {
     ;
 }
 
-void ScreenGC9A01::drawRidePage4()
+void ScreenGC9A01::drawRidePage()
 {
 #if DEBUG_GSM
     this->testGPS();
@@ -172,17 +172,17 @@ void ScreenGC9A01::drawRidePage4()
 #endif
 }
 
-void ScreenGC9A01::drawGlobalStatisticsPage5()
+void ScreenGC9A01::drawGlobalStatisticsPage()
 {
     ;
 }
 
-void ScreenGC9A01::drawGoHomePage6()
+void ScreenGC9A01::drawGoHomePage()
 {
     ;
 }
 
-void ScreenGC9A01::drawRideStatisticsPage7()
+void ScreenGC9A01::drawRideStatisticsPage()
 {
     ;
 }

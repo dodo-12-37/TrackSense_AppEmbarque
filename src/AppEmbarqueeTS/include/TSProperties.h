@@ -127,12 +127,12 @@ public:
         /*
             0 : Init TS Page
             1 : Home Page
-            2 : Compass Page
-            3 : Ride Direction Page
-            4 : Ride Page
-            5 : Global Statistics Page
-            6 : Go Home Page
-            7 : Ride Statistics Page
+            2 : Ride Page
+            3 : Ride Statistics Page
+            4 : Compass Page
+            5 : Ride Direction Page
+            6 : Global Statistics Page
+            7 : Go Home Page
             -1 : No Page (error)
         */
         uint8_t ActiveScreen;

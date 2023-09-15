@@ -19,14 +19,14 @@ private:
     void testGPS();
 
     /* Pages */
-    void drawInitTSPage0();
-    void drawHomePage1();
-    void drawCompassPage2();
-    void drawRideDirectionPage3();
-    void drawRidePage4();
-    void drawGlobalStatisticsPage5();
-    void drawGoHomePage6();
-    void drawRideStatisticsPage7();
+    void drawInitTSPage();
+    void drawHomePage();
+    void drawCompassPage();
+    void drawRideDirectionPage();
+    void drawRidePage();
+    void drawGlobalStatisticsPage();
+    void drawGoHomePage();
+    void drawRideStatisticsPage();
     void drawErrorPage();
 
     /* Elements */
@@ -51,12 +51,12 @@ public:
     /*
         0 : Init TS Page
         1 : Home Page
-        2 : Compass Page
-        3 : Ride Direction Page
-        4 : Ride Page
-        5 : Global Statistics Page
-        6 : Go Home Page
-        7 : Ride Statistics Page
+        2 : Ride Page
+        3 : Ride Statistics Page
+        4 : Compass Page
+        5 : Ride Direction Page
+        6 : Global Statistics Page
+        7 : Go Home Page
         -1 : No Page (error)
     */
     void tick() override;
