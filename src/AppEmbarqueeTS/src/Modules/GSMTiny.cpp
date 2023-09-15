@@ -3,8 +3,8 @@
 GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                modem(nullptr),
                                                _isInitialized(false),
-                                            //    _TEST_counterGoodValue(0),
-                                            //    _TEST_counterTotal(0),
+                                            //    CounterGoodValue(0),
+                                            //    CounterTotal(0),
                                                _latitude(0),
                                                _longitude(0),
                                                _speed(0),
@@ -65,23 +65,23 @@ void GSMTiny::init()
     this->gpsRestart();
     this->setWorkModeGPS(); // TODO : Activer paramètres GLONASS et GALILEO //
     this->_isInitialized = true;
-    this->_TSProperties->PropertiesTS._isInitializedGSM = true;
+    this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
 }
 
 void GSMTiny::tick()
 {
 
     /* PropertiesBattery */
-    this->_TSProperties->PropertiesBattery._batteryLevel = this->modem->getBattPercent();
+    this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
 
     Serial.println("=======================================");
 #if DEBUG_GSM
     Serial.println("Tick GSM");
-    Serial.println("_isRideStarted : " + String(this->_TSProperties->PropertiesCurrentRide._isRideStarted));
-    Serial.println("_isRideFinished : " + String(this->_TSProperties->PropertiesCurrentRide._isRideFinished));
+    Serial.println("IsRideStarted : " + String(this->_TSProperties->PropertiesCurrentRide.IsRideStarted));
+    Serial.println("IsRideFinished : " + String(this->_TSProperties->PropertiesCurrentRide.IsRideFinished));
 #endif
 
-    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted && this->_TSProperties->PropertiesCurrentRide._isRideFinished == false)
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted && this->_TSProperties->PropertiesCurrentRide.IsRideFinished == false)
     {
         if (this->_isGpsOn == false && this->_isModemOn == true && this->_isInitialized == true)
         {
@@ -94,13 +94,13 @@ void GSMTiny::tick()
             // if (this->isFixValid())
             // {
             //     this->saveFixToTSProperties();
-            //     // this->_TEST_counterGoodValue++;
-            //     this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
+            //     // this->CounterGoodValue++;
+            //     this->_TSProperties->PropertiesGPS.CounterGoodValue++;
             // }
             // else
             // {
             //     this->saveFixToTSProperties();
-            //     this->_TSProperties->PropertiesCurrentRide._isPointReadyToSave = false;
+            //     this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = false;
             // }
         }
         else
@@ -156,8 +156,8 @@ bool GSMTiny::readDatas()
         }
 
         Serial.println("=======================================");
-        // this->_TEST_counterTotal++;
-        this->_TSProperties->PropertiesGPS._TEST_counterTotal++;
+        // this->CounterTotal++;
+        this->_TSProperties->PropertiesGPS.CounterTotal++;
     }
 
     return result;
@@ -177,44 +177,44 @@ bool GSMTiny::isFixValid()
 
 void GSMTiny::saveFixToTSProperties()
 {
-    this->_TSProperties->PropertiesGPS._latitude = this->_latitude;
-    this->_TSProperties->PropertiesGPS._longitude = this->_longitude;
-    this->_TSProperties->PropertiesGPS._altitude = this->_altitude;
-    this->_TSProperties->PropertiesGPS._speed = this->_speed;
-    this->_TSProperties->PropertiesGPS._visibleSatellites = this->_visibleSatellites;
-    this->_TSProperties->PropertiesGPS._usedSatellites = this->_usedSatellites;
-    this->_TSProperties->PropertiesGPS._accuracy = this->_accuracy;
-    this->_TSProperties->PropertiesGPS._year = this->_year;
-    this->_TSProperties->PropertiesGPS._month = this->_month;
-    this->_TSProperties->PropertiesGPS._day = this->_day;
-    this->_TSProperties->PropertiesGPS._hour = this->_hour;
-    this->_TSProperties->PropertiesGPS._minute = this->_minute;
-    this->_TSProperties->PropertiesGPS._seconde = this->_seconde;
+    this->_TSProperties->PropertiesGPS.Latitude = this->_latitude;
+    this->_TSProperties->PropertiesGPS.Longitude = this->_longitude;
+    this->_TSProperties->PropertiesGPS.Altitude = this->_altitude;
+    this->_TSProperties->PropertiesGPS.Speed = this->_speed;
+    this->_TSProperties->PropertiesGPS.VisibleSatellites = this->_visibleSatellites;
+    this->_TSProperties->PropertiesGPS.UsedSatellites = this->_usedSatellites;
+    this->_TSProperties->PropertiesGPS.Accuracy = this->_accuracy;
+    this->_TSProperties->PropertiesGPS.Year = this->_year;
+    this->_TSProperties->PropertiesGPS.Month = this->_month;
+    this->_TSProperties->PropertiesGPS.Day = this->_day;
+    this->_TSProperties->PropertiesGPS.Hour = this->_hour;
+    this->_TSProperties->PropertiesGPS.Minute = this->_minute;
+    this->_TSProperties->PropertiesGPS.Seconde = this->_seconde;
     this->_TSProperties->PropertiesGPS.IsValid = this->isFixValid();
 
     if (this->_TSProperties->PropertiesGPS.IsValid)
     {
-        this->_TSProperties->PropertiesGPS._TEST_counterGoodValue++;
+        this->_TSProperties->PropertiesGPS.CounterGoodValue++;
 
-        if (this->_TSProperties->PropertiesCurrentRide._dateBegin == "0000-00-00T00:00:00")
+        if (this->_TSProperties->PropertiesCurrentRide.DateBegin == "0000-00-00T00:00:00")
         {
-            this->_TSProperties->PropertiesCurrentRide._dateBegin = this->getDatetime();
+            this->_TSProperties->PropertiesCurrentRide.DateBegin = this->getDatetime();
         }
 
-        this->_TSProperties->PropertiesCurrentRide._pointID++;
-        this->_TSProperties->PropertiesCurrentRide._dateEnd = this->getDatetime();
-        this->_TSProperties->PropertiesCurrentRide._temperature = this->_TSProperties->PropertiesTemperature._temperature;
-        this->_TSProperties->PropertiesCurrentRide._durationS = (millis() - this->_TSProperties->PropertiesCurrentRide._startTimeMS) / 1000;
+        this->_TSProperties->PropertiesCurrentRide.PointID++;
+        this->_TSProperties->PropertiesCurrentRide.DateEnd = this->getDatetime();
+        this->_TSProperties->PropertiesCurrentRide.Temperature = this->_TSProperties->PropertiesTemperature.Temperature;
+        this->_TSProperties->PropertiesCurrentRide.DurationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
         // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
-        this->_TSProperties->PropertiesCurrentRide._currentPoint = String(this->_TSProperties->PropertiesCurrentRide._pointID) + ";" +
+        this->_TSProperties->PropertiesCurrentRide.CurrentPoint = String(this->_TSProperties->PropertiesCurrentRide.PointID) + ";" +
                                                                    String(this->_latitude, 10) + ";" +
                                                                    String(this->_longitude, 10) + ";" +
                                                                    String(this->_altitude) + ";" +
-                                                                   String(this->_TSProperties->PropertiesCurrentRide._temperature) + ";" +
+                                                                   String(this->_TSProperties->PropertiesCurrentRide.Temperature) + ";" +
                                                                    String(this->_speed) + ";" +
                                                                    this->getDatetime() + ";" +
-                                                                   String(this->_TSProperties->PropertiesCurrentRide._durationS);
-        this->_TSProperties->PropertiesCurrentRide._isPointReadyToSave = true;
+                                                                   String(this->_TSProperties->PropertiesCurrentRide.DurationS);
+        this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
     }
 }
 

@@ -33,9 +33,9 @@ Program::Program() :
 
     this->_gsm->init();
 
-    this->_TSProperties->PropertiesTS._isInitializingTS = false;
-    this->_TSProperties->PropertiesScreen._isNewActivePage = true;
-    this->_TSProperties->PropertiesScreen._activeScreen = 1;
+    this->_TSProperties->PropertiesTS.IsInitializingTS = false;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = 1;
 }
 
 Program::~Program()
@@ -59,39 +59,39 @@ void Program::execute()
 void Program::initProperties()
 {
     // TS
-    this->_TSProperties->PropertiesTS._isInitializingTS = true;
+    this->_TSProperties->PropertiesTS.IsInitializingTS = true;
 
     // Battery
-    this->_TSProperties->PropertiesBattery._batteryLevel = 0;
+    this->_TSProperties->PropertiesBattery.BatteryLevel = 0;
 
     // Buttons
-    this->_TSProperties->PropertiesButtons._button1State = 0;
-    this->_TSProperties->PropertiesButtons._button2State = 0;
+    this->_TSProperties->PropertiesButtons.Button1State = 0;
+    this->_TSProperties->PropertiesButtons.Button2State = 0;
 
     // Buzzer
-    this->_TSProperties->PropertiesBuzzer._isBuzzerOn = false;
+    this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = false;
 
     // Screen
-    this->_TSProperties->PropertiesScreen._activeScreen = 0;
-    this->_TSProperties->PropertiesScreen._isDarkMode = true;
-    this->_TSProperties->PropertiesScreen._screenRotation = 0;
-    this->_TSProperties->PropertiesScreen._isNewActivePage = true;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
+    this->_TSProperties->PropertiesScreen.IsDarkMode = true;
+    this->_TSProperties->PropertiesScreen.ScreenRotation = 0;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
     // Ride
-    this->_TSProperties->PropertiesCurrentRide._isRideStarted = false;
-    this->_TSProperties->PropertiesCurrentRide._isRidePaused = false;
-    this->_TSProperties->PropertiesCurrentRide._isRideFinished = false;
+    this->_TSProperties->PropertiesCurrentRide.IsRideStarted = false;
+    this->_TSProperties->PropertiesCurrentRide.IsRidePaused = false;
+    this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
 
     // BLE
-    this->_TSProperties->PropertiesCompletedRideToSend._completedRideId = "00000000-0000-0000-0000-000000000000";
-    this->_TSProperties->PropertiesCompletedRideToSend._stats = "";
-    this->_TSProperties->PropertiesCompletedRideToSend._point = "";
-    this->_TSProperties->PropertiesCompletedRideToSend._currentPoint = 0;
-    this->_TSProperties->PropertiesCompletedRideToSend._nbPoints = 0;
-    this->_TSProperties->PropertiesCompletedRideToSend._isPointReady = false;
-    this->_TSProperties->PropertiesCompletedRideToSend._isPointReceived = false;
-    this->_TSProperties->PropertiesCompletedRideToSend._isReady = false;
-    this->_TSProperties->PropertiesCompletedRideToSend._isReceived = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";
+    this->_TSProperties->PropertiesCompletedRideToSend.Stats = "";
+    this->_TSProperties->PropertiesCompletedRideToSend.Point = "";
+    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
+    this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = 0;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsReady = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsReceived = false;
 
     // GPS
     this->_TSProperties->PropertiesGPS.resetGPSValues();

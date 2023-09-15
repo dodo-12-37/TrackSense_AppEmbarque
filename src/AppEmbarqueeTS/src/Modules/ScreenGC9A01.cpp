@@ -4,7 +4,7 @@ ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSPropert
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
     this->tft->begin();
-    this->tft->setRotation(this->_TSProperties->PropertiesScreen._screenRotation);
+    this->tft->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
     this->drawBackgroundColor();
 }
 
@@ -26,21 +26,21 @@ ScreenGC9A01::~ScreenGC9A01()
 */
 void ScreenGC9A01::tick()
 {
-    if (!this->_TSProperties->PropertiesTS._isInitializedGSM)
-    {
-        this->_TSProperties->PropertiesScreen._activeScreen = -1;
-        this->_TSProperties->PropertiesScreen._isNewActivePage = false;
-    }
+    // if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
+    // {
+    //     this->_TSProperties->PropertiesScreen.ActiveScreen = -1;
+    //     this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+    // }
 
-    this->tft->setRotation(this->_TSProperties->PropertiesScreen._screenRotation);
+    this->tft->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
-    if (this->_TSProperties->PropertiesScreen._isNewActivePage)
+    if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
     {
         this->drawBackgroundColor();
-        // this->_TSProperties->PropertiesScreen._isNewActivePage = false;
+        // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
     }
 
-    switch (this->_TSProperties->PropertiesScreen._activeScreen)
+    switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
     {
     case 0:
         this->drawInitTSPage0();
@@ -59,14 +59,14 @@ void ScreenGC9A01::tick()
         break;
 
     case 4:
-        if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
             this->drawRidePage4();
         }
         else
         {
-            // this->_TSProperties->PropertiesScreen._activeScreen = -1;
-            // this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true; ////////////////////////////
+            // this->_TSProperties->PropertiesScreen.ActiveScreen = -1;
+            // this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true; ////////////////////////////
         }
         break;
 
@@ -87,7 +87,7 @@ void ScreenGC9A01::tick()
         break;
     }
 
-    this->_TSProperties->PropertiesScreen._isNewActivePage = false;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
 }
 
 /*
@@ -132,7 +132,7 @@ void ScreenGC9A01::drawHomePage1()
     this->tft->setCursor(35, 50);
     this->tft->printf("%-10s", "Home Page");
 
-    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
     this->testButtonsScreen();
 #else
     this->drawLogoTS();
@@ -144,7 +144,7 @@ void ScreenGC9A01::drawHomePage1()
     this->drawBattery(this->calculateXCoordItemToCenter(batteryLengthInPixels),
                       20,
                       batteryLengthInPixels,
-                      this->_TSProperties->PropertiesBattery._batteryLevel);
+                      this->_TSProperties->PropertiesBattery.BatteryLevel);
 #endif
 }
 
@@ -168,7 +168,7 @@ void ScreenGC9A01::drawRidePage4()
     this->tft->setCursor(35, 50);
     this->tft->printf("%-10s", "Ride Page");
 
-    this->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery.BatteryLevel);
 #endif
 }
 
@@ -309,7 +309,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
     this->setTextColor();
     tft->setCursor((coordBarreVerteX + barreVerteX / 4), coordBarreVerteY + hauteurY / 4);
-    String strBatteryLevel = String(this->_TSProperties->PropertiesBattery._batteryLevel, 0) + "%";
+    String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
     tft->printf("%-3s", strBatteryLevel.c_str());
 }
 
@@ -351,7 +351,7 @@ int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)
 
 void ScreenGC9A01::drawBackgroundColor(int darkModeColor, int lightModeColor)
 {
-    if (this->_TSProperties->PropertiesScreen._isDarkMode)
+    if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
         this->tft->fillScreen(darkModeColor);
     }
@@ -366,7 +366,7 @@ void ScreenGC9A01::setTextColor(int textDarkModeColor,
                                 int textLightModeColor,
                                 int backgroundLightModeColor)
 {
-    if (this->_TSProperties->PropertiesScreen._isDarkMode)
+    if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
         this->tft->setTextColor(textDarkModeColor, backgroundDarkModeColor);
     }
@@ -391,11 +391,11 @@ void ScreenGC9A01::testGPS()
 {
     char *formatChar = (char *)"%-19s";
 
-    if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS._usedSatellites >= 4)
+    if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS.UsedSatellites >= 4)
     {
         this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
     }
-    else if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS._usedSatellites < 4)
+    else if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS.UsedSatellites < 4)
     {
         this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
     }
@@ -407,38 +407,38 @@ void ScreenGC9A01::testGPS()
     tft->setTextSize(2);
 
     tft->setCursor(40, 40);
-    String strCounterGoodValue = "Good: " + String(this->_TSProperties->PropertiesGPS._TEST_counterGoodValue);
+    String strCounterGoodValue = "Good: " + String(this->_TSProperties->PropertiesGPS.CounterGoodValue);
     tft->printf("%-15s", strCounterGoodValue.c_str());
 
     tft->setCursor(30, 60);
-    String strCounterTotal = "Total: " + String(this->_TSProperties->PropertiesGPS._TEST_counterTotal);
+    String strCounterTotal = "Total: " + String(this->_TSProperties->PropertiesGPS.CounterTotal);
     tft->printf("%-11s", strCounterTotal.c_str());
 
     tft->setCursor(15, 85);
-    String strUsedSatellite = "Used Sat: " + String(this->_TSProperties->PropertiesGPS._usedSatellites);
+    String strUsedSatellite = "Used Sat: " + String(this->_TSProperties->PropertiesGPS.UsedSatellites);
     tft->printf(formatChar, strUsedSatellite.c_str());
 
     tft->setCursor(2, 110);
-    String strLatitude = "Lat: " + String(this->_TSProperties->PropertiesGPS._latitude, 10);
+    String strLatitude = "Lat: " + String(this->_TSProperties->PropertiesGPS.Latitude, 10);
     tft->printf(formatChar, strLatitude.c_str());
 
     tft->setCursor(2, 130);
-    String strLongitude = "Lon: " + String(this->_TSProperties->PropertiesGPS._longitude, 10);
+    String strLongitude = "Lon: " + String(this->_TSProperties->PropertiesGPS.Longitude, 10);
     tft->printf(formatChar, strLongitude.c_str());
 
     tft->setCursor(12, 150);
-    String strAltitude = "Alt: " + String(this->_TSProperties->PropertiesGPS._altitude, 8);
+    String strAltitude = "Alt: " + String(this->_TSProperties->PropertiesGPS.Altitude, 8);
     tft->printf(formatChar, strAltitude.c_str());
 
     tft->setCursor(20, 170);
-    String strSpeed = "Speed: " + String(this->_TSProperties->PropertiesGPS._speed, 4);
+    String strSpeed = "Speed: " + String(this->_TSProperties->PropertiesGPS.Speed, 4);
     tft->printf(formatChar, strSpeed.c_str());
 
     tft->setCursor(40, 190);
-    String strAccuracy = "Accu: " + String(this->_TSProperties->PropertiesGPS._accuracy, 4);
+    String strAccuracy = "Accu: " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
     tft->printf(formatChar, strAccuracy.c_str());
 
-    this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery._batteryLevel);
+    this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevel);
 }
 
 void ScreenGC9A01::testButtonsScreen()
@@ -450,8 +450,8 @@ void ScreenGC9A01::testButtonsScreen()
     this->setTextColor();
 
     // int isButton1Pressed = digitalRead(PIN_BUTTON1); // 33
-    int isButton1Pressed = this->_TSProperties->PropertiesButtons._button1State;
-    int isButton2Pressed = this->_TSProperties->PropertiesButtons._button2State;
+    int isButton1Pressed = this->_TSProperties->PropertiesButtons.Button1State;
+    int isButton2Pressed = this->_TSProperties->PropertiesButtons.Button2State;
 
     if (isButton1Pressed == 0 & isButton2Pressed == 0) // not pressed
     {

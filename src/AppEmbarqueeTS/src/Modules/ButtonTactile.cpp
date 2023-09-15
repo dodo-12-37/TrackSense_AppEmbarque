@@ -27,13 +27,13 @@ int ButtonTactile::getFinalState()
         if (this->_lastStableStateButton == LOW && this->_buttonState == HIGH)
         {
             // tone(PIN_BUZZER, 450, 50);
-            this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true;
+            this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true;
         }
 
         if (this->_lastStableStateButton == HIGH && this->_buttonState == HIGH && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)
         {
             // tone(PIN_BUZZER, 550, 100);
-            this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true;
+            this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true;
             finalState = 2; // 2 == long press
         }
 

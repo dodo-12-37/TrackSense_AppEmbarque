@@ -26,8 +26,8 @@ void ControlerButtons::tick()
     this->_finalStateButton1 = this->_button1->getFinalState(); // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     this->_finalStateButton2 = this->_button2->getFinalState();
 
-    this->_TSProperties->PropertiesButtons._button1State = this->_finalStateButton1;
-    this->_TSProperties->PropertiesButtons._button2State = this->_finalStateButton2;
+    this->_TSProperties->PropertiesButtons.Button1State = this->_finalStateButton1;
+    this->_TSProperties->PropertiesButtons.Button2State = this->_finalStateButton2;
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
 
@@ -48,9 +48,9 @@ void ControlerButtons::tick()
         /* Start/Stop Ride */
         Serial.println("Button 1 LONG press");
 
-        // if (this->_TSProperties->PropertiesCurrentRide._isRideFinished == false)
+        // if (this->_TSProperties->PropertiesCurrentRide.IsRideFinished == false)
         // {
-            if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
+            if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
             {
                 this->finishRide();
             }
@@ -83,9 +83,9 @@ void ControlerButtons::tick()
         /* Pause/Restart Ride */
         Serial.println("Button 2 LONG press");
 
-        if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
-            if (this->_TSProperties->PropertiesCurrentRide._isRidePaused)
+            if (this->_TSProperties->PropertiesCurrentRide.IsRidePaused)
             {
                 this->restartRide();
             }
@@ -128,8 +128,8 @@ void ControlerButtons::tick()
 */
 void ControlerButtons::changePageUp()
 {
-    this->_TSProperties->PropertiesScreen._activeScreen = 1;
-    this->_TSProperties->PropertiesScreen._isNewActivePage = true;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = 1;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 /*
@@ -145,49 +145,49 @@ void ControlerButtons::changePageUp()
 */
 void ControlerButtons::changePageDown()
 {
-    this->_TSProperties->PropertiesScreen._activeScreen = 4;
-    this->_TSProperties->PropertiesScreen._isNewActivePage = true;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = 4;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 void ControlerButtons::startRide()
 {
-    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted == false)
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted == false)
     {
         Serial.println("===================== Start Ride =====================");
         this->_TSProperties->PropertiesCurrentRide.resetCurrentRide();
         this->_TSProperties->PropertiesGPS.resetGPSValues();
 
-        this->_TSProperties->PropertiesCurrentRide._isRideStarted = true;
-        this->_TSProperties->PropertiesCurrentRide._isRideFinished = false;
+        this->_TSProperties->PropertiesCurrentRide.IsRideStarted = true;
+        this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
 
-        this->_TSProperties->PropertiesCurrentRide._startTimeMS = millis();
+        this->_TSProperties->PropertiesCurrentRide.StartTimeMS = millis();
 
         this->_guidGenerator->generate();
-        this->_TSProperties->PropertiesCurrentRide._completedRideId = this->_guidGenerator->toCharArray();
+        this->_TSProperties->PropertiesCurrentRide.CompletedRideId = this->_guidGenerator->toCharArray();
 
-        this->_TSProperties->PropertiesScreen._activeScreen = 4;
-        this->_TSProperties->PropertiesScreen._isNewActivePage = true;
+        this->_TSProperties->PropertiesScreen.ActiveScreen = 4;
+        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
     }
 }
 
 void ControlerButtons::finishRide()
 {
-    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
     {
-        this->_TSProperties->PropertiesCurrentRide._isRideFinished = true;
-        this->_TSProperties->PropertiesCurrentRide._isRideStarted = false;
+        this->_TSProperties->PropertiesCurrentRide.IsRideFinished = true;
+        this->_TSProperties->PropertiesCurrentRide.IsRideStarted = false;
 
-        this->_TSProperties->PropertiesCurrentRide._endTimeMS = millis();
-        this->_TSProperties->PropertiesCurrentRide._durationS = (this->_TSProperties->PropertiesCurrentRide._endTimeMS - this->_TSProperties->PropertiesCurrentRide._startTimeMS) / 1000;
+        this->_TSProperties->PropertiesCurrentRide.EndTimeMS = millis();
+        this->_TSProperties->PropertiesCurrentRide.DurationS = (this->_TSProperties->PropertiesCurrentRide.EndTimeMS - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
 
-        this->_TSProperties->PropertiesCurrentRide._isRideReadyToSave = true;
+        this->_TSProperties->PropertiesCurrentRide.IsRideReadyToSave = true;
 
-        this->_TSProperties->PropertiesScreen._activeScreen = 1;
-        this->_TSProperties->PropertiesScreen._isNewActivePage = true;
+        this->_TSProperties->PropertiesScreen.ActiveScreen = 1;
+        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
-        this->_TSProperties->PropertiesGPS._TEST_counterTotal = 0;
-        this->_TSProperties->PropertiesGPS._TEST_counterGoodValue = 0;
+        this->_TSProperties->PropertiesGPS.CounterTotal = 0;
+        this->_TSProperties->PropertiesGPS.CounterGoodValue = 0;
         
         Serial.println("===================== Finish Ride =====================");
     }
@@ -195,23 +195,23 @@ void ControlerButtons::finishRide()
 
 void ControlerButtons::pauseRide()
 {
-    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
     {
-        this->_TSProperties->PropertiesCurrentRide._isRidePaused = true;
+        this->_TSProperties->PropertiesCurrentRide.IsRidePaused = true;
     }
 }
 
 void ControlerButtons::restartRide()
 {
-    if (this->_TSProperties->PropertiesCurrentRide._isRideStarted)
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
     {
-        this->_TSProperties->PropertiesCurrentRide._isRidePaused = false;
+        this->_TSProperties->PropertiesCurrentRide.IsRidePaused = false;
     }
 }
 
 void ControlerButtons::makeNoiseBuzzer()
 {
-    this->_TSProperties->PropertiesBuzzer._isBuzzerOn = true;
+    this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true;
 }
 
 void ControlerButtons::goHome()
@@ -226,5 +226,5 @@ void ControlerButtons::goHome()
             7 : Ride Statistics Page
             0 : No Page (error)
         */
-    this->_TSProperties->PropertiesScreen._activeScreen = 6;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = 6;
 }

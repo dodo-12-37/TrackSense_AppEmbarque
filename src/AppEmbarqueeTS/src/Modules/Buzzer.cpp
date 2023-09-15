@@ -13,9 +13,9 @@ Buzzer::~Buzzer()
 
 void Buzzer::tick()
 {
-    if (this->_TSProperties->PropertiesBuzzer._isBuzzerOn)
+    if (this->_TSProperties->PropertiesBuzzer.IsBuzzerOn)
     {
         tone(PIN_BUZZER, 500, 100);
-        this->_TSProperties->PropertiesBuzzer._isBuzzerOn = false;
+        this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = false;
     }
 }

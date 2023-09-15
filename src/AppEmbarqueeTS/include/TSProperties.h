@@ -8,61 +8,61 @@ public:
     /* Datas TrackSense */
     struct TSPropertiesTS
     {
-        bool _isInitializingTS;
-        bool _isInitializedGSM;
+        bool IsInitializingTS;
+        bool IsInitializedGSM;
     } PropertiesTS;
 
     /* datas Current ride */
     struct TSPropertiesCurrentRide
     {
-        bool _isRideStarted;
-        bool _isRidePaused;
-        bool _isRideFinished;
+        bool IsRideStarted;
+        bool IsRidePaused;
+        bool IsRideFinished;
 
-        String _completedRideId;
-        String _plannedRideId;
-        double _maxSpeed;
-        double _avgSpeed;
-        double _distance;
+        String CompletedRideId;
+        String PlannedRideId;
+        double MaxSpeed;
+        double AvgSpeed;
+        double Distance;
 
-        unsigned long _durationS;
-        unsigned long _startTimeMS;
-        unsigned long _endTimeMS;
+        unsigned long DurationS;
+        unsigned long StartTimeMS;
+        unsigned long EndTimeMS;
         
-        String _dateBegin;
-        String _dateEnd;
-        String _currentPoint;
-        int _nbPoints;
-        int _pointID;
-        int _nbFalls;
-        bool _isRideReadyToSave;
-        bool _isPointReadyToSave;
-        float _temperature;
+        String DateBegin;
+        String DateEnd;
+        String CurrentPoint;
+        int NbPoints;
+        int PointID;
+        int NbFalls;
+        bool IsRideReadyToSave;
+        bool IsPointReadyToSave;
+        float Temperature;
 
 
         void resetCurrentRide()
         {
-            this->_isRideStarted = false;
-            this->_isRidePaused = false;
-            this->_isRideFinished = false;
+            this->IsRideStarted = false;
+            this->IsRidePaused = false;
+            this->IsRideFinished = false;
             
-            this->_completedRideId = "00000000-0000-0000-0000-000000000000";
-            this->_plannedRideId = "00000000-0000-0000-0000-000000000000";
-            this->_maxSpeed = 0;
-            this->_avgSpeed = 0;
-            this->_distance = 0;
-            this->_durationS = 0;
-            this->_dateBegin = "0000-00-00T00:00:00";
-            this->_dateEnd = "0000-00-00T00:00:00";
-            this->_currentPoint = "";
-            this->_nbPoints = 0;
-            this->_pointID = 0;
-            this->_nbFalls = 0;
-            this->_isRideReadyToSave = false;
-            this->_isPointReadyToSave = false;
-            this->_temperature = 0;
-            this->_startTimeMS = 0;
-            this->_endTimeMS = 0;
+            this->CompletedRideId = "00000000-0000-0000-0000-000000000000";
+            this->PlannedRideId = "00000000-0000-0000-0000-000000000000";
+            this->MaxSpeed = 0;
+            this->AvgSpeed = 0;
+            this->Distance = 0;
+            this->DurationS = 0;
+            this->DateBegin = "0000-00-00T00:00:00";
+            this->DateEnd = "0000-00-00T00:00:00";
+            this->CurrentPoint = "";
+            this->NbPoints = 0;
+            this->PointID = 0;
+            this->NbFalls = 0;
+            this->IsRideReadyToSave = false;
+            this->IsPointReadyToSave = false;
+            this->Temperature = 0;
+            this->StartTimeMS = 0;
+            this->EndTimeMS = 0;
         }
     } PropertiesCurrentRide;
 
@@ -70,44 +70,44 @@ public:
     struct TSPropertiesGPS
     {
         // datas brute GPS
-        float _latitude;
-        float _longitude;
-        float _altitude;
-        float _speed;
-        int _visibleSatellites;
-        int _usedSatellites;
-        float _accuracy;
-        int _year;
-        int _month;
-        int _day;
-        int _hour;
-        int _minute;
-        int _seconde;
+        float Latitude;
+        float Longitude;
+        float Altitude;
+        float Speed;
+        int VisibleSatellites;
+        int UsedSatellites;
+        float Accuracy;
+        int Year;
+        int Month;
+        int Day;
+        int Hour;
+        int Minute;
+        int Seconde;
         bool IsValid;
 
-        int _TEST_counterGoodValue;
-        int _TEST_counterTotal;
+        int CounterGoodValue;
+        int CounterTotal;
 
-        float mph() { return 0.621371 * _speed; }
-        float miles() { return 0.00062137112 * _altitude; }
+        float mph() { return 0.621371 * Speed; }
+        float miles() { return 0.00062137112 * Altitude; }
 
         void resetGPSValues()
         {
-            this->_latitude = 0;
-            this->_longitude = 0;
-            this->_altitude = 0;
-            this->_speed = 0;
-            this->_visibleSatellites = 0;
-            this->_usedSatellites = 0;
-            this->_accuracy = 0;
-            this->_year = 0;
-            this->_month = 0;
-            this->_day = 0;
-            this->_hour = 0;
-            this->_minute = 0;
-            this->_seconde = 0;
-            this->_TEST_counterGoodValue = 0;
-            this->_TEST_counterTotal = 0;
+            this->Latitude = 0;
+            this->Longitude = 0;
+            this->Altitude = 0;
+            this->Speed = 0;
+            this->VisibleSatellites = 0;
+            this->UsedSatellites = 0;
+            this->Accuracy = 0;
+            this->Year = 0;
+            this->Month = 0;
+            this->Day = 0;
+            this->Hour = 0;
+            this->Minute = 0;
+            this->Seconde = 0;
+            this->CounterGoodValue = 0;
+            this->CounterTotal = 0;
             this->IsValid = false;
         }
     } PropertiesGPS;
@@ -115,10 +115,10 @@ public:
     /* datas Buttons */
     struct TSPropertiesButtons
     {
-        // bool _isButton1Pressed;
-        // bool _isButton2Pressed;
-        int _button1State;
-        int _button2State;
+        // bool IsButton1Pressed;
+        // bool IsButton2Pressed;
+        int Button1State;
+        int Button2State;
     } PropertiesButtons;
 
     /* datas Screen */
@@ -135,9 +135,9 @@ public:
             7 : Ride Statistics Page
             -1 : No Page (error)
         */
-        uint8_t _activeScreen;
-        bool _isNewActivePage;
-        bool _isDarkMode;
+        uint8_t ActiveScreen;
+        bool IsNewActivePage;
+        bool IsDarkMode;
 
         /*
             0 : Pins vers le haut
@@ -145,7 +145,7 @@ public:
             2 : Pins vers le bas
             3 : Pins vers la droite
         */
-        uint8_t _screenRotation;
+        uint8_t ScreenRotation;
 
     } PropertiesScreen;
 
@@ -158,16 +158,16 @@ public:
     /* datas Bluetooth */
     struct TSPropertiesBluetooth
     {
-        bool _isDeviceBluetoothConnected;
+        bool IsDeviceBluetoothConnected;
 
-        // bool _isBluetoothConnected;
-        // bool _isBluetoothActivated;
+        // bool IsBluetoothConnected;
+        // bool IsBluetoothActivated;
     } PropertiesBluetooth;
 
     /* datas LTE */
     struct TSPropertiesLTE
     {
-        bool _isDeviceLTEConnected;
+        bool IsDeviceLTEConnected;
     } PropertiesLTE;
 
     /* datas Wifi */
@@ -179,61 +179,61 @@ public:
     /* datas Compass */
     struct TSPropertiesCompass
     {
-        double _heading_angle; // PositionNord
-        double _declinationAngle;
-        // double _calibrationCompassX;
-        // double _calibrationCompassY;
-        // double _calibrationCompassZ;
+        double Heading_angle; // PositionNord
+        double DeclinationAngle;
+        // double CalibrationCompassX;
+        // double CalibrationCompassY;
+        // double CalibrationCompassZ;
     } PropertiesCompass;
 
     /* datas Gyroscope */
     struct TSPropertiesGyroscope
     {
-        double _roll_angle;  // PositionRoulis
-        double _pitch_angle; // PositionTangage
-        double _yaw_angle;   // PositionLacet
+        double RollAngle;  // PositionRoulis
+        double PitchAngle; // PositionTangage
+        double YawAngle;   // PositionLacet
     } PropertiesGyroscope;
 
     /* datas Accelerometer */
     struct TSPropertiesAccelerometer
     {
-        double _acceleration_x;
-        double _acceleration_y;
-        double _acceleration_z;
+        double Acceleration_x;
+        double Acceleration_y;
+        double Acceleration_z;
     } PropertiesAccelerometer;
 
     /* datas Temperature */
     struct TSPropertiesTemperature
     {
-        double _temperature;
+        double Temperature;
     } PropertiesTemperature;
 
     /* datas Battery */
     struct TSPropertiesBattery
     {
-        double _batteryLevel;
+        double BatteryLevel;
     } PropertiesBattery;
 
     /* datas Buzzer */
     struct TSPropertiesBuzzer
     {
-        bool _isBuzzerOn;
+        bool IsBuzzerOn;
     } PropertiesBuzzer;
 
     /* datas CompletedRide to send */
     struct TSPropertiesCompletedRideToSend
     {
-        String _completedRideId;
-        String _stats;
-        String _point;
-        int _currentPoint;
-        int _nbPoints;
+        String CompletedRideId;
+        String Stats;
+        String Point;
+        int CurrentPoint;
+        int NbPoints;
 
-        bool _isPointReady;
-        bool _isPointReceived;
+        bool IsPointReady;
+        bool IsPointReceived;
 
-        bool _isReady;
-        bool _isReceived;
+        bool IsReady;
+        bool IsReceived;
     } PropertiesCompletedRideToSend;
 
     /* Methods */
