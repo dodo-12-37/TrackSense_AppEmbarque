@@ -128,8 +128,6 @@ void ControlerButtons::tick()
 */
 void ControlerButtons::changePageUp()
 {
-    // this->_TSProperties->PropertiesScreen.ActiveScreen = this->_TSProperties->PropertiesScreen.ActiveScreen++ % NB_ACTIVE_PAGES;
-
     this->_TSProperties->PropertiesScreen.ActiveScreen++;
 
     if (this->_TSProperties->PropertiesScreen.ActiveScreen >= NB_ACTIVE_PAGES)
@@ -137,7 +135,6 @@ void ControlerButtons::changePageUp()
         this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
     }
     
-    // this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
@@ -154,8 +151,6 @@ void ControlerButtons::changePageUp()
 */
 void ControlerButtons::changePageDown()
 {
-    // this->_TSProperties->PropertiesScreen.ActiveScreen = this->_TSProperties->PropertiesScreen.ActiveScreen-- % NB_ACTIVE_PAGES;
-
     this->_TSProperties->PropertiesScreen.ActiveScreen--;
 
     if (this->_TSProperties->PropertiesScreen.ActiveScreen < 0)
@@ -163,7 +158,6 @@ void ControlerButtons::changePageDown()
         this->_TSProperties->PropertiesScreen.ActiveScreen = NB_ACTIVE_PAGES - 1;
     }
 
-    // this->_TSProperties->PropertiesScreen.ActiveScreen = RIDE_PAGE_ID;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
