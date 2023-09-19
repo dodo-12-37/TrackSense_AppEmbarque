@@ -1,10 +1,28 @@
 #include "Modules/ScreenGC9A01.h"
 
+// #include <Fonts/BebasNeue_Regular18pt7b.h> // Font logo TrackSense
+// #include <Fonts/BebasNeue_Regular6pt7b.h>  // Font logo TrackSense
+// #include <Fonts/BebasNeue_Regular24pt7b.h> // Font logo TrackSense
+// #include <Fonts/FreeSansBold9pt7b.h> // Vraiment le meilleur à date
+// #include <Fonts/FreeSansBold12pt7b.h> // Vraiment le meilleur à date
+// #include <Fonts/FreeSansBold18pt7b.h> // Vraiment le meilleur à date
+// #include <Fonts/FreeSansBold24pt7b.h> // Vraiment le meilleur à date
+// #include <Fonts/FreeSerifBold9pt7b.h> // look good
+// #include <Fonts/FreeMonoBold9pt7b.h>  // look good mais bug
+// #include <Fonts/FreeSerifBold12pt7b.h>  // jolie, mais pas ce qu'on veut avoir
+// #include <Fonts/FreeMonoBold24pt7b.h>   // jolie, mais pas ce qu'on veut avoir
+
 ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+    // pinMode(TFT_BL_BLK, OUTPUT);       // PyPortal requires
+    // digitalWrite(TFT_BL_BLK, HIGH);    // turning on backlight
     this->tft->begin();
     this->tft->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
+
+    // tft->setFont(&BebasNeue_Regular24pt7b);
+    // tft->setFont(&FreeSansBold12pt7b);
+
     this->drawBackgroundColor();
 }
 
@@ -37,8 +55,6 @@ void ScreenGC9A01::tick()
     {
         this->_counterSamePage = 0;
     }
-    
-    
 
     if (this->_currentActivePage == this->_lastActivePage)
     {
@@ -237,13 +253,37 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
 {
     int16_t coordX = 17; // "T" coordX = 16
     int16_t coordY = 65; // "T" coordX = 65
-
     tft->setTextSize(7);
+
+    int16_t coordX_ = 0;
+    int16_t coordY_ = 0;
+
+    // int16_t coordX = 31;  // "T" coordX = 16
+    // int16_t coordY = 115; // "T" coordX = 65
+    // tft->setTextSize(2, 3);
+    // tft->setFont(&FreeSansBold9pt7b);    // Le meilleur à date
+    // tft->setFont(&BebasNeue_Regular18pt7b);
 
     uint16_t width = 42;  // "T" width = 42
     uint16_t height = 56; // "T" height = 56
 
-    tft->getTextBounds("T", coordX, coordY, &coordX, &coordY, &width, &height);
+    tft->getTextBounds("R", coordX, coordY, &coordX_, &coordY_, &width, &height);
+    Serial.println("T");
+    Serial.print("coordX : ");
+    Serial.println(coordX);
+    Serial.print("coordY : ");
+    Serial.println(coordY);
+    Serial.print("coordX_ : ");
+    Serial.println(coordX_);
+    Serial.print("coordY_ : ");
+    Serial.println(coordY_);
+    Serial.print("width : ");
+    Serial.println(width);
+    Serial.print("height : ");
+    Serial.println(height);
+
+    // width = 42;  // "T" width = 42
+    // height = 56; // "T" height = 56
 
     int widthWithoutSpace = width * 0.80952381; // widthWithoutSpace = 42 * 0.80952381 = 34
     int heightWithoutSpace = height * 0.875;    // heightWithoutSpace = 56 * 0.875 = 49
@@ -264,16 +304,16 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
     tft->printf("%-1s", "K");
 
     // Draw special "S"
-    tft->fillCircle(coordX + width * 0.761904762, coordY2 + height * 0.160714286, 4, GC9A01A_RED);
-    tft->fillCircle(coordX + width * 0.547619048, coordY2 + height * 0.053571429, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.285714286, coordY2 + height * 0.089285714, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.142857143, coordY2 + height * 0.250000000, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.309523810, coordY2 + height * 0.392857143, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.523809524, coordY2 + height * 0.500000000, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.714285714, coordY2 + height * 0.642857143, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.547619048, coordY2 + height * 0.803571429, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.285714286, coordY2 + height * 0.839285714, 4, GC9A01A_WHITE);
-    tft->fillCircle(coordX + width * 0.095238095, coordY2 + height * 0.714285714, 4, GC9A01A_RED);
+    tft->fillCircle(coordX + width * 0.761904762, coordY2 + (height * 0.160714286), 4, GC9A01A_RED);
+    tft->fillCircle(coordX + width * 0.547619048, coordY2 + (height * 0.053571429), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.285714286, coordY2 + (height * 0.089285714), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.142857143, coordY2 + (height * 0.250000000), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.309523810, coordY2 + (height * 0.392857143), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.523809524, coordY2 + (height * 0.500000000), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.714285714, coordY2 + (height * 0.642857143), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.547619048, coordY2 + (height * 0.803571429), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.285714286, coordY2 + (height * 0.839285714), 4, GC9A01A_WHITE);
+    tft->fillCircle(coordX + width * 0.095238095, coordY2 + (height * 0.714285714), 4, GC9A01A_RED);
 
     // Draw "ENSE"
     this->setTextColor();
@@ -347,7 +387,7 @@ void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t lar
         // if (this->_currentActivePage == this->_lastLastActivePage)
         if (this->_counterSamePage == 1)
         {
-            this->tft->fillRect(coordX -5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
+            this->tft->fillRect(coordX - 5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
         }
         this->tft->fillTriangle(coordX, coordY, coordX + largeurX, coordY + hauteurY / 2, coordX, coordY + hauteurY, GC9A01A_GREEN);
     }
@@ -356,7 +396,7 @@ void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t lar
         // if (this->_currentActivePage == this->_lastLastActivePage)
         if (this->_counterSamePage == 1)
         {
-            this->tft->fillRect(coordX -5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
+            this->tft->fillRect(coordX - 5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
         }
         this->tft->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
     }

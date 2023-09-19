@@ -8,6 +8,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_GC9A01A.h>
 
+
+
 class ScreenGC9A01 : public IScreen
 {
 private:
