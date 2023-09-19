@@ -3,31 +3,39 @@
 
 
 Program::Program() : 
-    _trackSenseProperties(nullptr), 
-    _lte(nullptr), 
-    _gps(nullptr), 
+    _TSProperties(nullptr), 
+    // _lte(nullptr), 
+    _gsm(nullptr), 
     _sdCard(nullptr), 
     _gyroscope(nullptr), 
     _compass(nullptr), 
     _accelerometer(nullptr), 
     _ble(nullptr), 
     _screen(nullptr), 
-    _buzzer(nullptr)
+    _buzzer(nullptr),
+    _controlerButtons(nullptr)
 {
-    this->_trackSenseProperties = new TrackSenseProperties();
-    this->_controlerButtons = new ControlerButtons(this->_trackSenseProperties);
-    this->_screen = new ScreenGC9A01(this->_trackSenseProperties);
-    this->_ble = new BLE(this->_trackSenseProperties);
-    this->_sdCard = new SDCard(this->_trackSenseProperties);
-    this->_gps = new GPSTinyPlus(this->_trackSenseProperties);
-    this->_lte = new LTE(this->_trackSenseProperties);
-    this->_gyroscope = new GyroscopeMPU6050(this->_trackSenseProperties);
-    this->_compass = new CompassHMC5883L(this->_trackSenseProperties);
-    this->_accelerometer = new AccelerometerMPU6050(this->_trackSenseProperties);
-    this->_buzzer = new Buzzer(this->_trackSenseProperties);
-
+    this->_TSProperties = new TSProperties();
     this->initProperties();
 
+    this->_screen = new ScreenGC9A01(this->_TSProperties);
+    this->_screen->tick();
+
+    this->_controlerButtons = new ControlerButtons(this->_TSProperties);
+    this->_ble = new BLE(this->_TSProperties);
+    this->_sdCard = new SDCard(this->_TSProperties);
+    this->_gsm = new GSMTiny(this->_TSProperties);
+    // this->_lte = new LTE(this->_TSProperties);
+    this->_gyroscope = new GyroscopeMPU6050(this->_TSProperties);
+    this->_compass = new CompassHMC5883L(this->_TSProperties);
+    this->_accelerometer = new AccelerometerMPU6050(this->_TSProperties);
+    this->_buzzer = new Buzzer(this->_TSProperties);
+
+    this->_gsm->init();
+
+    this->_TSProperties->PropertiesTS.IsInitializingTS = false;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = 1;
 }
 
 Program::~Program()
@@ -36,36 +44,59 @@ Program::~Program()
 
 void Program::execute()
 {
-    // Serial.println("Hello World");
     this->_controlerButtons->tick();
+    this->_buzzer->tick();
     this->_screen->tick();
     this->_ble->tick();
+    this->_gsm->tick();
     this->_sdCard->tick();
-    this->_gps->tick();
-    this->_lte->tick();
+    // this->_lte->tick();
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-    this->_buzzer->tick();   // gossant ou pas :p   // lol
 }
 
 void Program::initProperties()
 {
+    // TS
+    this->_TSProperties->PropertiesTS.IsInitializingTS = true;
+
+    // Battery
+    this->_TSProperties->PropertiesBattery.BatteryLevel = 0;
+
     // Buttons
-    this->_trackSenseProperties->PropertiesButtons._TEST_Button1State = 0;
-    this->_trackSenseProperties->PropertiesButtons._TEST_Button2State = 0;
+    this->_TSProperties->PropertiesButtons.Button1State = 0;
+    this->_TSProperties->PropertiesButtons.Button2State = 0;
 
     // Buzzer
-    this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = false;
+    this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = false;
 
     // Screen
-    this->_trackSenseProperties->PropertiesScreen._isHomePage = true;
-    this->_trackSenseProperties->PropertiesScreen._isRidePage = false;
-    this->_trackSenseProperties->PropertiesScreen._isRideDirectionPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isRideStatisticsPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isGlobalStatisticsPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isCompassPage = false;
-    this->_trackSenseProperties->PropertiesScreen._isGoHomePage = false;
-    this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
+    this->_TSProperties->PropertiesScreen.IsDarkMode = true;
+    this->_TSProperties->PropertiesScreen.ScreenRotation = 0;
+    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
-}
+    // Ride
+    this->_TSProperties->PropertiesCurrentRide.IsRideStarted = false;
+    this->_TSProperties->PropertiesCurrentRide.IsRidePaused = false;
+    this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
+
+    // BLE
+    this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";
+    this->_TSProperties->PropertiesCompletedRideToSend.Stats = "";
+    this->_TSProperties->PropertiesCompletedRideToSend.Point = "";
+    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
+    this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = 0;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsReady = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsReceived = false;
+
+    // GPS
+    this->_TSProperties->PropertiesGPS.resetGPSValues();
+
+    // Current Ride
+    this->_TSProperties->PropertiesCurrentRide.resetCurrentRide();
+
+}   

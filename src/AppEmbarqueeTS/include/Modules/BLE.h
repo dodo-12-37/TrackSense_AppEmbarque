@@ -9,43 +9,48 @@
 
 #include "Interfaces/IBLE.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 class BLE 
     : public IBLE
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
     BLEServer* _serverBLE;
+    BLEAdvertising* _advertisingBLE;
 
     BLEService* _completedRideService;
-    BLECharacteristic* _CRIdCaracteristic;
-    BLECharacteristic* _CRRouteIdCaracteristic;
-    BLECharacteristic* _CRMaxSpeedCaracteristic;
-    BLECharacteristic* _CRAVGSpeedCaracteristic;
-    BLECharacteristic* _CRDistanceCaracteristic;
-    BLECharacteristic* _CRDurationCaracteristic;
-    BLECharacteristic* _CRDateBeginCaracteristic;
-    BLECharacteristic* _CRDateEndCaracteristic;
-    BLECharacteristic* _CRPointsCaracteristic;
-    BLECharacteristic* _CRNbPointsCaracteristic;
-    BLECharacteristic* _CRNbFallsCaracteristic;
+
+    BLECharacteristic* _CRStatsCaracteristic;
+    BLECharacteristic* _CRPointCaracteristic;
+    BLECharacteristic* _CRPointNumberCaracteristic;
     BLECharacteristic* _CRIsReadyCaracteristic;
-    BLECharacteristic* _CRIsReceivedCaracteristic;
+
+    BLEDescriptor* _CRStatsDescriptor;
+    BLEDescriptor* _CRPointDescriptor;
+    BLEDescriptor* _CRPointNumberDescriptor;
+    BLEDescriptor* _CRIsReadyDescriptor;
+
+    unsigned long _lastTimeStatsSent;
+    unsigned long _lastTimePointSent;
 
     void initBLE();
     void initAdvertising();
     void initCompletedRideService();
     void initCompletedRideCaracteristics();
-    void sendCompletedRide();
-
+    void initCompletedRideDescriptors();
+    void sendCompletedRideStats();
+    void sendCompletedRideCurrentPoint();
 
 public:
     static bool isDeviceConnected;
-    static bool isCompletedRideReceived;
+    static bool isCompletedRideStatsSending;
+    static bool isCompletedRideStatsReceived;
+    static bool isCompletedRidePointSending;
+    static bool isCompletedRidePointReceived;
 
-    BLE(TrackSenseProperties* trackSenseProperties);
+    BLE(TSProperties* TSProperties);
     ~BLE();
 
     void tick() override;

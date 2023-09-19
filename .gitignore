@@ -403,7 +403,8 @@ FodyWeavers.xsd
 "Modèles 3D"
 Modèles 3D
 # *.zip
-# TestEcran_Adafruit_GC9A01A
-# TestEcran_TFT_eSPI
-# Références Composants/GC9A01 - TFT LCD Display Module/Modèles 3D/1.28inch_LCD_Module_3D_Drawing/1.28inch LCD Module 3D Drawing/0508.stp
-# TestLTE_TinyGSM/.vscode/extensions.json
+
+*/.vscode/extensions.json
+
+cr/*.csv
+cr/

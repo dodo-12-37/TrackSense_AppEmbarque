@@ -6,21 +6,35 @@
 
 #include "Interfaces/ISDCard.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 class SDCard : public ISDCard
 {
 private:
-    TrackSenseProperties* trackSenseProperties;
+    TSProperties* _TSProperties;
     // SD* _sd;
 
     int _nbFiles;
-    File _currentFile;
+    bool _isRideStarted;
+    File _currentPointsFile;
+    String _currentPointsFileName;
+    String _currentStatsFileName;
+
+    File _currentFileSendPoints;
+    unsigned long _positionCursorFileSendPoints;
+    bool _isSendingPoints;
 
     void checkFiles();
+    void createRideFiles();
+    void processCurrentRide();
+    void writeStatsFile();
+    void writePoint();
+    void processSendRide();
+    void setStatsToSend();
+    void setPointsToSendFromFile();
 
 public:
-    SDCard(TrackSenseProperties* trackSenseProperties);
+    SDCard(TSProperties* TSProperties);
     ~SDCard();
 
     void init() override;

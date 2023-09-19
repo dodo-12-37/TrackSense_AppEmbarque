@@ -1,16 +1,16 @@
-#include "Modules/LTE.h"
+// #include "Modules/LTE.h"
 
 
 
-LTE::LTE(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
-{
-}
+// LTE::LTE(TSProperties* TSProperties) : _TSProperties(TSProperties)
+// {
+// }
 
-LTE::~LTE()
-{
-}
+// LTE::~LTE()
+// {
+// }
 
-void LTE::tick()
-{
-    ;
-}
+// void LTE::tick()
+// {
+//     ;
+// }

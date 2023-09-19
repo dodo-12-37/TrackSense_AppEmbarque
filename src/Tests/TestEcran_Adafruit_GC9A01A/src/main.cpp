@@ -162,8 +162,6 @@ void dessinerBatteryLogo(int16_t coordX, int16_t coordY, int16_t largeurX, int p
     tft.fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #1
     tft.fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #2
     tft.fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #3
-
-
 }
 
 void testMaisonScreen()

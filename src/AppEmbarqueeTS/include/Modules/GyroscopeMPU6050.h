@@ -2,17 +2,17 @@
 #include <Arduino.h>
 #include "Interfaces/IGyroscope.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 
 
 class GyroscopeMPU6050 : public IGyroscope
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
 public:
-    GyroscopeMPU6050(TrackSenseProperties* trackSenseProperties);
+    GyroscopeMPU6050(TSProperties* TSProperties);
     ~GyroscopeMPU6050();
 
     void tick() override;

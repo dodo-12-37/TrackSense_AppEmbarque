@@ -2,9 +2,16 @@
 #include "Configurations.h"
 
 
-SDCard::SDCard(TrackSenseProperties* trackSenseProperties) 
-    : trackSenseProperties(trackSenseProperties),
-    _nbFiles(0)
+SDCard::SDCard(TSProperties* TSProperties) 
+    : _TSProperties(TSProperties),
+    _nbFiles(0),
+    _isRideStarted(false),
+    _currentPointsFile(),
+    _currentPointsFileName(""),
+    _currentStatsFileName(""),
+    _currentFileSendPoints(),
+    _positionCursorFileSendPoints(0),
+    _isSendingPoints(false)
 {
     this->init();
 }
@@ -40,8 +47,13 @@ void SDCard::init()
 
 void SDCard::tick()
 {
-    File f = SD.open(SDCARD_ROOT_PATH, FILE_WRITE);
-
+    this->processCurrentRide();
+    this->processSendRide();
+    
+    // this->setPointsToSendFromFile();
+    // this->setStatsToSendFromFile();
+    // this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
+    // 
     // Serial.println("SDCard");
     // Serial.println("Writing to test.txt...");
     // File file = SD.open("/test.txt", FILE_WRITE);
@@ -83,3 +95,162 @@ void SDCard::checkFiles()
     }
     root.close();
 }
+
+void SDCard::createRideFiles()
+{
+    this->_currentStatsFileName = 
+        String(SDCARD_ROOT_PATH) 
+        + "/" 
+        + this->_TSProperties->PropertiesCurrentRide.CompletedRideId 
+        + SDCARD_FILE_STATS_NAME 
+        + SDCARD_FILE_EXTENSION;
+    this->_currentPointsFileName = 
+        String(SDCARD_ROOT_PATH) 
+        + "/" 
+        + this->_TSProperties->PropertiesCurrentRide.CompletedRideId 
+        + SDCARD_FILE_POINTS_NAME 
+        + SDCARD_FILE_EXTENSION;
+
+    File f = SD.open(this->_currentStatsFileName, FILE_READ);
+    f.close();
+    f = SD.open(this->_currentPointsFileName, FILE_READ);
+    f.close();
+}
+
+void SDCard::processCurrentRide()
+{
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted && !this->_isRideStarted)
+    {
+        this->_isRideStarted = true;
+
+        this->createRideFiles();
+
+        this->_currentPointsFile = SD.open(this->_currentPointsFileName, FILE_WRITE);        
+    }
+    else if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted 
+                && this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave)
+    {
+        this->writePoint();
+    }
+    else if (this->_TSProperties->PropertiesCurrentRide.IsRideFinished && this->_isRideStarted)
+    {
+        this->_isRideStarted = false;
+
+        if (this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave)
+        {
+            this->writePoint();
+        }
+
+        this->writeStatsFile();
+
+        this->_currentPointsFile.close();
+    }
+}
+
+void SDCard::writeStatsFile()
+{
+    String content = 
+        this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
+        this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
+        this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
+        this->_TSProperties->PropertiesCurrentRide.AvgSpeed + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
+        this->_TSProperties->PropertiesCurrentRide.Distance + ";" +
+        this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
+        this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
+
+    File file = SD.open(this->_currentStatsFileName, FILE_WRITE);
+
+    file.println(content);
+    file.close();
+}
+
+void SDCard::writePoint()
+{
+    this->_currentPointsFile.println(this->_TSProperties->PropertiesCurrentRide.CurrentPoint);
+    this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = false;
+}
+
+void SDCard::setStatsToSend()
+{
+    String content = 
+        this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
+        this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
+        this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
+        this->_TSProperties->PropertiesCurrentRide.AvgSpeed + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
+        this->_TSProperties->PropertiesCurrentRide.Distance + ";" +
+        this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
+        this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
+
+    this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
+        = this->_TSProperties->PropertiesCurrentRide.CompletedRideId;
+    this->_TSProperties->PropertiesCompletedRideToSend.Stats = content;
+    this->_TSProperties->PropertiesCompletedRideToSend.NbPoints 
+        = this->_TSProperties->PropertiesCurrentRide.NbPoints;
+    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsReceived  = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived  = false;
+    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady  = false;
+}
+
+void SDCard::setPointsToSendFromFile()
+{
+    if (this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint == 0)
+    {
+        String fileName = 
+            String(SDCARD_ROOT_PATH) 
+            + "/" 
+            + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
+            + SDCARD_FILE_POINTS_NAME 
+            + SDCARD_FILE_EXTENSION;
+
+        this->_currentFileSendPoints = SD.open(this->_currentPointsFileName, FILE_READ);
+        this->_positionCursorFileSendPoints = 0;
+    }
+    
+    if (!this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady
+                && this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint
+                    < this->_TSProperties->PropertiesCompletedRideToSend.NbPoints)
+    {
+        ++this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint;
+
+        this->_currentFileSendPoints.seek(this->_positionCursorFileSendPoints);
+        String point = this->_currentFileSendPoints.readStringUntil('\n');
+        this->_positionCursorFileSendPoints = this->_currentFileSendPoints.position();
+
+        this->_TSProperties->PropertiesCompletedRideToSend.Point = point;
+        this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = true;
+        this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
+    }
+    else if (this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint
+                    >= this->_TSProperties->PropertiesCompletedRideToSend.NbPoints)
+    {
+        this->_currentFileSendPoints.close();
+        this->_isSendingPoints = false;
+        this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
+        this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
+    }
+}
+
+void SDCard::processSendRide()
+{
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideFinished)
+    {
+        if (!this->_TSProperties->PropertiesCompletedRideToSend.IsReady)
+        {
+            this->setStatsToSend();
+            this->_isSendingPoints = true;
+        }
+        else if (this->_isSendingPoints)
+        {
+            this->setPointsToSendFromFile();
+        }
+    }
+}
+

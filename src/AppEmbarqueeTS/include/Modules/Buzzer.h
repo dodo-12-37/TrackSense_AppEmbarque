@@ -2,17 +2,17 @@
 #include <Arduino.h>
 #include "Interfaces/IBuzzer.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 
 
 class Buzzer : public IBuzzer
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
 public:
-    Buzzer(TrackSenseProperties* trackSenseProperties);
+    Buzzer(TSProperties* TSProperties);
     ~Buzzer();
 
     void tick() override;
