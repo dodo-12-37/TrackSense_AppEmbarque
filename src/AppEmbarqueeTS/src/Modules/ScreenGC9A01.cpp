@@ -15,8 +15,6 @@
 ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
-    // pinMode(TFT_BL_BLK, OUTPUT);       // PyPortal requires
-    // digitalWrite(TFT_BL_BLK, HIGH);    // turning on backlight
     this->tft->begin();
     this->tft->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
