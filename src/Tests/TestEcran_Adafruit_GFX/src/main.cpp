@@ -52,114 +52,121 @@ and the underlying physical layout.
 
 #endif
 
+#define TFT_WIDTH 240
+#define TFT_HEIGHT 240
+
+void drawLogoTS();
+
 // Hardware SPI on Feather or other boards
 Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+// This is an incomplete Arduino example to minimally show
+// the canvas drawing approach. A real program would #include
+// a display library header and declare a global 'display',
+// also including and enabling a custom font.
+
+// Then, in ADDITION to all that, there's...
+GFXcanvas1 canvas(TFT_WIDTH, TFT_HEIGHT); // 1-bit, 120x30 pixels
+// GFXcanvas8 canvas(TFT_WIDTH, TFT_HEIGHT); // 8-bit, 120x30 pixels
+// GFXcanvas16 canvas(TFT_WIDTH, TFT_HEIGHT); // 16-bit, 120x30 pixels
 
 void setup()
 {
-    pinMode(TFT_BL_BLK, OUTPUT);
-    digitalWrite(TFT_BL_BLK, HIGH);
-    
-
     Serial.begin(115200);
-    Serial.println("TFT Test!");
 
+    // Display init and font select would take place here.
+    // See later examples for that.
+    // tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
     tft.begin();
-    tft.fillScreen(GC9A01A_BLACK);
-    Serial.println(F("Setup TFT Done!"));
 
-    // first create a rectangular GFXcanvas8SerialDemo object and draw to it
-    GFXcanvas8SerialDemo demo8(240, 240);
-
-    demo8.fillScreen(0x00);
-    demo8.setRotation(1); // now canvas is 11x21
-    demo8.fillCircle(5, 10, 5, 0xAA);
-    demo8.writeFastHLine(0, 0, 11, 0x11);
-    demo8.writeFastHLine(10, 10, -11, 0x22);
-    demo8.writeFastHLine(0, 20, 11, 0x33);
-    demo8.writeFastVLine(0, 0, 21, 0x44);
-    demo8.writeFastVLine(10, 20, -21, 0x55);
-
-    Serial.println("Demonstrating GFXcanvas rotated and raw pixels.\n");
-    tft.drawBitmap(0, 0, demo8.getPixel(), 240, 240);
-
-    // print it out rotated
-
-    Serial.println("The canvas's content in the rotation of '0':\n");
-    demo8.setRotation(0);
-    demo8.print(true);
-    Serial.println("\n");
-
-    Serial.println("The canvas's content in the rotation of '1' (which is what "
-                   "it was drawn in):\n");
-    demo8.setRotation(1);
-    demo8.print(true);
-    Serial.println("\n");
-
-    Serial.println("The canvas's content in the rotation of '2':\n");
-    demo8.setRotation(2);
-    demo8.print(true);
-    Serial.println("\n");
-
-    Serial.println("The canvas's content in the rotation of '3':\n");
-    demo8.setRotation(3);
-    demo8.print(true);
-    Serial.println("\n");
-
-    // print it out unrotated
-    Serial.println("The canvas's content in it's raw, physical layout:\n");
-    demo8.print(false);
-    Serial.println("\n");
-  
-    // Demonstrate GFXcanvas1SerialDemo
-
-    GFXcanvas1SerialDemo demo1(240, 240);
-    demo1.fillScreen(0);
-    demo1.setRotation(0);
-    demo1.writeFastHLine(0, 0, 9, 1);
-    demo1.setRotation(1);
-    demo1.writeFastHLine(0, 0, 9, 1);
-    demo1.setRotation(2);
-    demo1.writeFastHLine(0, 0, 9, 1);
-    demo1.setRotation(3);
-    demo1.writeFastHLine(0, 0, 9, 1);
-    demo1.setRotation(1);
-    demo1.fillRect(3, 8, 5, 5, 1);
-
-    Serial.println("\nThe GFXcanvas1 raw content after drawing a fast horizontal "
-                   "line in each rotation:\n");
-    demo1.print(false);
-    Serial.println("\n");
-
-    // Demonstrate GFXcanvas16SerialDemo
-
-    GFXcanvas16SerialDemo demo16(240, 240);
-    demo16.fillScreen(0);
-    demo16.setRotation(0);
-    demo16.writeFastHLine(0, 0, 9, 0x1111);
-    demo16.setRotation(1);
-    demo16.writeFastHLine(0, 0, 9, 0x2222);
-    demo16.setRotation(2);
-    demo16.writeFastHLine(0, 0, 9, 0x3333);
-    demo16.setRotation(3);
-    demo16.writeFastHLine(0, 0, 9, 0x4444);
-    demo16.setRotation(1);
-    demo16.fillRect(3, 8, 5, 5, 0x8888);
-
-    Serial.println("\nThe GFXcanvas16 raw content after drawing a fast "
-                   "horizontal line in each rotation:\n");
-    demo16.print(false);
-    Serial.println("\n");
-
-
-
-
-
-
-
-
-
-    digitalWrite(TFT_BL_BLK, LOW);
+    // Text might exceed width of canvas, so disable wrapping:
+    canvas.setTextWrap(false);
+    canvas.setFont();
+    // canvas.setTextColor(GC9A01A_YELLOW, GC9A01A_BLUE);
 }
 
-void loop() {}
+void loop()
+{
+    Serial.println("Entering loop");
+
+    // Draw something on the canvas:
+    canvas.fillScreen(0x0000); // Clear canvas (not display)
+    canvas.setCursor(0, 24);   // Pos. is BASE LINE when using fonts!
+    canvas.println(millis());  // Print elapsed time in milliseconds
+
+    // drawLogoTS();
+    /*
+        Draw a RAM-resident 1-bit image at the specified (x,y) position, using the specified foreground (for set bits) and background (unset bits) colors.
+
+        Parameters:
+        x –     Top left corner x coordinate
+        y –     Top left corner y coordinate
+        bitmap – byte array with monochrome bitmap
+        w –     Width of bitmap in pixels
+        h –     Height of bitmap in pixels
+        color – 16-bit 5-6-5 Color to draw pixels with
+        bg –    16-bit 5-6-5 Color to draw background with
+    */
+    // Copy canvas to screen at upper-left corner.
+    Serial.println("Drawing canvas to screen");
+    tft.drawBitmap(0, 0, canvas.getBuffer(), canvas.width(), canvas.height(), 0xFFFF, 0x0000);
+    Serial.println("Drawing canvas to screen done");
+    // tft.drawRGBBitmap(0, 0, canvas.getBuffer(), canvas.width(), canvas.height());
+    delay(500);
+}
+
+void drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le logo TS en Light Mode : canvas.drawfillCircle()
+{
+    int16_t coordX = 17; // "T" coordX = 16
+    int16_t coordY = 65; // "T" coordX = 65
+    canvas.setTextSize(7);
+
+    int16_t coordX_ = 0;
+    int16_t coordY_ = 0;
+
+    uint16_t width = 42;  // "T" width = 42
+    uint16_t height = 56; // "T" height = 56
+
+    // canvas.getTextBounds("R", coordX, coordY, &coordX_, &coordY_, &width, &height);
+
+    int widthWithoutSpace = width * 0.80952381; // widthWithoutSpace = 42 * 0.80952381 = 34
+    int heightWithoutSpace = height * 0.875;    // heightWithoutSpace = 56 * 0.875 = 49
+
+    int coordY2 = coordY + height + 1; // "premier E" coordX = 122     // 65 + 56 = 121
+
+    // Draw "TRA"
+    canvas.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    canvas.setCursor(coordX, coordY);
+    canvas.printf("%-3s", "TRA");
+    // Draw "C" of "TRACK"
+    canvas.setTextColor(GC9A01A_RED, GC9A01A_BLACK);
+    canvas.setCursor(coordX + width * 3, coordY);
+    canvas.printf("%-1s", "C");
+    // Draw "K" of "TRACK"
+    canvas.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    canvas.setCursor(coordX + width * 4, coordY);
+    canvas.printf("%-1s", "K");
+
+    // Draw special "S"
+    canvas.fillCircle(coordX + width * 0.761904762, coordY2 + (height * 0.160714286), 4, GC9A01A_RED);
+    canvas.fillCircle(coordX + width * 0.547619048, coordY2 + (height * 0.053571429), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.285714286, coordY2 + (height * 0.089285714), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.142857143, coordY2 + (height * 0.250000000), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.309523810, coordY2 + (height * 0.392857143), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.523809524, coordY2 + (height * 0.500000000), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.714285714, coordY2 + (height * 0.642857143), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.547619048, coordY2 + (height * 0.803571429), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.285714286, coordY2 + (height * 0.839285714), 4, GC9A01A_WHITE);
+    canvas.fillCircle(coordX + width * 0.095238095, coordY2 + (height * 0.714285714), 4, GC9A01A_RED);
+
+    // Draw "ENSE"
+    canvas.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    canvas.setCursor(coordX + width, coordY2);
+    canvas.printf("%-4s", "ENSE");
+
+    // Draw circle
+    // Comme le nombre de pixel est pair (240), le centre est entre 2 pixels. On ne peut pas mettre de fraction de pixel... Donc pour avoir un cercle centré, il faut dessiner 4 cercles...
+    canvas.drawCircle(119, 119, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    canvas.drawCircle(120, 120, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    canvas.drawCircle(119, 120, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    canvas.drawCircle(120, 119, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+}
