@@ -11,8 +11,8 @@
 #define BLE_FALSE "false"
 #define BLE_OK "ok"
 
-#define BLE_DELAY_SEND_STATS_MS 5000
-#define BLE_DELAY_SEND_POINT_MS 5000
+#define BLE_DELAY_SEND_STATS_MS 500
+#define BLE_DELAY_SEND_POINT_MS 100
 
 // Service et caracterisiques pour CompletedRide
 #define BLE_COMPLETED_RIDE_SERVICE_UUID "62ffab64-3646-4fb9-88d8-541deb961192"
@@ -35,7 +35,7 @@
 #define RIDE_POINT_4 String("4;46.8428497314;-71.3972473145;102.50;0.00;28.89;2023-09-13T12:09:55;0")
 #define RIDE_POINT_5 String("5;46.8428993225;-71.3971862793;101.90;0.00;19.08;2023-09-13T12:09:55;0")
 String currentPoint;
-int currentPointNumber = 0;
+int currentPointNumber = 1;
 bool isPointReady = false;
 bool isPointReceived = false;
 bool isReady = false;
@@ -130,11 +130,13 @@ class CompletedRideReceiveStatsCallbacks
         {
             if (BLE::isCompletedRideStatsSending)
             {
+                // Serial.println("Callback reception stats");
                 BLE::isCompletedRideStatsReceived = true;
                 BLE::isCompletedRideStatsSending = false;
             }
             else if (BLE::isCompletedRidePointSending)
             {
+                // Serial.println("Callback reception point");
                 BLE::isCompletedRidePointReceived = true;
                 BLE::isCompletedRidePointSending = false;
             }
@@ -202,15 +204,18 @@ void BLE::tick()
         {
             if (!BLE::isCompletedRideStatsReceived || BLE::isCompletedRideStatsSending) // Renvoie les stats tant qu'on a pas la confirmation de reception
             {
+                // Serial.println("Envoie des stats");
                 this->sendCompletedRideStats();
             }
             else if (BLE::isCompletedRidePointReceived)
             {
+                // Serial.println("Confirmation reception point");
                 this->confirmPointReceived();
             }
             else if (BLE::isCompletedRideStatsReceived
                         && (isPointReady || BLE::isCompletedRidePointSending))
             {
+                // Serial.println("Envoie du point");
                 this->sendCompletedRideCurrentPoint();
             }
             // else if (BLE::isCompletedRideStatsReceived
@@ -228,7 +233,7 @@ void BLE::tick()
         Serial.println("Restart Advertising");
         isReady = true;
         currentPoint = RIDE_POINT_1;
-        currentPointNumber = 0;
+        currentPointNumber = 1;
         isPointReady = true;
         BLE::isCompletedRidePointReceived = false;
         BLE::isCompletedRideStatsReceived = false;
@@ -344,7 +349,7 @@ void BLE::sendCompletedRideCurrentPoint()
         this->_lastTimePointSent = currentTime;
         // this->_CRPointCaracteristic->setValue(currentPoint.c_str());
         this->_CRStatsCaracteristic->setValue(currentPoint.c_str());
-        Serial.println("notification charac value : " + String(this->_CRNotificationCaracteristic->getValue().c_str()));
+        // Serial.println("notification charac value : " + String(this->_CRNotificationCaracteristic->getValue().c_str()));
         this->_CRNotificationCaracteristic->setValue("sending");
         this->_CRNotificationCaracteristic->notify();
         BLE::isCompletedRidePointSending = true;
@@ -359,7 +364,7 @@ void BLE::confirmPointReceived()
 {
     BLE::isCompletedRidePointReceived = false;
     
-    if (RIDE_NB_POINTS < currentPointNumber) 
+    if (RIDE_NB_POINTS > currentPointNumber) 
     {
         isPointReady = false;
         isPointReceived = true;
@@ -394,6 +399,7 @@ void loop() {
     {
         isPointReceived = false;
         currentPointNumber++;
+        // Serial.println(String("loop, increment currentPointNumber : ") + String(currentPointNumber));
         switch (currentPointNumber)
         {
             case 2:
@@ -415,6 +421,7 @@ void loop() {
             default:
                 break;
         }
+        // Serial.println(String("loop, currrentPoint : ") + String(currentPoint));
         Serial.println("Completed Ride Point Ready to send");
     }
     serveurBLE->tick();
