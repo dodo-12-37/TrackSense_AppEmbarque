@@ -48,6 +48,7 @@ public:
     static bool isCompletedRidePointSending;
     static bool isCompletedRidePointReceived;
     static bool isAdvertiesingStarted;
+    static int currentPointNumber;
 
     BLE(TSProperties* TSProperties);
     ~BLE();

@@ -115,6 +115,7 @@
 #define BLE_TRUE "true"
 #define BLE_FALSE "false"
 #define BLE_OK "ok"
+#define BLE_CONFIRME_STATS 0
 
 #define BLE_DELAY_SEND_STATS_MS 1000
 #define BLE_DELAY_SEND_POINT_MS 200

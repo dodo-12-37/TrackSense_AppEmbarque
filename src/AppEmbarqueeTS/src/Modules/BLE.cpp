@@ -16,6 +16,7 @@ bool BLE::isCompletedRideStatsReceived = false;
 bool BLE::isCompletedRidePointSending = false;
 bool BLE::isCompletedRidePointReceived = false;
 bool BLE::isAdvertiesingStarted = false;
+int BLE::currentPointNumber = 0;
 
 /*----- CallBacks -----*/
 class ServerBLECallbacks
@@ -41,17 +42,19 @@ class CompletedRideReceiveDataCallbacks
     void onWrite(BLECharacteristic *p_characteristic)
     {
         std::string receivedData = p_characteristic->getValue();
-        std::string falseString = BLE_OK;
+        std::string acceptation = String(BLE::currentPointNumber).c_str();
 
-        Serial.println("Confirmation reception data");
+        Serial.println(String("Callback Reception data: ") + String(receivedData.c_str()));
+        Serial.println(String("Callback Acceptation data: ") + String(acceptation.c_str()));
 
-        if (receivedData.compare(falseString) == 0)
+        if (receivedData.compare(acceptation) == 0)
         {
             if (BLE::isCompletedRideStatsSending)
             {
                 // Serial.println("Callback reception stats");
                 BLE::isCompletedRideStatsReceived = true;
                 BLE::isCompletedRideStatsSending = false;
+                BLE::currentPointNumber = 1;
             }
             else if (BLE::isCompletedRidePointSending)
             {
@@ -198,6 +201,7 @@ void BLE::sendCompletedRideStats()
         this->_CRNotificationCaracteristic->notify();
         BLE::isCompletedRideStatsSending = true;
         BLE::isCompletedRideStatsReceived = false;
+        BLE::currentPointNumber = BLE_CONFIRME_STATS;
         Serial.println("Completed Ride stats sent");
     }
 };
@@ -213,6 +217,7 @@ void BLE::sendCompletedRideCurrentPoint()
         this->_CRNotificationCaracteristic->setValue("sending");
         this->_CRNotificationCaracteristic->notify();
         BLE::isCompletedRidePointSending = true;
+        BLE::currentPointNumber = this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint;
 
         this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
         Serial.println(String("Completed Ride Point ") + String(this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint) + String(" sent"));

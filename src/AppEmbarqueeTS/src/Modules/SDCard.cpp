@@ -238,12 +238,6 @@ void SDCard::setStatsToSend()
     this->_TSProperties->PropertiesCompletedRideToSend.Stats = content;
     // this->_TSProperties->PropertiesCompletedRideToSend.NbPoints 
     //     = this->_TSProperties->PropertiesCurrentRide.NbPoints;
-
-    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsReceived  = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived  = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady  = false;
 }
 
 void SDCard::setPointsToSendFromFile()
@@ -294,7 +288,15 @@ void SDCard::processSendRide()
             Serial.println("SDCard Ride Id find to send: " + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId);
 
             this->setStatsToSend();
+
             this->_isSendingPoints = true;
+            this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
+                = this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId;
+            this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsReceived  = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived  = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady  = false;
         }
         else if (this->_isSendingPoints)
         {
