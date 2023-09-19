@@ -340,14 +340,6 @@ void BLE::sendCompletedRideCurrentPoint()
 {
     unsigned long currentTime = millis();
 
-    // if (BLE::isCompletedRidePointReceived)
-    // {
-    //     isPointReady = false;
-    //     isPointReceived = true;
-    //     BLE::isCompletedRidePointReceived = false;
-    //     Serial.println("Completed Ride Point received");
-    // }
-    // else 
     if ( (currentTime - this->_lastTimePointSent) > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
     {
         this->_lastTimePointSent = currentTime;

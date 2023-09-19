@@ -22,18 +22,15 @@ private:
 
     BLEService* _completedRideService;
 
-    BLECharacteristic* _CRStatsCaracteristic;
-    BLECharacteristic* _CRPointCaracteristic;
-    BLECharacteristic* _CRPointNumberCaracteristic;
-    BLECharacteristic* _CRIsReadyCaracteristic;
+    BLECharacteristic* _CRDataCaracteristic;
+    BLECharacteristic* _CRNotificationCaracteristic;
 
-    BLEDescriptor* _CRStatsDescriptor;
-    BLEDescriptor* _CRPointDescriptor;
-    BLEDescriptor* _CRPointNumberDescriptor;
-    BLEDescriptor* _CRIsReadyDescriptor;
+    BLEDescriptor* _CRDataDescriptor;
+    BLEDescriptor* _CRNotificationDescriptor;
 
     unsigned long _lastTimeStatsSent;
     unsigned long _lastTimePointSent;
+    unsigned long _lastTimeAdvertiesingStarted;
 
     void initBLE();
     void initAdvertising();
@@ -42,6 +39,7 @@ private:
     void initCompletedRideDescriptors();
     void sendCompletedRideStats();
     void sendCompletedRideCurrentPoint();
+    void confirmPointReceived();
 
 public:
     static bool isDeviceConnected;
@@ -49,6 +47,7 @@ public:
     static bool isCompletedRideStatsReceived;
     static bool isCompletedRidePointSending;
     static bool isCompletedRidePointReceived;
+    static bool isAdvertiesingStarted;
 
     BLE(TSProperties* TSProperties);
     ~BLE();
