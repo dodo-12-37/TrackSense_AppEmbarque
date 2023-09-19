@@ -83,6 +83,7 @@ public:
     static bool isCompletedRidePointSending;
     static bool isCompletedRidePointReceived;
     static bool isAdvertiesingStarted;
+    static int currentPointNumber;
 
     BLE();
     ~BLE();
@@ -98,6 +99,7 @@ bool BLE::isCompletedRideStatsReceived = false;
 bool BLE::isCompletedRidePointSending = false;
 bool BLE::isCompletedRidePointReceived = false;
 bool BLE::isAdvertiesingStarted = false;
+int BLE::currentPointNumber = 0;
 
 /*----- CallBacks -----*/
 class ServerBLECallbacks
@@ -123,11 +125,12 @@ class CompletedRideReceiveStatsCallbacks
     void onWrite(BLECharacteristic *p_characteristic)
     {
         std::string receivedData = p_characteristic->getValue();
-        std::string falseString = BLE_OK;
+        std::string acceptation = String(BLE::currentPointNumber).c_str();
 
-        Serial.println("Confirmation reception data");
+        Serial.println(String("Callback Reception data: ") + String(receivedData.c_str()));
+        Serial.println(String("Callback Acceptation data: ") + String(acceptation.c_str()));
 
-        if (receivedData.compare(falseString) == 0)
+        if (receivedData.compare(acceptation) == 0)
         {
             if (BLE::isCompletedRideStatsSending)
             {
@@ -153,10 +156,10 @@ class CompletedRideReceiveStatsCallbacks
 //     {
 //         std::string receivedData = p_characteristic->getValue();
 //         std::string okString = BLE_OK;
-
+//
 //         Serial.println("Confirmation reception point");
 //         Serial.println(receivedData.c_str());
-
+//
 //         if (receivedData.compare(okString) == 0)
 //         {
 //             p_characteristic->setValue("");
@@ -242,6 +245,7 @@ void BLE::tick()
         BLE::isCompletedRidePointReceived = false;
         BLE::isCompletedRideStatsReceived = false;
         BLE::isCompletedRidePointSending = false;
+        BLE::currentPointNumber = 0;
 
         delay(500);
         BLE::isAdvertiesingStarted = true;
@@ -346,6 +350,7 @@ void BLE::sendCompletedRideCurrentPoint()
         // this->_CRPointCaracteristic->setValue(currentPoint.c_str());
         this->_CRStatsCaracteristic->setValue(currentPoint.c_str());
         // Serial.println("notification charac value : " + String(this->_CRNotificationCaracteristic->getValue().c_str()));
+        BLE::currentPointNumber = currentPointNumber;
         this->_CRNotificationCaracteristic->setValue("sending");
         this->_CRNotificationCaracteristic->notify();
         BLE::isCompletedRidePointSending = true;
