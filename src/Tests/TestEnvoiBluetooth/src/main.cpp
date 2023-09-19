@@ -400,6 +400,7 @@ void loop() {
     {
         isPointReceived = false;
         currentPointNumber++;
+        BLE::currentPointNumber = currentPointNumber;
         currentPoint = String(currentPointNumber) + String(RIDE_POINT);
         isPointReady = true;
         // switch (cur)
