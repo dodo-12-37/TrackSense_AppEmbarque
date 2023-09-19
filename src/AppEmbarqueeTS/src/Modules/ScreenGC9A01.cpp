@@ -26,10 +26,35 @@ ScreenGC9A01::~ScreenGC9A01()
 */
 void ScreenGC9A01::tick()
 {
+    this->_currentActivePage = this->_TSProperties->PropertiesScreen.ActiveScreen;
+
+    // this->_TSProperties->PropertiesScreen.IsNewActivePage = !(this->_currentActivePage == this->_lastActivePage);
+    if (this->_lastActivePage == this->_lastLastActivePage)
+    {
+        this->_counterSamePage++;
+    }
+    else
+    {
+        this->_counterSamePage = 0;
+    }
+    
+    
+
+    if (this->_currentActivePage == this->_lastActivePage)
+    {
+        this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+        // this->_counterSamePage++;
+    }
+    else
+    {
+        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+        // this->_counterSamePage = 0;
+    }
+
     if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+        // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
     }
 
     this->tft->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
@@ -58,7 +83,7 @@ void ScreenGC9A01::tick()
         else
         {
             this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-            this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+            // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
         }
         break;
 
@@ -70,7 +95,7 @@ void ScreenGC9A01::tick()
         else
         {
             this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-            this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+            // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
         }
         break;
 
@@ -95,7 +120,9 @@ void ScreenGC9A01::tick()
         break;
     }
 
-    this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+    // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+    this->_lastLastActivePage = this->_lastActivePage;
+    this->_lastActivePage = this->_currentActivePage;
 }
 
 /*
@@ -109,19 +136,6 @@ void ScreenGC9A01::tick()
 
 void ScreenGC9A01::drawInitTSPage()
 {
-    /*
-        @brief    Helper to determine size of a PROGMEM string with current
-    font/size. Pass string and a cursor position, returns UL corner and W,H.
-        @param    str     The flash-memory ascii string to measure
-        @param    x       The current cursor X
-        @param    y       The current cursor Y
-        @param    x1      The boundary X coordinate, set by function
-        @param    y1      The boundary Y coordinate, set by function
-        @param    w      The boundary width, set by function
-        @param    h      The boundary height, set by function
-    */
-    // this->tft->getTextBounds("Initializing", 10, 150); // Pour centrer le texte ???
-
     // this->setTextColor();
     // this->tft->setTextSize(3);
     // this->tft->setCursor(10, 90);
@@ -144,15 +158,15 @@ void ScreenGC9A01::drawHomePage()
     this->testButtonsScreen();
 #else
     this->drawLogoTS();
-    // this->setTextColor();
-    // this->tft->setTextSize(2);
-    // this->tft->setCursor(35, 50);
-    // this->tft->printf("%-10s", "Home Page");
+
     int batteryLengthInPixels = 70;
     this->drawBattery(this->calculateXCoordItemToCenter(batteryLengthInPixels),
                       20,
                       batteryLengthInPixels,
                       this->_TSProperties->PropertiesBattery.BatteryLevel);
+
+    int rideStartedLengthInPixels = 40;
+    this->drawIsRideStarted(this->calculateXCoordItemToCenter(rideStartedLengthInPixels), 185, rideStartedLengthInPixels);
 #endif
 }
 
@@ -219,8 +233,7 @@ void ScreenGC9A01::drawErrorPage()
 */
 #pragma region Elements
 
-// void ScreenGC9A01::drawLogoTS(int16_t coordX, int16_t coordY, int16_t taille)
-void ScreenGC9A01::drawLogoTS()
+void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le logo TS en Light Mode : this->drawfillCircle()
 {
     int16_t coordX = 17; // "T" coordX = 16
     int16_t coordY = 65; // "T" coordX = 65
@@ -284,8 +297,8 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     double coordBarreVerteX = coordX + (zoneBarreVerteX - barreVerteX) / 2;
     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
 
-    tft->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
-    tft->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
+    this->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY);                                       // Contour
+    this->drawFillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2); // ti boute        + hauteurY / 2 - 16/2
 
     switch (pourcentage)
     {
@@ -318,11 +331,35 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
         tft->setTextSize(3);
     }
 
-    // this->setTextColor(GC9A01A_BLACK, GC9A01A_WHITE, GC9A01A_WHITE, GC9A01A_BLACK);
+    tft->setCursor((coordX + largeurX) * 1.05, coordBarreVerteY + hauteurY / 4);
     this->setTextColor();
-    tft->setCursor((coordBarreVerteX + barreVerteX / 4), coordBarreVerteY + hauteurY / 4);
-    String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
+    const String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
     tft->printf("%-3s", strBatteryLevel.c_str());
+}
+
+void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX)
+{
+    double hauteurY = largeurX;
+
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+    {
+        // if (this->_currentActivePage == this->_lastActivePage && this->_lastActivePage == this->_lastLastActivePage)
+        // if (this->_currentActivePage == this->_lastLastActivePage)
+        if (this->_counterSamePage == 1)
+        {
+            this->tft->fillRect(coordX -5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
+        }
+        this->tft->fillTriangle(coordX, coordY, coordX + largeurX, coordY + hauteurY / 2, coordX, coordY + hauteurY, GC9A01A_GREEN);
+    }
+    else
+    {
+        // if (this->_currentActivePage == this->_lastLastActivePage)
+        if (this->_counterSamePage == 1)
+        {
+            this->tft->fillRect(coordX -5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
+        }
+        this->tft->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
+    }
 }
 
 #pragma endregion Elements
@@ -385,6 +422,34 @@ void ScreenGC9A01::setTextColor(int textDarkModeColor,
     else
     {
         this->tft->setTextColor(textLightModeColor, backgroundLightModeColor);
+    }
+}
+
+void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
+                            uint16_t darkModeColor,
+                            uint16_t lightModeColor)
+{
+    if (this->_TSProperties->PropertiesScreen.IsDarkMode)
+    {
+        this->tft->drawRect(x, y, width, height, darkModeColor);
+    }
+    else
+    {
+        this->tft->drawRect(x, y, width, height, lightModeColor);
+    }
+}
+
+void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t height,
+                                uint16_t darkModeColor,
+                                uint16_t lightModeColor)
+{
+    if (this->_TSProperties->PropertiesScreen.IsDarkMode)
+    {
+        this->tft->fillRect(x, y, width, height, darkModeColor);
+    }
+    else
+    {
+        this->tft->fillRect(x, y, width, height, lightModeColor);
     }
 }
 

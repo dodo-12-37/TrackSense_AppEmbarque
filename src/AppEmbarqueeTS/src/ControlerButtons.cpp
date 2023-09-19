@@ -135,7 +135,7 @@ void ControlerButtons::changePageUp()
         this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
     }
     
-    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+    // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 /*
@@ -158,7 +158,7 @@ void ControlerButtons::changePageDown()
         this->_TSProperties->PropertiesScreen.ActiveScreen = NB_ACTIVE_PAGES - 1;
     }
 
-    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+    // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 void ControlerButtons::startRide()
@@ -178,7 +178,7 @@ void ControlerButtons::startRide()
         this->_TSProperties->PropertiesCurrentRide.CompletedRideId = this->_guidGenerator->toCharArray();
 
         this->_TSProperties->PropertiesScreen.ActiveScreen = RIDE_PAGE_ID;
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+        // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
     }
 }
@@ -196,7 +196,7 @@ void ControlerButtons::finishRide()
         this->_TSProperties->PropertiesCurrentRide.IsRideReadyToSave = true;
 
         this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+        // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
         this->_TSProperties->PropertiesGPS.CounterTotal = 0;
         this->_TSProperties->PropertiesGPS.CounterGoodValue = 0;
