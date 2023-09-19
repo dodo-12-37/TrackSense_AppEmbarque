@@ -27,8 +27,9 @@
 
 
 // Donnees pour CompletedRide
-#define RIDE_NB_POINTS 5
-#define RIDE_STATS "e3ba4698-d64b-447e-81f5-0bf0e09700eb;00000000-0000-0000-0000-000000000000;0.00;0.00;2023-09-13T12:09:55;2023-09-13T12:41:38;33.00;0.00;5;0;"
+#define RIDE_NB_POINTS 1000
+#define RIDE_STATS "e3ba4698-d64b-447e-81f5-0bf0e09700eb;00000000-0000-0000-0000-000000000000;0.00;0.00;2023-09-13T12:09:55;2023-09-13T12:41:38;33.00;0.00;1000;0;"
+#define RIDE_POINT String(";46.8423843384;-71.3978271484;95.70;0.00;49.26;2023-09-13T12:09:55;0")
 #define RIDE_POINT_1 String("1;46.8423843384;-71.3978271484;95.70;0.00;49.26;2023-09-13T12:09:55;0")
 #define RIDE_POINT_2 String("2;46.8425025940;-71.3976898193;99.40;0.00;47.78;2023-09-13T12:09:55;0")
 #define RIDE_POINT_3 String("3;46.8427085876;-71.3974456787;101.90;0.00;46.11;2023-09-13T12:09:55;0")
@@ -136,7 +137,7 @@ class CompletedRideReceiveStatsCallbacks
             }
             else if (BLE::isCompletedRidePointSending)
             {
-                // Serial.println("Callback reception point");
+                Serial.println("Callback reception point");
                 BLE::isCompletedRidePointReceived = true;
                 BLE::isCompletedRidePointSending = false;
             }
@@ -232,8 +233,9 @@ void BLE::tick()
     {
         Serial.println("Restart Advertising");
         isReady = true;
-        currentPoint = RIDE_POINT_1;
+        // currentPoint = RIDE_POINT_1;
         currentPointNumber = 1;
+        currentPoint = String(currentPointNumber) + String(RIDE_POINT);
         isPointReady = true;
         BLE::isCompletedRidePointReceived = false;
         BLE::isCompletedRideStatsReceived = false;
@@ -399,29 +401,34 @@ void loop() {
     {
         isPointReceived = false;
         currentPointNumber++;
-        // Serial.println(String("loop, increment currentPointNumber : ") + String(currentPointNumber));
-        switch (currentPointNumber)
-        {
-            case 2:
-                currentPoint = RIDE_POINT_2;
-                isPointReady = true;
-                break;
-            case 3:
-                currentPoint = RIDE_POINT_3;
-                isPointReady = true;
-                break;
-            case 4:
-                currentPoint = RIDE_POINT_4;
-                isPointReady = true;
-                break;
-            case 5:
-                currentPoint = RIDE_POINT_5;
-                isPointReady = true;
-                break;
-            default:
-                break;
-        }
-        // Serial.println(String("loop, currrentPoint : ") + String(currentPoint));
+        currentPoint = String(currentPointNumber) + String(RIDE_POINT);
+        isPointReady = true;
+        // switch (cur)
+        // {
+        //     case 1:
+        //         currentPoint = RIDE_POINT_1;
+        //         isPointReady = true;
+        //         break;
+        //     case 2:
+        //         currentPoint = RIDE_POINT_2;
+        //         isPointReady = true;
+        //         break;
+        //     case 3:
+        //         currentPoint = RIDE_POINT_3;
+        //         isPointReady = true;
+        //         break;
+        //     case 4:
+        //         currentPoint = RIDE_POINT_4;
+        //         isPointReady = true;
+        //         break;
+        //     case 5:
+        //         currentPoint = RIDE_POINT_5;
+        //         isPointReady = true;
+        //         break;
+        //     default:
+        //         break;
+        // }
+        Serial.println(String("loop, currentPoint : ") + String(currentPoint));
         Serial.println("Completed Ride Point Ready to send");
     }
     serveurBLE->tick();
