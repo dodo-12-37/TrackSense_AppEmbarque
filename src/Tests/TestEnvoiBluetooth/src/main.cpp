@@ -11,8 +11,8 @@
 #define BLE_FALSE "false"
 #define BLE_OK "ok"
 
-#define BLE_DELAY_SEND_STATS_MS 500
-#define BLE_DELAY_SEND_POINT_MS 100
+#define BLE_DELAY_SEND_STATS_MS 1000
+#define BLE_DELAY_SEND_POINT_MS 200
 
 // Service et caracterisiques pour CompletedRide
 #define BLE_COMPLETED_RIDE_SERVICE_UUID "62ffab64-3646-4fb9-88d8-541deb961192"
@@ -107,13 +107,13 @@ class ServerBLECallbacks
     {
         BLE::isDeviceConnected = true;
         BLE::isAdvertiesingStarted = false;
-        Serial.println("Connecte");
+        Serial.println("Connected");
     }
 
     void onDisconnect(BLEServer *p_server)
     {
         BLE::isDeviceConnected = false;
-        Serial.println("Deconnecte");
+        Serial.println("Disconnected");
     }
 };
 
@@ -137,7 +137,7 @@ class CompletedRideReceiveStatsCallbacks
             }
             else if (BLE::isCompletedRidePointSending)
             {
-                Serial.println("Callback reception point");
+                // Serial.println("Callback reception point");
                 BLE::isCompletedRidePointReceived = true;
                 BLE::isCompletedRidePointSending = false;
             }
@@ -190,7 +190,9 @@ BLE::BLE()
     this->initCompletedRideDescriptors();
     this->_completedRideService->start();
     this->initAdvertising();
+    Serial.println("Start Advertising");
     this->_serverBLE->startAdvertising();
+    BLE::isAdvertiesingStarted = true;
 }
 
 BLE::~BLE()
@@ -254,7 +256,7 @@ void BLE::initBLE()
     this->_serverBLE = BLEDevice::createServer();
     this->_serverBLE->setCallbacks(new ServerBLECallbacks());
 
-    Serial.println("BLE initialised");
+    Serial.println("BLE initialized");
 }
 
 void BLE::initAdvertising()
@@ -267,14 +269,14 @@ void BLE::initAdvertising()
 
     this->_advertisingBLE->addServiceUUID(BLE_COMPLETED_RIDE_SERVICE_UUID);
     this->_advertisingBLE->start();
-    Serial.println("Advertising initialised");
+    Serial.println("Advertising initialized");
 }
 
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
     // this->_completedRideService->start();
-    Serial.println("Completed Ride Service initialised");
+    Serial.println("Completed Ride Service initialized");
 };
 
 void BLE::initCompletedRideCaracteristics()
@@ -302,7 +304,7 @@ void BLE::initCompletedRideCaracteristics()
     // this->_CRIsReadyCaracteristic->setValue(BLE_FALSE);
     // this->_CRIsReadyCaracteristic->setCallbacks(new CompletedRideReceiveStatsCallbacks());
 
-    Serial.println("Completed Ride Caracteristics initialised");
+    Serial.println("Completed Ride Caracteristics initialized");
 }
 
 void BLE::initCompletedRideDescriptors()
@@ -315,7 +317,7 @@ void BLE::initCompletedRideDescriptors()
     this->_CRNotificationDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NOTIF_NAME);
     this->_CRNotificationCaracteristic->addDescriptor(this->_CRNotificationDescriptor);
 
-    Serial.println("Completed Ride Descriptors initialised");
+    Serial.println("Completed Ride Descriptors initialized");
 }
 
 void BLE::sendCompletedRideStats()
@@ -358,7 +360,7 @@ void BLE::sendCompletedRideCurrentPoint()
         // BLE::isCompletedRidePointReceived = false;
 
         isPointReady = false;
-        Serial.println(String("Completed Ride Point ") + String(currentPointNumber) + String(" sended"));
+        Serial.println(String("Completed Ride Point ") + String(currentPointNumber) + String(" sent"));
     }
 }
 
@@ -370,11 +372,11 @@ void BLE::confirmPointReceived()
     {
         isPointReady = false;
         isPointReceived = true;
-        Serial.println("Completed Ride Point received");
+        Serial.println(String("Completed Ride Point ") + String(currentPointNumber) +  String(" received"));
     }
     else
     {
-        Serial.println("Fin des points");
+        Serial.println("End of points");
         isReady = false;
         isReceived = true;
     }
@@ -428,7 +430,7 @@ void loop() {
         //     default:
         //         break;
         // }
-        Serial.println(String("loop, currentPoint : ") + String(currentPoint));
+        Serial.println(String("Current point: ") + String(currentPoint));
         Serial.println("Completed Ride Point Ready to send");
     }
     serveurBLE->tick();
