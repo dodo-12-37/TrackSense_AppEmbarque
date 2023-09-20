@@ -1,184 +1,223 @@
-/*
-  There are four different methods of plotting anti-aliased fonts to the screen.
 
-  This sketch uses method 1, using tft.print() and tft.println() calls.
+//   Diagnostic test for the displayed colour order
+//
+// Written by Bodmer 17/2/19 for the TFT_eSPI library:
+// https://github.com/Bodmer/TFT_eSPI
 
-  In some cases the sketch shows what can go wrong too, so read the comments!
-  
-  The font is rendered WITHOUT a background, but a background colour needs to be
-  set so the anti-aliasing of the character is performed correctly. This is because
-  characters are drawn one by one.
-  
-  This method is good for static text that does not change often because changing
-  values may flicker. The text appears at the tft cursor coordinates.
+/* 
+ Different hardware manufacturers use different colour order
+ configurations at the hardware level.  This may result in
+ incorrect colours being displayed.
 
-  It is also possible to "print" text directly into a created sprite, for example using
-  spr.println("Hello"); and then push the sprite to the screen. That method is not
-  demonstrated in this sketch.
-  
+ Incorrectly displayed colours could also be the result of
+ using the wrong display driver in the library setup file.
+
+ Typically displays have a control register (MADCTL) that can
+ be used to set the Red Green Blue (RGB) colour order to RGB
+ or BRG so that red and blue are swapped on the display.
+
+ This control register is also used to manage the display
+ rotation and coordinate mirroring. The control register
+ typically has 8 bits, for the ILI9341 these are:
+
+ Bit Function
+ 7   Mirror Y coordinate (row address order)
+ 6   Mirror X coordinate (column address order)
+ 5   Row/column exchange (for rotation)
+ 4   Refresh direction (top to bottom or bottom to top in portrait orientation)
+ 3   RGB order (swaps red and blue)
+ 2   Refresh direction (top to bottom or bottom to top in landscape orientation)
+ 1   Not used
+ 0   Not used
+
+ The control register bits can be written with this example command sequence:
+ 
+    tft.writecommand(TFT_MADCTL);
+    tft.writedata(0x48);          // Bits 6 and 3 set
+    
+ 0x48 is the default value for ILI9341 (0xA8 for ESP32 M5STACK)
+ in rotation 0 orientation.
+ 
+ Another control register can be used to "invert" colours,
+ this swaps black and white as well as other colours (e.g.
+ green to magenta, red to cyan, blue to yellow).
+ 
+ To invert colours insert this line after tft.init() or tft.begin():
+
+    tft.invertDisplay( invert ); // Where invert is true or false
+
 */
-//  The fonts used are in the sketch data folder, press Ctrl+K to view.
-
-//  Upload the fonts and icons to SPIFFS (must set at least 1M for SPIFFS) using the
-//  "Tools"  "ESP8266 (or ESP32) Sketch Data Upload" menu option in the IDE.
-//  To add this option follow instructions here for the ESP8266:
-//  https://github.com/esp8266/arduino-esp8266fs-plugin
-//  or for the ESP32:
-//  https://github.com/me-no-dev/arduino-esp32fs-plugin
-
-//  Close the IDE and open again to see the new menu option.
-
-//  A processing sketch to create new fonts can be found in the Tools folder of TFT_eSPI
-//  https://github.com/Bodmer/TFT_eSPI/tree/master/Tools/Create_Smooth_Font/Create_font
-
-//  This sketch uses font files created from the Noto family of fonts:
-//  https://www.google.com/get/noto/
-
-#define AA_FONT_SMALL "NotoSansBold15"
-#define AA_FONT_LARGE "NotoSansBold36"
-
-// Font files are stored in SPIFFS, so load the library
-#include <FS.h>
 
 #include <SPI.h>
 #include <TFT_eSPI.h>       // Hardware-specific library
+// #include <Fonts/Custom/BebasNeue_Regular18pt7b.h>
 
-TFT_eSPI tft = TFT_eSPI();
+void drawLogoTS();
+
+TFT_eSPI tft = TFT_eSPI(); // Invoke custom library
 
 
-void setup(void) {
+void setup(void)
+{
+    Serial.begin(115200);
 
-  Serial.begin(250000);
+    tft.init();
 
-  tft.begin();
+    tft.fillScreen(TFT_BLACK);
+    // tft.drawRect(0, 0, tft.width(), tft.height(), TFT_GREEN);
 
-  tft.setRotation(0);
+    // // Set "cursor" at top left corner of display (0,0) and select font 4
+    // tft.setCursor(20, 40, 4);
 
-  if (!SPIFFS.begin()) {
-    Serial.println("SPIFFS initialisation failed!");
-    while (1) yield(); // Stay here twiddling thumbs waiting
-  }
-  Serial.println("\r\nSPIFFS available!");
-  
-  // ESP32 will crash if any of the fonts are missing
-  bool font_missing = false;
-  if (SPIFFS.exists("/NotoSansBold15.vlw")    == false) font_missing = true;
-  if (SPIFFS.exists("/NotoSansBold36.vlw")    == false) font_missing = true;
+    // // Set the font colour to be white with a black background
+    // tft.setTextColor(TFT_WHITE);
 
-  if (font_missing)
-  {
-    Serial.println("\r\nFont missing in SPIFFS, did you upload it?");
-    while(1) yield();
-  }
-  else Serial.println("\r\nFonts found OK.");
+    // // We can now plot text on screen using the "print" class
+    // tft.println(" Initialised default\n");
+    // tft.println(" White text");
+
+    // tft.setTextColor(TFT_RED);
+    // tft.println(" Red text");
+
+    // tft.setTextColor(TFT_GREEN);
+    // tft.println(" Green text");
+
+    // tft.setTextColor(TFT_BLUE);
+    // tft.println(" Blue text");
+
+    // delay(5000);
+    
+}
+
+void loop()
+{
+    drawLogoTS();
+
+
+    // tft.invertDisplay(false); // Where i is true or false
+
+    // tft.fillScreen(TFT_BLACK);
+    // tft.drawRect(0, 0, tft.width(), tft.height(), TFT_GREEN);
+
+    // tft.setCursor(20, 40, 4);
+
+    // tft.setTextColor(TFT_WHITE);
+    // tft.println(" Invert OFF\n");
+
+    // tft.println(" White text");
+
+    // tft.setTextColor(TFT_RED);
+    // tft.println(" Red text");
+
+    // tft.setTextColor(TFT_GREEN);
+    // tft.println(" Green text");
+
+    // tft.setTextColor(TFT_BLUE);
+    // tft.println(" Blue text");
+
+    // // delay(5000);
+
+    // // Binary inversion of colours
+    // tft.invertDisplay(true); // Where i is true or false
+
+    // tft.fillScreen(TFT_BLACK);
+    // tft.drawRect(0, 0, tft.width(), tft.height(), TFT_GREEN);
+
+    // tft.setCursor(20, 40, 4);
+
+    // tft.setTextColor(TFT_WHITE);
+    // tft.println(" Invert ON\n");
+
+    // tft.println(" White text");
+
+    // tft.setTextColor(TFT_RED);
+    // tft.println(" Red text");
+
+    // tft.setTextColor(TFT_GREEN);
+    // tft.println(" Green text");
+
+    // tft.setTextColor(TFT_BLUE);
+    // tft.println(" Blue text");
+
+    // delay(5000);
 }
 
 
-void loop() {
+void drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le logo TS en Light Mode : tft.drawfillCircle()
+{
+    int16_t coordX = 17; // "T" coordX = 16
+    int16_t coordY = 65; // "T" coordX = 65
+    tft.setTextSize(7);
 
-  tft.fillScreen(TFT_BLACK);
+    int16_t coordX_ = 0;
+    int16_t coordY_ = 0;
 
-  tft.setTextColor(TFT_WHITE, TFT_BLACK); // Set the font colour AND the background colour
-                                          // so the anti-aliasing works
+    // int16_t coordX = 31;  // "T" coordX = 16
+    // int16_t coordY = 115; // "T" coordX = 65
+    // tft.setTextSize(2);
+    // // tft.setFont(&FreeSansBold9pt7b);    // Le meilleur à date
+    // tft.setTextFont(&BebasNeue_Regular18pt7b.bitmap);
 
-  tft.setCursor(0, 0); // Set cursor at top left of screen
+    uint16_t width = 42;  // "T" width = 42
+    uint16_t height = 56; // "T" height = 56
 
+    // tft.getTextBounds("R", coordX, coordY, &coordX_, &coordY_, &width, &height);
+    // Serial.println("T");
+    // Serial.print("coordX : ");
+    // Serial.println(coordX);
+    // Serial.print("coordY : ");
+    // Serial.println(coordY);
+    // Serial.print("coordX_ : ");
+    // Serial.println(coordX_);
+    // Serial.print("coordY_ : ");
+    // Serial.println(coordY_);
+    // Serial.print("width : ");
+    // Serial.println(width);
+    // Serial.print("height : ");
+    // Serial.println(height);
 
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // Small font
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // width = 42;  // "T" width = 42
+    // height = 56; // "T" height = 56
 
-  tft.loadFont(AA_FONT_SMALL); // Must load the font first
+    int widthWithoutSpace = width * 0.80952381; // widthWithoutSpace = 42 * 0.80952381 = 34
+    int heightWithoutSpace = height * 0.875;    // heightWithoutSpace = 56 * 0.875 = 49
 
-  tft.println("Small 15pt font"); // println moves cursor down for a new line
+    int coordY2 = coordY + height + 1; // "premier E" coordX = 122     // 65 + 56 = 121
 
-  tft.println(); // New line
+    // Draw "TRA"
+    tft.setTextColor(TFT_WHITE);
+    tft.setCursor(coordX, coordY);
+    tft.printf("%-3s", "TRA");
+    // Draw "C" of "TRACK"
+    tft.setTextColor(TFT_RED);
+    tft.setCursor(coordX + width * 3, coordY);
+    tft.printf("%-1s", "C");
+    // Draw "K" of "TRACK"
+    tft.setTextColor(TFT_WHITE);
+    tft.setCursor(coordX + width * 4, coordY);
+    tft.printf("%-1s", "K");
 
-  tft.print("ABC"); // print leaves cursor at end of line
+    // Draw special "S"
+    tft.fillCircle(coordX + width * 0.761904762, coordY2 + (height * 0.160714286), 4, TFT_RED);
+    tft.fillCircle(coordX + width * 0.547619048, coordY2 + (height * 0.053571429), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.285714286, coordY2 + (height * 0.089285714), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.142857143, coordY2 + (height * 0.250000000), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.309523810, coordY2 + (height * 0.392857143), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.523809524, coordY2 + (height * 0.500000000), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.714285714, coordY2 + (height * 0.642857143), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.547619048, coordY2 + (height * 0.803571429), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.285714286, coordY2 + (height * 0.839285714), 4, TFT_WHITE);
+    tft.fillCircle(coordX + width * 0.095238095, coordY2 + (height * 0.714285714), 4, TFT_RED);
 
-  tft.setTextColor(TFT_CYAN, TFT_BLACK);
-  tft.println("1234"); // Added to line after ABC
+    // Draw "ENSE"
+    tft.setTextColor(TFT_WHITE);
+    tft.setCursor(coordX + width, coordY2);
+    tft.printf("%-4s", "ENSE");
 
-  tft.setTextColor(TFT_YELLOW, TFT_BLACK);
-  // print stream formatting can be used,see:
-  // https://www.arduino.cc/en/Serial/Print
-  int ivalue = 1234;
-  tft.println(ivalue);       // print as an ASCII-encoded decimal
-  tft.println(ivalue, DEC);  // print as an ASCII-encoded decimal
-  tft.println(ivalue, HEX);  // print as an ASCII-encoded hexadecimal
-  tft.println(ivalue, OCT);  // print as an ASCII-encoded octal
-  tft.println(ivalue, BIN);  // print as an ASCII-encoded binary
-
-  tft.println(); // New line
-  tft.setTextColor(TFT_MAGENTA, TFT_BLACK);
-  float fvalue = 1.23456;
-  tft.println(fvalue, 0);  // no decimal places
-  tft.println(fvalue, 1);  // 1 decimal place
-  tft.println(fvalue, 2);  // 2 decimal places
-  tft.println(fvalue, 5);  // 5 decimal places
-
-  delay(5000);
-
-  // Get ready for the next demo while we have this font loaded
-  tft.fillScreen(TFT_BLACK);
-  tft.setCursor(0, 0); // Set cursor at top left of screen
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.println("Wrong and right ways to");
-  tft.println("print changing values...");
-
-  tft.unloadFont(); // Remove the font to recover memory used
-
-
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // Large font
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  tft.loadFont(AA_FONT_LARGE); // Load another different font
-
-  //tft.fillScreen(TFT_BLACK);
-  
-  // Draw changing numbers - does not work unless a filled rectangle is drawn over the old text
-  for (int i = 0; i <= 20; i++)
-  {
-    tft.setCursor(50, 50);
-    tft.setTextColor(TFT_GREEN, TFT_BLACK); // TFT_BLACK is used for anti-aliasing only
-                                            // By default background fill is off
-    tft.print("      "); // Overprinting old number with spaces DOES NOT WORK!
-    tft.setCursor(50, 50);
-    tft.print(i / 10.0, 1);
-
-    // Adding a parameter "true" to the setTextColor() function fills character background
-    // This extra parameter is only for smooth fonts!
-    tft.setTextColor(TFT_GREEN, TFT_BLACK, true);
-    tft.setCursor(50, 90);
-    tft.print(i / 10.0, 1);
-    
-    delay (200);
-  }
-
-  delay(5000);
-
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // Large font text wrapping
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  tft.fillScreen(TFT_BLACK);
-  
-  tft.setTextColor(TFT_YELLOW, TFT_BLACK); // Change the font colour and the background colour
-
-  tft.setCursor(0, 0); // Set cursor at top left of screen
-
-  tft.println("Large font!");
-
-  tft.setTextWrap(true); // Wrap on width
-  tft.setTextColor(TFT_CYAN, TFT_BLACK);
-  tft.println("Long lines wrap to the next line");
-
-  tft.setTextWrap(false, false); // Wrap on width and height switched off
-  tft.setTextColor(TFT_MAGENTA, TFT_BLACK);
-  tft.println("Unless text wrap is switched off");
-
-  tft.unloadFont(); // Remove the font to recover memory used
-
-  delay(8000);
+    // Draw circle
+    // Comme le nombre de pixel est pair (240), le centre est entre 2 pixels. On ne peut pas mettre de fraction de pixel... Donc pour avoir un cercle centré, il faut dessiner 4 cercles...
+    tft.drawCircle(119, 119, 120, TFT_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft.drawCircle(120, 120, 120, TFT_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft.drawCircle(119, 120, 120, TFT_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+    tft.drawCircle(120, 119, 120, TFT_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
 }
