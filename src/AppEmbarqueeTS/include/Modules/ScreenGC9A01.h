@@ -15,6 +15,7 @@ class ScreenGC9A01 : public IScreen
 private:
     TSProperties *_TSProperties;
     Adafruit_GC9A01A *tft;
+    GFXcanvas16 *canvas;
     int _currentActivePage;
     int _lastActivePage;
     int _lastLastActivePage;
