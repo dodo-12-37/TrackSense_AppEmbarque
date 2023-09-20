@@ -12,13 +12,15 @@
 // #include <Fonts/FreeSerifBold12pt7b.h>  // jolie, mais pas ce qu'on veut avoir
 // #include <Fonts/FreeMonoBold24pt7b.h>   // jolie, mais pas ce qu'on veut avoir
 
-ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties)
+ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties),
+                                                         _currentActivePage(INIT_TS_PAGE_ID),
+                                                         _lastActivePage(INIT_TS_PAGE_ID)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
+    delay(1000);
     this->tft->begin();
     this->canvas->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
-    
 
     // tft->setFont(&BebasNeue_Regular24pt7b);
     // tft->setFont(&FreeSansBold12pt7b);
@@ -46,25 +48,13 @@ void ScreenGC9A01::tick()
 {
     this->_currentActivePage = this->_TSProperties->PropertiesScreen.ActiveScreen;
 
-    // this->_TSProperties->PropertiesScreen.IsNewActivePage = !(this->_currentActivePage == this->_lastActivePage);
-    if (this->_lastActivePage == this->_lastLastActivePage)
-    {
-        this->_counterSamePage++;
-    }
-    else
-    {
-        this->_counterSamePage = 0;
-    }
-
     if (this->_currentActivePage == this->_lastActivePage)
     {
         this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-        // this->_counterSamePage++;
     }
     else
     {
         this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-        // this->_counterSamePage = 0;
     }
 
     if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
@@ -140,7 +130,6 @@ void ScreenGC9A01::tick()
     this->canvas->fillScreen(GC9A01A_BLACK);
 
     // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    this->_lastLastActivePage = this->_lastActivePage;
     this->_lastActivePage = this->_currentActivePage;
 }
 
@@ -342,7 +331,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 
     // this->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY);                                       // Contour
     // this->drawFillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2); // ti boute        + hauteurY / 2 - 16/2
-    this->canvas->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                       // Contour
+    this->canvas->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     this->canvas->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
 
     switch (pourcentage)

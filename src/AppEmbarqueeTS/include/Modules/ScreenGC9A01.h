@@ -18,8 +18,8 @@ private:
     GFXcanvas16 *canvas;
     int _currentActivePage;
     int _lastActivePage;
-    int _lastLastActivePage;
-    int _counterSamePage;
+    // int _lastLastActivePage;
+    // int _counterSamePage;
 
     /* Tests */
     void testButtonsScreen();
