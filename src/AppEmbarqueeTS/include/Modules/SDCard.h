@@ -7,6 +7,7 @@
 #include "Interfaces/ISDCard.h"
 #include "Configurations.h"
 #include "TSProperties.h"
+#include "StringQueue.h"
 
 class SDCard : public ISDCard
 {
@@ -14,9 +15,11 @@ private:
     TSProperties* _TSProperties;
     // SD* _sd;
 
-    int _nbFiles;
+    StringQueue _queueCompletedRideIds;
+    int _nbRidesInSDCard;
     bool _isRideStarted;
     File _currentPointsFile;
+    // String _currentRideId;
     String _currentPointsFileName;
     String _currentStatsFileName;
 

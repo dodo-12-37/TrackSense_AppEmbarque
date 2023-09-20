@@ -1,18 +1,21 @@
 #include "Modules/SDCard.h"
 #include "Configurations.h"
-
+#include "StringQueue.h"
 
 SDCard::SDCard(TSProperties* TSProperties) 
     : _TSProperties(TSProperties),
-    _nbFiles(0),
+    _queueCompletedRideIds(),
+    _nbRidesInSDCard(0),
     _isRideStarted(false),
     _currentPointsFile(),
+    // _currentRideId(""),
     _currentPointsFileName(""),
     _currentStatsFileName(""),
     _currentFileSendPoints(),
     _positionCursorFileSendPoints(0),
     _isSendingPoints(false)
 {
+    this->_queueCompletedRideIds = StringQueue();
     this->init();
 }
 
@@ -85,13 +88,30 @@ void SDCard::tick()
 
 void SDCard::checkFiles()
 {
-    this->_nbFiles = 0;
+    this->_nbRidesInSDCard = 0;
     File root = SD.open(SDCARD_ROOT_PATH);
+
+    String id;
+    String statsType = String(SDCARD_FILE_STATS_NAME) + String(SDCARD_FILE_EXTENSION);
+    String pointsType = String(SDCARD_FILE_POINTS_NAME) + String(SDCARD_FILE_EXTENSION);
 
     while (File file = root.openNextFile())
     {
-        this->_nbFiles++;
-        file.close();
+        String name = file.name();
+        if (name.length() > 36)
+        {
+            String idTemp = name.substring(0, 36);
+            
+            if (!this->_queueCompletedRideIds.contains(idTemp))
+            {
+                Serial.println("SDCard Ride Id find: " + idTemp);
+                this->_queueCompletedRideIds.enqueue(idTemp);
+                this->_nbRidesInSDCard++;
+            }
+
+            Serial.println("SDCard nb of rides: " + String(this->_nbRidesInSDCard));
+            file.close();
+        }
     }
     root.close();
 }
@@ -142,8 +162,10 @@ void SDCard::processCurrentRide()
         }
 
         this->writeStatsFile();
-
         this->_currentPointsFile.close();
+        Serial.println("SDCard Ride Id add into the queue: " + this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
+        this->_queueCompletedRideIds.enqueue(this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
+        this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
     }
 }
 
@@ -175,28 +197,47 @@ void SDCard::writePoint()
 
 void SDCard::setStatsToSend()
 {
-    String content = 
-        this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
-        this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
-        this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
-        this->_TSProperties->PropertiesCurrentRide.AvgSpeed + ";" +
-        this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
-        this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
-        this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
-        this->_TSProperties->PropertiesCurrentRide.Distance + ";" +
-        this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
-        this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
+    int compt = 0;
+    File stats = SD.open(String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId) 
+                            + String(SDCARD_FILE_STATS_NAME) 
+                            + String(SDCARD_FILE_EXTENSION)
+                            , FILE_READ);
+    String content = "";
+
+    while (stats.available())
+    {
+        String line = stats.readStringUntil(';');
+        content += line;
+        content += ";";
+        compt++;
+
+        if (compt == 8)
+        {
+            this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = line.toInt();
+        }
+    }
+
+    stats.close();
+
+    Serial.println("SDCard Stats find to send: " + content);
+
+    // String content = 
+    //     this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.AvgSpeed + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.Distance + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
 
     this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
-        = this->_TSProperties->PropertiesCurrentRide.CompletedRideId;
+        = this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId;
     this->_TSProperties->PropertiesCompletedRideToSend.Stats = content;
-    this->_TSProperties->PropertiesCompletedRideToSend.NbPoints 
-        = this->_TSProperties->PropertiesCurrentRide.NbPoints;
-    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsReceived  = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived  = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady  = false;
+    // this->_TSProperties->PropertiesCompletedRideToSend.NbPoints 
+    //     = this->_TSProperties->PropertiesCurrentRide.NbPoints;
 }
 
 void SDCard::setPointsToSendFromFile()
@@ -228,28 +269,45 @@ void SDCard::setPointsToSendFromFile()
         this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = true;
         this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
     }
-    else if (this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint
-                    >= this->_TSProperties->PropertiesCompletedRideToSend.NbPoints)
-    {
-        this->_currentFileSendPoints.close();
-        this->_isSendingPoints = false;
-        this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
-        this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
-    }
+    // else if (this->_TSProperties->PropertiesCompletedRideToSend.IsReceived)
+    // {
+    //     this->_currentFileSendPoints.close();
+    //     this->_isSendingPoints = false;
+    //     this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
+    //     this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
+    // }
 }
 
 void SDCard::processSendRide()
 {
-    if (this->_TSProperties->PropertiesCurrentRide.IsRideFinished)
+    if (this->_queueCompletedRideIds.getSize() > 0)
     {
         if (!this->_TSProperties->PropertiesCompletedRideToSend.IsReady)
         {
+            this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId = this->_queueCompletedRideIds.dequeue();
+            Serial.println("SDCard Ride Id find to send: " + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId);
+
             this->setStatsToSend();
+
             this->_isSendingPoints = true;
+            this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
+                = this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId;
+            this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsReceived  = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived  = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady  = false;
         }
         else if (this->_isSendingPoints)
         {
             this->setPointsToSendFromFile();
+        }
+        else if (this->_TSProperties->PropertiesCompletedRideToSend.IsReceived)
+        {
+            this->_currentFileSendPoints.close();
+            this->_isSendingPoints = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
         }
     }
 }

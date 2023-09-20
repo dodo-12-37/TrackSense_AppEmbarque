@@ -1,8 +1,5 @@
 {
     "files.associations": {
-        "string": "cpp",
-        "new": "cpp",
-        "*.tpp": "cpp",
         "array": "cpp",
         "atomic": "cpp",
         "*.tcc": "cpp",
@@ -32,6 +29,7 @@
         "numeric": "cpp",
         "optional": "cpp",
         "random": "cpp",
+        "string": "cpp",
         "string_view": "cpp",
         "system_error": "cpp",
         "tuple": "cpp",
@@ -43,6 +41,7 @@
         "iosfwd": "cpp",
         "istream": "cpp",
         "limits": "cpp",
+        "new": "cpp",
         "ostream": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",
