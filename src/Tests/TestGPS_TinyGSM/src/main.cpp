@@ -49,7 +49,7 @@ TinyGsm modem(SerialAT);
 #define TFT_SCL_CLK_SCK 18
 // #define TFT_MISO 19
 
-Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+Adafruit_GC9A01A tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 
 void setup()
 {
