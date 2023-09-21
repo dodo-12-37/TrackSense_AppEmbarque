@@ -226,7 +226,7 @@ public:
         String CompletedRideId;
         String Stats;
         String Point;
-        int CurrentPoint;
+        int CurrentPointNumber;
         int NbPoints;
 
         bool IsPointReady;

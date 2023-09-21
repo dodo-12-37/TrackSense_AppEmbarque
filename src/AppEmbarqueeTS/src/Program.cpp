@@ -86,7 +86,7 @@ void Program::initProperties()
     this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";
     this->_TSProperties->PropertiesCompletedRideToSend.Stats = "";
     this->_TSProperties->PropertiesCompletedRideToSend.Point = "";
-    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
+    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPointNumber = 0;
     this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = 0;
     this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
     this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
