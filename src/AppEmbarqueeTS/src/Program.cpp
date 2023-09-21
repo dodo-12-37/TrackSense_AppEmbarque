@@ -13,7 +13,6 @@ Program::Program() : _TSProperties(nullptr),
                      _controlerScreen(nullptr)
 {
     this->_TSProperties = new TSProperties();
-    this->initProperties();
 
     this->_controlerScreen = new ControlerScreen(this->_TSProperties);
     this->_controlerScreen->tick();
@@ -51,48 +50,4 @@ void Program::execute()
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-}
-
-void Program::initProperties()
-{
-    // TS
-    this->_TSProperties->PropertiesTS.IsInitializingTS = true;
-
-    // Battery
-    this->_TSProperties->PropertiesBattery.BatteryLevel = 0;
-
-    // Buttons
-    this->_TSProperties->PropertiesButtons.Button1State = 0;
-    this->_TSProperties->PropertiesButtons.Button2State = 0;
-
-    // Buzzer
-    this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = false;
-
-    // Screen
-    this->_TSProperties->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
-    this->_TSProperties->PropertiesScreen.IsDarkMode = true;
-    this->_TSProperties->PropertiesScreen.ScreenRotation = 0;
-    this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-
-    // Ride
-    this->_TSProperties->PropertiesCurrentRide.IsRideStarted = false;
-    this->_TSProperties->PropertiesCurrentRide.IsRidePaused = false;
-    this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
-
-    // BLE
-    this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";
-    this->_TSProperties->PropertiesCompletedRideToSend.Stats = "";
-    this->_TSProperties->PropertiesCompletedRideToSend.Point = "";
-    this->_TSProperties->PropertiesCompletedRideToSend.CurrentPoint = 0;
-    this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = 0;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsReady = false;
-    this->_TSProperties->PropertiesCompletedRideToSend.IsReceived = false;
-
-    // GPS
-    this->_TSProperties->PropertiesGPS.resetGPSValues();
-
-    // Current Ride
-    this->_TSProperties->PropertiesCurrentRide.resetCurrentRide();
 }

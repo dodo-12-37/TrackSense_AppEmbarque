@@ -1,6 +1,9 @@
 #pragma once
 #include <Arduino.h>
-#include "TSProperties.h"
+// #include "TSProperties.h"
+#include "Configurations.h"
+
+
 
 class TSProperties
 {
@@ -239,4 +242,6 @@ public:
     /* Methods */
     TSProperties();
     ~TSProperties();
+
+    void initProperties();
 };

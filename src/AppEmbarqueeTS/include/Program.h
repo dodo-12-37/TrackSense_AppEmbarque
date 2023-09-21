@@ -32,8 +32,6 @@ private:
     ControlerButtons *_controlerButtons;
     IControlerScreen *_controlerScreen;
 
-    void initProperties();
-
 public:
     Program();
     ~Program();
