@@ -16,7 +16,8 @@ private:
     bool _isInitialized;
     bool _isGpsOn;
     bool _isModemOn;
-    bool _isFixIsValid; // ???
+    // bool _isFixValid; // ???
+    bool _isGPSFixed;
 
     // int _pointId;
 
@@ -52,6 +53,7 @@ private:
     void setWorkModeGPS();
 
     bool isFixValid();
+    bool isGPSFixed();
     void saveFixToTSProperties();
 
 public:

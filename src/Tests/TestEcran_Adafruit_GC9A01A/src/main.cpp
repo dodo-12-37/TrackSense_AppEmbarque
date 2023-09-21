@@ -56,7 +56,7 @@
 #endif
 
 // Hardware SPI on Feather or other boards
-Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+Adafruit_GC9A01A tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 
 unsigned long testFillScreen();
 unsigned long testText();
@@ -83,8 +83,8 @@ void setup()
     pinMode(32, OUTPUT);
     // tone(32, 500, 5000);
 
-    pinMode(TFT_BL_BLK, OUTPUT);
-    digitalWrite(TFT_BL_BLK, HIGH);
+    pinMode(TFT_BLK, OUTPUT);
+    digitalWrite(TFT_BLK, HIGH);
 
     Serial.begin(115200);
     Serial.println("GC9A01A Test!");
