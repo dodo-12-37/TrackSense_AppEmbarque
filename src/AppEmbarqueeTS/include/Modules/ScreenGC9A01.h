@@ -17,8 +17,6 @@ private:
 
 public:
     ScreenGC9A01(TSProperties *TSProperties);
-    // ScreenGC9A01(TSProperties *TSProperties, int16_t pinChipSelect = TFT_CS, int16_t pinDC = TFT_DC, int16_t pinReset = TFT_RST, int16_t pinMOSI = TFT_MOSI, int16_t pinCLK = TFT_CLK);
-    // ScreenGC9A01(int16_t pinChipSelect = TFT_CS, int16_t pinDC = TFT_DC, int16_t pinReset = TFT_RST, int16_t pinMOSI = TFT_MOSI, int16_t pinCLK = TFT_CLK);
     ~ScreenGC9A01();
 
     /* Tests */
@@ -32,14 +30,17 @@ public:
     void drawError() override;
     // void drawSignal();
 
-    /* Drawing tools */
+    /* Calculations */
     int calculateXCoordTextToCenter(String text) override;
     int calculateXCoordItemToCenter(uint16_t lengthInPixels) override;
 
+    /* Drawing tools */
     void drawOnScreen() override;
     void drawBackgroundColor(uint16_t darkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR, uint16_t lightModeColor = TFT_LIGHT_MODE_BACKGROUND_COLOR) override;
     // void drawBackgroundImage();
     void setRotation(u_int8_t rotation) override;
+    void printText(String text, int16_t coordX, int16_t coordY) override;
+    void setTextSize(uint8_t size) override;
     void setTextColor(uint16_t textDarkModeColor = TFT_DARK_MODE_TEXT_COLOR,
                       uint16_t backgroundDarkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR,
                       uint16_t textLightModeColor = TFT_LIGHT_MODE_TEXT_COLOR,

@@ -13,10 +13,7 @@ Program::Program() : _TSProperties(nullptr),
                      _controlerScreen(nullptr)
 {
     this->_TSProperties = new TSProperties();
-
     this->_controlerScreen = new ControlerScreen(this->_TSProperties);
-    this->_controlerScreen->tick();
-
     this->_controlerButtons = new ControlerButtons(this->_TSProperties);
     this->_ble = new BLE(this->_TSProperties);
     this->_sdCard = new SDCard(this->_TSProperties);
@@ -27,15 +24,16 @@ Program::Program() : _TSProperties(nullptr),
     this->_accelerometer = new AccelerometerMPU6050(this->_TSProperties);
     this->_buzzer = new Buzzer(this->_TSProperties);
 
-    this->_gsm->init();
+    // this->_gsm->init();
 
     this->_TSProperties->PropertiesTS.IsInitializingTS = false;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-    this->_TSProperties->PropertiesScreen.ActiveScreen = 1;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
 }
 
 Program::~Program()
 {
+    ;
 }
 
 void Program::execute()

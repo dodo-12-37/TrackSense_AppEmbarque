@@ -4,7 +4,9 @@
 
 class IControlerScreen
 {
-private:
+public:
+    virtual void tick() = 0;
+    
     /*
         Draw Pages
     */
@@ -18,13 +20,4 @@ private:
     virtual void drawRideStatisticsPage() = 0;
     virtual void drawErrorPage() = 0;
 
-public:
-    virtual void tick() = 0;
-
-
-    /*
-        Showing modes
-    */
-    // virtual void setRotation(u_int8_t rotation) = 0;
-    // virtual void setBackgroudColor(uint16_t darkModeColor, uint16_t lightModeColor) = 0;
 };

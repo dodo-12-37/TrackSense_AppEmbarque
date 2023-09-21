@@ -25,6 +25,7 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
     this->modem = new TinyGsm(SerialAT);
     // Set GSM module baud rate
     // SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
+    this->init();
 }
 
 GSMTiny::~GSMTiny()
@@ -33,6 +34,8 @@ GSMTiny::~GSMTiny()
 
 void GSMTiny::init()
 {
+    this->_TSProperties->PropertiesTS.IsInitializedGSM = false;
+
     this->modemPowerOn();
 
     // Set GSM module baud rate
@@ -287,6 +290,8 @@ void GSMTiny::gpsPowerOn()
             0 Set the GPIO low level
             1 Set the GPIO high level
     */
+    Serial.println("Enabling GPS");
+    this->modem->enableGPS();
 
     // Set SIM7000G GPIO4 HIGH ,turn on GPS power
     // CMD:AT+SGPIO=0,4,1,1

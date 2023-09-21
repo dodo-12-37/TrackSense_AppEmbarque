@@ -3,9 +3,11 @@
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
                                                                _currentActivePage(INIT_TS_PAGE_ID),
-                                                               _lastActivePage(INIT_TS_PAGE_ID)
+                                                               _lastActivePage(HOME_PAGE_ID)
 {
     this->_screen = new ScreenGC9A01(this->_TSProperties);
+    this->tick();
+    // first tick() here ???
 }
 
 ControlerScreen::~ControlerScreen()
@@ -51,17 +53,20 @@ void ControlerScreen::tick()
         // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
     }
 
+    Serial.print("Active Screen : ");
+    Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
+
     switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
     {
-    case INIT_TS_PAGE_ID: // 0
+    case INIT_TS_PAGE_ID: // -1
         this->drawInitTSPage();
         break;
 
-    case HOME_PAGE_ID: // 1
+    case HOME_PAGE_ID: // 0
         this->drawHomePage();
         break;
 
-    case RIDE_PAGE_ID: // 2
+    case RIDE_PAGE_ID: // 1
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
             this->drawRidePage();
@@ -73,7 +78,7 @@ void ControlerScreen::tick()
         }
         break;
 
-    case RIDE_STATISTICS_PAGE_ID: // 3
+    case RIDE_STATISTICS_PAGE_ID: // 2
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
             this->drawRideStatisticsPage();
@@ -85,23 +90,23 @@ void ControlerScreen::tick()
         }
         break;
 
-    case COMPASS_PAGE_ID: // 4
+    case COMPASS_PAGE_ID: // 3
         this->drawCompassPage();
         break;
 
-    case RIDE_DIRECTION_PAGE_ID: // 5
+    case RIDE_DIRECTION_PAGE_ID: // 4
         this->drawRideDirectionPage();
         break;
 
-    case GLOBAL_STATISTICS_PAGE_ID: // 6
+    case GLOBAL_STATISTICS_PAGE_ID: // 5
         this->drawGlobalStatisticsPage();
         break;
 
-    case GO_HOME_PAGE_ID: // 7
+    case GO_HOME_PAGE_ID: // 6
         this->drawGoHomePage();
         break;
 
-    default:                   // -1
+    default:                   // -2
         this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
         break;
     }
@@ -123,26 +128,17 @@ void ControlerScreen::tick()
 
 void ControlerScreen::drawInitTSPage()
 {
-    // this->setTextColor();
-    // this->canvas->setTextSize(3);
-    // this->canvas->setCursor(10, 90);
-    // this->canvas->printf("%-13s", "Initializing");
-    // this->canvas->setCursor(30, 120);
-    // this->canvas->printf("%-11s", "TrackSense");
-
     this->_screen->drawLogoTS();
+
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(2);
+    this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 200);
 }
 
 void ControlerScreen::drawHomePage()
 {
 #if DEBUG_BUTTONS
-    this->setTextColor();
-    this->canvas->setTextSize(3);
-    this->canvas->setCursor(35, 50);
-    this->canvas->printf("%-10s", "Home Page");
-
-    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
-    this->testButtonsScreen();
+    this->_screen->testButtonsScreen();
 #else
     this->_screen->drawLogoTS();
 
@@ -172,12 +168,11 @@ void ControlerScreen::drawRidePage()
 #if DEBUG_GSM
     this->_screen->testGPS();
 #else
-    this->setTextColor();
-    this->canvas->setTextSize(3);
-    this->canvas->setCursor(35, 50);
-    this->canvas->printf("%-10s", "Ride Page");
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(3);
+    this->_screen->printText("Ride Page", 35, 50);
 
-    this->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery.BatteryLevel);
+    this->_screen->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery.BatteryLevel);
 #endif
 }
 

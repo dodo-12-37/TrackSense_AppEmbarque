@@ -2,7 +2,14 @@
 
 
 
-TSProperties::TSProperties()
+TSProperties::TSProperties() : PropertiesTS(),
+                               PropertiesBattery(),
+                               PropertiesButtons(),
+                               PropertiesBuzzer(),
+                               PropertiesScreen(),
+                               PropertiesCurrentRide(),
+                               PropertiesCompletedRideToSend(),
+                               PropertiesGPS()
 {
     this->initProperties();
 }
@@ -16,6 +23,7 @@ void TSProperties::initProperties()
 {
     // TS
     this->PropertiesTS.IsInitializingTS = true;
+    this->PropertiesTS.IsInitializedGSM = true;
 
     // Battery
     this->PropertiesBattery.BatteryLevel = 0;
@@ -33,11 +41,13 @@ void TSProperties::initProperties()
     this->PropertiesScreen.ScreenRotation = 0;
     this->PropertiesScreen.IsNewActivePage = true;
 
-    // Ride
+    // Current Ride
     this->PropertiesCurrentRide.IsRideStarted = false;
     this->PropertiesCurrentRide.IsRidePaused = false;
     this->PropertiesCurrentRide.IsRideFinished = false;
-
+    this->PropertiesCurrentRide.IsRideReadyToSave = false;
+    this->PropertiesCurrentRide.resetCurrentRide();
+    
     // BLE
     this->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";
     this->PropertiesCompletedRideToSend.Stats = "";
@@ -52,6 +62,4 @@ void TSProperties::initProperties()
     // GPS
     this->PropertiesGPS.resetGPSValues();
 
-    // Current Ride
-    this->PropertiesCurrentRide.resetCurrentRide();
 }

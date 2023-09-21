@@ -203,7 +203,6 @@ void ScreenGC9A01::drawError()
     this->canvas->setCursor(15, 110);
     this->canvas->printf("%-8s", "ERROR !");
 }
-
 #pragma endregion Elements
 
 /*
@@ -235,8 +234,9 @@ int ScreenGC9A01::calculateXCoordTextToCenter(String text)
         @param    h      The boundary height, set by function
     */
     uint16_t textWidth, textHeight;
+    int16_t x = 0, y = 0;
 
-    this->canvas->getTextBounds(text, 10, 10, 0, 0, &textWidth, &textHeight);
+    this->canvas->getTextBounds(text, 10, 10, &x, &y, &textWidth, &textHeight);
 
     return (TFT_WIDTH - textWidth) / 2;
 }
@@ -276,7 +276,19 @@ void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
 void ScreenGC9A01::setRotation(u_int8_t rotation)
 {
     this->canvas->setRotation(rotation);
-    this->tft->setRotation(rotation);
+    // this->tft->setRotation(rotation);
+}
+
+void ScreenGC9A01::setTextSize(uint8_t size)
+{
+    this->canvas->setTextSize(size);
+}
+
+void ScreenGC9A01::printText(String text, int16_t coordX, int16_t coordY)
+{
+    const char* formatChar =  ("%-" + String(text.length()) + "s").c_str();
+    this->canvas->setCursor(coordX, coordY);
+    this->canvas->printf(formatChar, text.c_str());
 }
 
 void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
@@ -306,7 +318,6 @@ void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t hei
         this->canvas->fillRect(x, y, width, height, lightModeColor);
     }
 }
-
 #pragma endregion DrawingTools
 
 /*
@@ -374,6 +385,14 @@ void ScreenGC9A01::testGPS()
 
 void ScreenGC9A01::testButtonsScreen()
 {
+    this->setTextColor();
+    this->canvas->setTextSize(3);
+    this->canvas->setCursor(35, 50);
+    this->canvas->printf("%-10s", "Home Page");
+
+    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
+
+
     char *formatChar = (char *)"%-29s";
 
     this->canvas->setCursor(2, 100);
