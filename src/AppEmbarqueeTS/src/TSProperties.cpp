@@ -52,7 +52,7 @@ void TSProperties::initProperties()
     this->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";
     this->PropertiesCompletedRideToSend.Stats = "";
     this->PropertiesCompletedRideToSend.Point = "";
-    this->PropertiesCompletedRideToSend.CurrentPoint = 0;
+    this->PropertiesCompletedRideToSend.CurrentPointNumber = 0;
     this->PropertiesCompletedRideToSend.NbPoints = 0;
     this->PropertiesCompletedRideToSend.IsPointReady = false;
     this->PropertiesCompletedRideToSend.IsPointReceived = false;
