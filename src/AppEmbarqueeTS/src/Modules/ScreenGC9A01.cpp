@@ -12,15 +12,13 @@
 // #include <Fonts/FreeSerifBold12pt7b.h>  // jolie, mais pas ce qu'on veut avoir
 // #include <Fonts/FreeMonoBold24pt7b.h>   // jolie, mais pas ce qu'on veut avoir
 
-ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties),
-                                                         _currentActivePage(INIT_TS_PAGE_ID),
-                                                         _lastActivePage(INIT_TS_PAGE_ID)
+ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties)
 {
-    this->tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+    this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
     delay(1000);
     this->tft->begin();
-    this->canvas->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
+    this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
     // tft->setFont(&BebasNeue_Regular24pt7b);
     // tft->setFont(&FreeSansBold12pt7b);
@@ -32,205 +30,6 @@ ScreenGC9A01::~ScreenGC9A01()
 {
     delete this->tft;
 }
-
-/*
-    0 : Home Page
-    1 : Ride Page
-    2 : Ride Statistics Page
-    3 : Compass Page
-    4 : Ride Direction Page
-    5 : Global Statistics Page
-    6 : Go Home Page
-    -1 : Init TS Page
-    -2 : No Page (error)
-*/
-void ScreenGC9A01::tick()
-{
-    this->_currentActivePage = this->_TSProperties->PropertiesScreen.ActiveScreen;
-
-    if (this->_currentActivePage == this->_lastActivePage)
-    {
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    }
-    else
-    {
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-    }
-
-    if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
-    {
-        this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
-        // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    }
-
-    this->canvas->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
-
-    if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
-    {
-        this->drawBackgroundColor();
-        // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    }
-
-    switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
-    {
-    case INIT_TS_PAGE_ID: // 0
-        this->drawInitTSPage();
-        break;
-
-    case HOME_PAGE_ID: // 1
-        this->drawHomePage();
-        break;
-
-    case RIDE_PAGE_ID: // 2
-        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
-        {
-            this->drawRidePage();
-        }
-        else
-        {
-            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-            // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-        }
-        break;
-
-    case RIDE_STATISTICS_PAGE_ID: // 3
-        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
-        {
-            this->drawRideStatisticsPage();
-        }
-        else
-        {
-            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-            // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-        }
-        break;
-
-    case COMPASS_PAGE_ID: // 4
-        this->drawCompassPage();
-        break;
-
-    case RIDE_DIRECTION_PAGE_ID: // 5
-        this->drawRideDirectionPage();
-        break;
-
-    case GLOBAL_STATISTICS_PAGE_ID: // 6
-        this->drawGlobalStatisticsPage();
-        break;
-
-    case GO_HOME_PAGE_ID: // 7
-        this->drawGoHomePage();
-        break;
-
-    default:                   // -1
-        this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
-        break;
-    }
-
-    this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
-    this->canvas->fillScreen(GC9A01A_BLACK);
-
-    // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    this->_lastActivePage = this->_currentActivePage;
-}
-
-/*
-
-
-    Draw Pages
-
-
-*/
-#pragma region DrawPages
-
-void ScreenGC9A01::drawInitTSPage()
-{
-    // this->setTextColor();
-    // this->canvas->setTextSize(3);
-    // this->canvas->setCursor(10, 90);
-    // this->canvas->printf("%-13s", "Initializing");
-    // this->canvas->setCursor(30, 120);
-    // this->canvas->printf("%-11s", "TrackSense");
-
-    this->drawLogoTS();
-}
-
-void ScreenGC9A01::drawHomePage()
-{
-#if DEBUG_BUTTONS
-    this->setTextColor();
-    this->canvas->setTextSize(3);
-    this->canvas->setCursor(35, 50);
-    this->canvas->printf("%-10s", "Home Page");
-
-    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
-    this->testButtonsScreen();
-#else
-    this->drawLogoTS();
-
-    int batteryLengthInPixels = 70;
-    this->drawBattery(this->calculateXCoordItemToCenter(batteryLengthInPixels),
-                      20,
-                      batteryLengthInPixels,
-                      this->_TSProperties->PropertiesBattery.BatteryLevel);
-
-    int rideStartedLengthInPixels = 40;
-    this->drawIsRideStarted(this->calculateXCoordItemToCenter(rideStartedLengthInPixels), 185, rideStartedLengthInPixels);
-#endif
-}
-
-void ScreenGC9A01::drawCompassPage()
-{
-    ;
-}
-
-void ScreenGC9A01::drawRideDirectionPage()
-{
-    ;
-}
-
-void ScreenGC9A01::drawRidePage()
-{
-#if DEBUG_GSM
-    this->testGPS();
-#else
-    this->setTextColor();
-    this->canvas->setTextSize(3);
-    this->canvas->setCursor(35, 50);
-    this->canvas->printf("%-10s", "Ride Page");
-
-    this->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery.BatteryLevel);
-#endif
-}
-
-void ScreenGC9A01::drawGlobalStatisticsPage()
-{
-    ;
-}
-
-void ScreenGC9A01::drawGoHomePage()
-{
-    ;
-}
-
-void ScreenGC9A01::drawRideStatisticsPage()
-{
-    int batteryLengthInPixels = 150;
-    this->drawBattery(this->calculateXCoordItemToCenter(batteryLengthInPixels),
-                      100,
-                      batteryLengthInPixels,
-                      this->_TSProperties->PropertiesBattery.BatteryLevel);
-}
-
-void ScreenGC9A01::drawErrorPage()
-{
-    this->canvas->fillScreen(GC9A01A_RED);
-    this->setTextColor(GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE, GC9A01A_RED);
-    this->canvas->setTextSize(5);
-    this->canvas->setCursor(15, 110);
-    this->canvas->printf("%-8s", "ERROR !");
-}
-
-#pragma endregion DrawPages
 
 /*
 
@@ -396,6 +195,15 @@ void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t lar
     }
 }
 
+void ScreenGC9A01::drawError()
+{
+    this->canvas->fillScreen(GC9A01A_RED);
+    this->setTextColor(GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE, GC9A01A_RED);
+    this->canvas->setTextSize(5);
+    this->canvas->setCursor(15, 110);
+    this->canvas->printf("%-8s", "ERROR !");
+}
+
 #pragma endregion Elements
 
 /*
@@ -406,6 +214,12 @@ void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t lar
 
 */
 #pragma region DrawingTools
+
+void ScreenGC9A01::drawOnScreen()
+{
+    this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
+    this->canvas->fillScreen(GC9A01A_BLACK);
+}
 
 int ScreenGC9A01::calculateXCoordTextToCenter(String text)
 {
@@ -432,7 +246,7 @@ int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)
     return (TFT_WIDTH - lengthInPixels) / 2;
 }
 
-void ScreenGC9A01::drawBackgroundColor(int darkModeColor, int lightModeColor)
+void ScreenGC9A01::drawBackgroundColor(uint16_t darkModeColor, uint16_t lightModeColor)
 {
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -444,10 +258,10 @@ void ScreenGC9A01::drawBackgroundColor(int darkModeColor, int lightModeColor)
     }
 }
 
-void ScreenGC9A01::setTextColor(int textDarkModeColor,
-                                int backgroundDarkModeColor,
-                                int textLightModeColor,
-                                int backgroundLightModeColor)
+void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
+                                uint16_t backgroundDarkModeColor,
+                                uint16_t textLightModeColor,
+                                uint16_t backgroundLightModeColor)
 {
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -457,6 +271,12 @@ void ScreenGC9A01::setTextColor(int textDarkModeColor,
     {
         this->canvas->setTextColor(textLightModeColor, backgroundLightModeColor);
     }
+}
+
+void ScreenGC9A01::setRotation(u_int8_t rotation)
+{
+    this->canvas->setRotation(rotation);
+    this->tft->setRotation(rotation);
 }
 
 void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,

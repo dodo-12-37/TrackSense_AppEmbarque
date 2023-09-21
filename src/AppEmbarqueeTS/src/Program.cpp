@@ -1,25 +1,22 @@
 #include "Program.h"
 
-
-
-Program::Program() : 
-    _TSProperties(nullptr), 
-    // _lte(nullptr), 
-    _gsm(nullptr), 
-    _sdCard(nullptr), 
-    _gyroscope(nullptr), 
-    _compass(nullptr), 
-    _accelerometer(nullptr), 
-    _ble(nullptr), 
-    _screen(nullptr), 
-    _buzzer(nullptr),
-    _controlerButtons(nullptr)
+Program::Program() : _TSProperties(nullptr),
+                     // _lte(nullptr),
+                     _gsm(nullptr),
+                     _sdCard(nullptr),
+                     _gyroscope(nullptr),
+                     _compass(nullptr),
+                     _accelerometer(nullptr),
+                     _ble(nullptr),
+                     _buzzer(nullptr),
+                     _controlerButtons(nullptr),
+                     _controlerScreen(nullptr)
 {
     this->_TSProperties = new TSProperties();
     this->initProperties();
 
-    this->_screen = new ScreenGC9A01(this->_TSProperties);
-    this->_screen->tick();
+    this->_controlerScreen = new ControlerScreen(this->_TSProperties);
+    this->_controlerScreen->tick();
 
     this->_controlerButtons = new ControlerButtons(this->_TSProperties);
     this->_ble = new BLE(this->_TSProperties);
@@ -46,7 +43,7 @@ void Program::execute()
 {
     this->_controlerButtons->tick();
     this->_buzzer->tick();
-    this->_screen->tick();
+    this->_controlerScreen->tick();
     this->_ble->tick();
     this->_gsm->tick();
     this->_sdCard->tick();
@@ -98,5 +95,4 @@ void Program::initProperties()
 
     // Current Ride
     this->_TSProperties->PropertiesCurrentRide.resetCurrentRide();
-
-}   
+}
