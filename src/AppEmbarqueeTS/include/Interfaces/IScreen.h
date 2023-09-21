@@ -13,6 +13,7 @@ public:
     virtual void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage) = 0;
     virtual void drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX) = 0;
     virtual void drawError() = 0;
+    virtual void drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX) = 0;
 
     /* Calculations */
     virtual int calculateXCoordTextToCenter(String text) = 0;

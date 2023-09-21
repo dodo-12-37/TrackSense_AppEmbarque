@@ -28,6 +28,7 @@ public:
     void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage) override;
     void drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX) override;
     void drawError() override;
+    void drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX) override;
     // void drawSignal();
 
     /* Calculations */

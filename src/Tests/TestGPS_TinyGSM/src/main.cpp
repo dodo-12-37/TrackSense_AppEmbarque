@@ -242,7 +242,7 @@ void printGPSOnScreen(float lat, float lon, float speed, float alt, float accura
     tft.printf("%-11s", strCounterTotal.c_str());
 
     // tft.setCursor(30, 90);
-    // String strIsValid = "IsValid : " + String(locationIsValid ? "true" : "false");
+    // String strIsValid = "IsFixValid : " + String(locationIsValid ? "true" : "false");
     // tft.printf(formatChar, strIsValid.c_str());
 
     tft.setCursor(15, 85);

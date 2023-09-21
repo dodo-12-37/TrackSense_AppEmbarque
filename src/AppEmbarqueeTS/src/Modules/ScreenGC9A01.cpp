@@ -176,21 +176,10 @@ void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t lar
 
     if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
     {
-        // if (this->_currentActivePage == this->_lastActivePage && this->_lastActivePage == this->_lastLastActivePage)
-        // if (this->_currentActivePage == this->_lastLastActivePage)
-        // if (this->_counterSamePage == 1)
-        // {
-        //     this->canvas->fillRect(coordX - 5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
-        // }
         this->canvas->fillTriangle(coordX, coordY, coordX + largeurX, coordY + hauteurY / 2, coordX, coordY + hauteurY, GC9A01A_GREEN);
     }
     else
     {
-        // if (this->_currentActivePage == this->_lastLastActivePage)
-        // if (this->_counterSamePage == 1)
-        // {
-        //     this->canvas->fillRect(coordX - 5, coordY - 5, largeurX + 10, hauteurY + 10, GC9A01A_BLACK);
-        // }
         this->canvas->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
     }
 }
@@ -202,6 +191,24 @@ void ScreenGC9A01::drawError()
     this->canvas->setTextSize(5);
     this->canvas->setCursor(15, 110);
     this->canvas->printf("%-8s", "ERROR !");
+}
+
+void ScreenGC9A01::drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX)
+{
+    double hauteurY = largeurX;
+
+    if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.IsGPSFixed)
+    {
+        this->canvas->fillTriangle(coordX, coordY, coordX + largeurX, coordY + hauteurY / 2, coordX, coordY + hauteurY, GC9A01A_GREEN);
+    }
+    else if (!this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.IsGPSFixed)
+    {
+        this->canvas->fillTriangle(coordX, coordY, coordX + largeurX, coordY + hauteurY / 2, coordX, coordY + hauteurY, GC9A01A_YELLOW);
+    }
+    else
+    {
+        this->canvas->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
+    }
 }
 #pragma endregion Elements
 
@@ -286,14 +293,14 @@ void ScreenGC9A01::setTextSize(uint8_t size)
 
 void ScreenGC9A01::printText(String text, int16_t coordX, int16_t coordY)
 {
-    const char* formatChar =  ("%-" + String(text.length()) + "s").c_str();
+    String text2 = "%-" + String(text.length()) + "s";
+    const char *formatChar = text2.c_str();
     this->canvas->setCursor(coordX, coordY);
     this->canvas->printf(formatChar, text.c_str());
 }
 
 void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
-                            uint16_t darkModeColor,
-                            uint16_t lightModeColor)
+                            uint16_t darkModeColor, uint16_t lightModeColor)
 {
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -306,8 +313,7 @@ void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
 }
 
 void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t height,
-                                uint16_t darkModeColor,
-                                uint16_t lightModeColor)
+                                uint16_t darkModeColor, uint16_t lightModeColor)
 {
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -333,11 +339,11 @@ void ScreenGC9A01::testGPS()
 {
     char *formatChar = (char *)"%-19s";
 
-    if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS.UsedSatellites >= 4)
+    if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.UsedSatellites >= 4)
     {
         this->setTextColor(GC9A01A_GREEN, GC9A01A_BLACK, GC9A01A_DARKGREEN, GC9A01A_WHITE);
     }
-    else if (this->_TSProperties->PropertiesGPS.IsValid && this->_TSProperties->PropertiesGPS.UsedSatellites < 4)
+    else if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.UsedSatellites < 4)
     {
         this->setTextColor(GC9A01A_CYAN, GC9A01A_BLACK, GC9A01A_DARKCYAN, GC9A01A_WHITE);
     }
@@ -391,7 +397,6 @@ void ScreenGC9A01::testButtonsScreen()
     this->canvas->printf("%-10s", "Home Page");
 
     this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
-
 
     char *formatChar = (char *)"%-29s";
 

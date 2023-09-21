@@ -132,7 +132,7 @@ void ControlerScreen::drawInitTSPage()
 
     this->_screen->setTextColor();
     this->_screen->setTextSize(2);
-    this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 200);
+    this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 190);
 }
 
 void ControlerScreen::drawHomePage()
@@ -142,11 +142,11 @@ void ControlerScreen::drawHomePage()
 #else
     this->_screen->drawLogoTS();
 
-    int batteryLengthInPixels = 70;
+    int batteryLengthInPixels = 50;
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
-                      20,
-                      batteryLengthInPixels,
-                      this->_TSProperties->PropertiesBattery.BatteryLevel);
+                               20,
+                               batteryLengthInPixels,
+                               this->_TSProperties->PropertiesBattery.BatteryLevel);
 
     int rideStartedLengthInPixels = 40;
     this->_screen->drawIsRideStarted(this->_screen->calculateXCoordItemToCenter(rideStartedLengthInPixels), 185, rideStartedLengthInPixels);
@@ -170,9 +170,30 @@ void ControlerScreen::drawRidePage()
 #else
     this->_screen->setTextColor();
     this->_screen->setTextSize(3);
-    this->_screen->printText("Ride Page", 35, 50);
+    this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 60);
 
-    this->_screen->drawBattery(70, 140, 70, this->_TSProperties->PropertiesBattery.BatteryLevel);
+    this->_screen->setTextSize(7);
+
+    if (this->_TSProperties->PropertiesGPS.IsFixValid)
+    {
+        String speed = String(this->_TSProperties->PropertiesGPS.Speed, 1);
+        this->_screen->printText(speed, this->_screen->calculateXCoordTextToCenter(speed), 110);
+    }
+    else
+    {
+        this->_screen->printText("---", this->_screen->calculateXCoordTextToCenter("---"), 110);
+    }
+
+    this->_screen->setTextSize(3);
+    this->_screen->printText("Km/h", this->_screen->calculateXCoordTextToCenter("Km/h"), 190);
+
+    int batteryLengthInPixels = 50;
+    this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
+                               20,
+                               batteryLengthInPixels,
+                               this->_TSProperties->PropertiesBattery.BatteryLevel);
+
+    this->_screen->drawIsGPSValid(40, 170, 30);
 #endif
 }
 
@@ -190,9 +211,9 @@ void ControlerScreen::drawRideStatisticsPage()
 {
     int batteryLengthInPixels = 150;
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
-                      100,
-                      batteryLengthInPixels,
-                      this->_TSProperties->PropertiesBattery.BatteryLevel);
+                               100,
+                               batteryLengthInPixels,
+                               this->_TSProperties->PropertiesBattery.BatteryLevel);
 }
 
 void ControlerScreen::drawErrorPage()

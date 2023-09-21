@@ -86,7 +86,8 @@ public:
         int Hour;
         int Minute;
         int Seconde;
-        bool IsValid;
+        bool IsFixValid;
+        bool IsGPSFixed;
 
         int CounterGoodValue;
         int CounterTotal;
@@ -111,7 +112,7 @@ public:
             this->Seconde = 0;
             this->CounterGoodValue = 0;
             this->CounterTotal = 0;
-            this->IsValid = false;
+            this->IsFixValid = false;
         }
     } PropertiesGPS;
 
