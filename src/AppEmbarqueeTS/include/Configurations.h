@@ -75,6 +75,8 @@
 #define SDCARD_FILE_EXTENSION ".csv"
 #define SDCARD_FILE_STATS_NAME "_stats"
 #define SDCARD_FILE_POINTS_NAME "_points"
+#define SDCARD_POSITION_NUMBER_OF_POINTS 9
+#define SDCARD_NUMBER_ELEMENTS_OF_POINT 8
 
 /*----- GSM LilyGO T-SIM7000G (GPS, LTE) -----*/
 // Exemple point

@@ -19,7 +19,6 @@ private:
     int _nbRidesInSDCard;
     bool _isRideStarted;
     File _currentPointsFile;
-    // String _currentRideId;
     String _currentPointsFileName;
     String _currentStatsFileName;
 

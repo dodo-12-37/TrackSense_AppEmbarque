@@ -152,7 +152,7 @@ public:
     /* datas SD Card */
     struct TSPropertiesSDCard
     {
-        ;
+        bool IsSDCardConnected;
     } PropertiesSDCard;
 
     /* datas Bluetooth */
