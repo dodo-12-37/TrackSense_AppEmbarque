@@ -1,13 +1,13 @@
 #include "ControlerButtons.h"
 
 ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(TSProperties),
-                                                                                 _button1(nullptr),
-                                                                                 _button2(nullptr),
-                                                                                 // _isPressedButton1(false),
-                                                                                 // _isPressedButton2(false),
-                                                                                 _finalStateButton1(0),
-                                                                                 _finalStateButton2(0),
-                                                                                 _guidGenerator(nullptr)
+                                                                 _button1(nullptr),
+                                                                 _button2(nullptr),
+                                                                 // _isPressedButton1(false),
+                                                                 // _isPressedButton2(false),
+                                                                 _finalStateButton1(0),
+                                                                 _finalStateButton2(0),
+                                                                 _guidGenerator(nullptr)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
@@ -48,17 +48,14 @@ void ControlerButtons::tick()
         /* Start/Stop Ride */
         Serial.println("Button 1 LONG press");
 
-        // if (this->_TSProperties->PropertiesCurrentRide.IsRideFinished == false)
-        // {
-            if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
-            {
-                this->finishRide();
-            }
-            else
-            {
-                this->startRide();
-            }
-        // }
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+        {
+            this->finishRide();
+        }
+        else
+        {
+            this->startRide();
+        }
         break;
 
     case 3:
@@ -134,7 +131,7 @@ void ControlerButtons::changePageUp()
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
     }
-    
+
     // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
@@ -179,7 +176,6 @@ void ControlerButtons::startRide()
 
         this->_TSProperties->PropertiesScreen.ActiveScreen = RIDE_PAGE_ID;
         // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-
     }
 }
 
@@ -200,7 +196,7 @@ void ControlerButtons::finishRide()
 
         this->_TSProperties->PropertiesGPS.CounterTotal = 0;
         this->_TSProperties->PropertiesGPS.CounterGoodValue = 0;
-        
+
         Serial.println("===================== Finish Ride =====================");
     }
 }

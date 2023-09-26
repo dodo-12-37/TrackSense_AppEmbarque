@@ -43,8 +43,8 @@
 #define C_WHITE 0xFFFF
 
 // create the display object
-// Adafruit_GC9A01A Display(TFT_CS_SS, TFT_DC);
-Adafruit_GC9A01A Display(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+// Adafruit_GC9A01A Display(TFT_CS, TFT_DC);
+Adafruit_GC9A01A Display(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 
 // create a flicker free pnject for each data to be printed with the flicker free option
 // the library used template scheme so you need to pass the data type in <>
@@ -63,7 +63,7 @@ void setup()
 {
     Serial.begin(115200);
 
-    pinMode(TFT_CS_SS, OUTPUT);
+    pinMode(TFT_CS, OUTPUT);
     pinMode(TFT_DC, OUTPUT);
 
     // while (!Serial);     // used for leonardo debugging

@@ -67,8 +67,8 @@ and the underlying physical layout.
 void drawLogoTS();
 
 // Hardware SPI on Feather or other boards
-// Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
-Adafruit_GC9A01A *tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+// Adafruit_GC9A01A tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
+Adafruit_GC9A01A *tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 // This is an incomplete Arduino example to minimally show
 // the canvas drawing approach. A real program would #include
 // a display library header and declare a global 'display',
@@ -86,7 +86,7 @@ void setup()
 
     // Display init and font select would take place here.
     // See later examples for that.
-    // tft = new Adafruit_GC9A01A(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+    // tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
     tft->begin();
     tft->fillScreen(0x07FF); // Clear screen to blue
     // canvas->flush();

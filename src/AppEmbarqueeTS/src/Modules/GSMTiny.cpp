@@ -3,8 +3,8 @@
 GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                modem(nullptr),
                                                _isInitialized(false),
-                                            //    CounterGoodValue(0),
-                                            //    CounterTotal(0),
+                                               //    CounterGoodValue(0),
+                                               //    CounterTotal(0),
                                                _latitude(0),
                                                _longitude(0),
                                                _speed(0),
@@ -20,11 +20,13 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _seconde(0),
                                                _isGpsOn(false),
                                                _isModemOn(false),
-                                               _isFixIsValid(false)
+                                            //    _isFixValid(false),
+                                               _isGPSFixed(false)
 {
     this->modem = new TinyGsm(SerialAT);
     // Set GSM module baud rate
     // SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
+    this->init();
 }
 
 GSMTiny::~GSMTiny()
@@ -33,6 +35,8 @@ GSMTiny::~GSMTiny()
 
 void GSMTiny::init()
 {
+    this->_TSProperties->PropertiesTS.IsInitializedGSM = false;
+
     this->modemPowerOn();
 
     // Set GSM module baud rate
@@ -66,6 +70,7 @@ void GSMTiny::init()
     this->setWorkModeGPS();
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
+    this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
 }
 
 void GSMTiny::tick()
@@ -175,6 +180,18 @@ bool GSMTiny::isFixValid()
     return result;
 }
 
+bool GSMTiny::isGPSFixed()
+{
+    bool result = false;
+
+    if (this->_latitude != 0 && this->_longitude != 0)
+    {
+        result = true;
+    }
+
+    return result;
+}
+
 void GSMTiny::saveFixToTSProperties()
 {
     this->_TSProperties->PropertiesGPS.Latitude = this->_latitude;
@@ -190,9 +207,10 @@ void GSMTiny::saveFixToTSProperties()
     this->_TSProperties->PropertiesGPS.Hour = this->_hour;
     this->_TSProperties->PropertiesGPS.Minute = this->_minute;
     this->_TSProperties->PropertiesGPS.Seconde = this->_seconde;
-    this->_TSProperties->PropertiesGPS.IsValid = this->isFixValid();
+    this->_TSProperties->PropertiesGPS.IsFixValid = this->isFixValid();
+    this->_TSProperties->PropertiesGPS.IsGPSFixed = this->isGPSFixed();
 
-    if (this->_TSProperties->PropertiesGPS.IsValid)
+    if (this->_TSProperties->PropertiesGPS.IsFixValid)
     {
         this->_TSProperties->PropertiesGPS.CounterGoodValue++;
 
@@ -207,13 +225,13 @@ void GSMTiny::saveFixToTSProperties()
         this->_TSProperties->PropertiesCurrentRide.DurationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
         // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
         this->_TSProperties->PropertiesCurrentRide.CurrentPoint = String(this->_TSProperties->PropertiesCurrentRide.PointID) + ";" +
-                                                                   String(this->_latitude, 10) + ";" +
-                                                                   String(this->_longitude, 10) + ";" +
-                                                                   String(this->_altitude) + ";" +
-                                                                   String(this->_TSProperties->PropertiesCurrentRide.Temperature) + ";" +
-                                                                   String(this->_speed) + ";" +
-                                                                   this->getDatetime() + ";" +
-                                                                   String(this->_TSProperties->PropertiesCurrentRide.DurationS);
+                                                                  String(this->_latitude, 10) + ";" +
+                                                                  String(this->_longitude, 10) + ";" +
+                                                                  String(this->_altitude) + ";" +
+                                                                  String(this->_TSProperties->PropertiesCurrentRide.Temperature) + ";" +
+                                                                  String(this->_speed) + ";" +
+                                                                  this->getDatetime() + ";" +
+                                                                  String(this->_TSProperties->PropertiesCurrentRide.DurationS);
         this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
     }
 }
@@ -287,6 +305,8 @@ void GSMTiny::gpsPowerOn()
             0 Set the GPIO low level
             1 Set the GPIO high level
     */
+    Serial.println("Enabling GPS");
+    this->modem->enableGPS();
 
     // Set SIM7000G GPIO4 HIGH ,turn on GPS power
     // CMD:AT+SGPIO=0,4,1,1

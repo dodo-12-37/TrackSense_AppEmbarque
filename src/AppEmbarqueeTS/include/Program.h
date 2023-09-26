@@ -3,6 +3,7 @@
 #include "Configurations.h"
 #include "TSProperties.h"
 #include "ControlerButtons.h"
+#include "ControlerScreen.h"
 
 // #include "Modules/LTE.h"
 #include "Modules/GSMTiny.h"
@@ -21,18 +22,15 @@ class Program
 private:
     TSProperties *_TSProperties;
     // ILTE *_lte;
-    // IGPS *_gps;
     IGSM *_gsm;
     ISDCard *_sdCard;
     IGyroscope *_gyroscope;
     ICompass *_compass;
     IAccelerometer *_accelerometer;
     IBLE *_ble;
-    IScreen *_screen;
     IBuzzer *_buzzer;
     ControlerButtons *_controlerButtons;
-
-    void initProperties();
+    IControlerScreen *_controlerScreen;
 
 public:
     Program();

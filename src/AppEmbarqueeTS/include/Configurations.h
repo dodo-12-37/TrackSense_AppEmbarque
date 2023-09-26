@@ -4,7 +4,7 @@
 
 /*----- DEBUG -----*/
 #define DEBUG_BUTTONS false
-#define DEBUG_GSM true
+#define DEBUG_GSM false
 
 
 /*----- Screen -----*/
@@ -22,13 +22,13 @@
 
 #else // VSPI
 
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 05        // 25     // Chip select control pin
-    #define TFT_DC 00           // 19        // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 19          // Ne semble pas être utile, car non tactile
+    #define TFT_BLK -1 //12 // LED back-light. "BLK" or "BLK"
+    #define TFT_CS 5        // 25     // Chip select control pin. "CS" or "SS"
+    #define TFT_DC 0        // 19        // Data Command control pin
+    #define TFT_RST -1      // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
+    #define TFT_MOSI 23     // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
+    #define TFT_CLK 18      // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
+    #define TFT_MISO 19     // Ne semble pas être utile, car non tactile
 
 #endif
 
