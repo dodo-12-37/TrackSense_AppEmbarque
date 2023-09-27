@@ -24,9 +24,9 @@ public:
 
         String CompletedRideId;
         String PlannedRideId;
-        double MaxSpeed;
-        double AvgSpeed;
-        double Distance;
+        float MaxSpeed;
+        float AvgSpeed;
+        float Distance;
 
         unsigned long DurationS;
         unsigned long StartTimeMS;

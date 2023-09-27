@@ -47,11 +47,11 @@ void ControlerScreen::tick()
 
     this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
-    if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
-    {
-        this->_screen->drawBackgroundColor();
-        // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    }
+    // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
+    // {
+    //     this->_screen->drawBackgroundColor();
+    //     // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+    // }
 
     Serial.print("Active Screen : ");
     Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
@@ -128,11 +128,14 @@ void ControlerScreen::tick()
 
 void ControlerScreen::drawInitTSPage()
 {
-    this->_screen->drawLogoTS();
+    // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
+    // {
+        this->_screen->drawLogoTS();
 
-    this->_screen->setTextColor();
-    this->_screen->setTextSize(2);
-    this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 190);
+        this->_screen->setTextColor();
+        this->_screen->setTextSize(2);
+        this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 190);
+    // }
 }
 
 void ControlerScreen::drawHomePage()
@@ -140,7 +143,10 @@ void ControlerScreen::drawHomePage()
 #if DEBUG_BUTTONS
     this->_screen->testButtonsScreen();
 #else
-    this->_screen->drawLogoTS();
+    // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
+    // {
+        this->_screen->drawLogoTS();
+    // }
 
     int batteryLengthInPixels = 50;
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
@@ -168,24 +174,37 @@ void ControlerScreen::drawRidePage()
 #if DEBUG_GSM
     this->_screen->testGPS();
 #else
-    this->_screen->setTextColor();
-    this->_screen->setTextSize(3);
-    this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 60);
+    String speed = "";
 
-    this->_screen->setTextSize(7);
+    // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
+    // {
+        this->_screen->setTextColor();
+        this->_screen->setTextSize(3);
+        this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 60);
 
-    if (this->_TSProperties->PropertiesGPS.IsFixValid)
+        this->_screen->setTextColor();
+        this->_screen->setTextSize(3);
+        this->_screen->printText("Km/h", this->_screen->calculateXCoordTextToCenter("Km/h"), 190);
+    // }
+
+    if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.IsGPSFixed)
     {
-        String speed = String(this->_TSProperties->PropertiesGPS.Speed, 1);
-        this->_screen->printText(speed, this->_screen->calculateXCoordTextToCenter(speed), 110);
+        this->_screen->setTextColor();
+        speed = String(this->_TSProperties->PropertiesGPS.Speed, 1);
+    }
+    else if (!this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.IsGPSFixed)
+    {
+        this->_screen->setTextColor(GC9A01A_YELLOW, GC9A01A_BLACK, GC9A01A_YELLOW, GC9A01A_WHITE);
+        speed = String(this->_TSProperties->PropertiesGPS.Speed, 1);
     }
     else
     {
-        this->_screen->printText("---", this->_screen->calculateXCoordTextToCenter("---"), 110);
+        this->_screen->setTextColor();
+        speed = "---";
     }
 
-    this->_screen->setTextSize(3);
-    this->_screen->printText("Km/h", this->_screen->calculateXCoordTextToCenter("Km/h"), 190);
+    this->_screen->setTextSize(7);
+    this->_screen->printText(speed, this->_screen->calculateXCoordTextToCenter(speed), 110);
 
     int batteryLengthInPixels = 50;
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
@@ -193,7 +212,7 @@ void ControlerScreen::drawRidePage()
                                batteryLengthInPixels,
                                this->_TSProperties->PropertiesBattery.BatteryLevel);
 
-    this->_screen->drawIsGPSValid(40, 170, 30);
+    // this->_screen->drawIsGPSValid(40, 170, 30);
 #endif
 }
 

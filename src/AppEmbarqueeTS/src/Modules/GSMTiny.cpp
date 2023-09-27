@@ -3,8 +3,6 @@
 GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                modem(nullptr),
                                                _isInitialized(false),
-                                               //    CounterGoodValue(0),
-                                               //    CounterTotal(0),
                                                _latitude(0),
                                                _longitude(0),
                                                _speed(0),
@@ -20,8 +18,13 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _seconde(0),
                                                _isGpsOn(false),
                                                _isModemOn(false),
-                                            //    _isFixValid(false),
-                                               _isGPSFixed(false)
+                                               _isGPSFixed(false),
+                                               _distanceBetweenLastPointAndCurrentPoint(0),
+                                               _maxDistanceTresholdInMeters(5),
+                                               _lastValidLatitude(0),
+                                               _lastValidLongitude(0),
+                                               _durationS(0),
+                                               _maxDurationTresholdInSeconds(30)
 {
     this->modem = new TinyGsm(SerialAT);
     // Set GSM module baud rate
@@ -95,23 +98,26 @@ void GSMTiny::tick()
 
         if (this->readDatas())
         {
-            this->saveFixToTSProperties();
-            // if (this->isFixValid())
-            // {
-            //     this->saveFixToTSProperties();
-            //     // this->CounterGoodValue++;
-            //     this->_TSProperties->PropertiesGPS.CounterGoodValue++;
-            // }
-            // else
-            // {
-            //     this->saveFixToTSProperties();
-            //     this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = false;
-            // }
+            this->saveGPSDatasToTSProperties();
+
+            if (this->_TSProperties->PropertiesGPS.IsFixValid)
+            {
+                this->_distanceBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
+                this->_durationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
+
+                if (this->_distanceBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters ||
+                    this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds)
+                {
+                    this->saveCurrentRideDatasToTSProperties();
+
+                    this->_lastValidLatitude = this->_latitude;
+                    this->_lastValidLongitude = this->_longitude;
+                }
+            }
         }
         else
         {
             Serial.println("Write GPS : Location is not Valid");
-            // this->_TSProperties->PropertiesCurrentRide._locationIsValid = false;
         }
     }
     else
@@ -192,7 +198,7 @@ bool GSMTiny::isGPSFixed()
     return result;
 }
 
-void GSMTiny::saveFixToTSProperties()
+void GSMTiny::saveGPSDatasToTSProperties()
 {
     this->_TSProperties->PropertiesGPS.Latitude = this->_latitude;
     this->_TSProperties->PropertiesGPS.Longitude = this->_longitude;
@@ -209,31 +215,35 @@ void GSMTiny::saveFixToTSProperties()
     this->_TSProperties->PropertiesGPS.Seconde = this->_seconde;
     this->_TSProperties->PropertiesGPS.IsFixValid = this->isFixValid();
     this->_TSProperties->PropertiesGPS.IsGPSFixed = this->isGPSFixed();
+}
 
-    if (this->_TSProperties->PropertiesGPS.IsFixValid)
+void GSMTiny::saveCurrentRideDatasToTSProperties()
+{
+    this->_TSProperties->PropertiesGPS.CounterGoodValue++;
+
+    if (this->_TSProperties->PropertiesCurrentRide.DateBegin == "0000-00-00T00:00:00")
     {
-        this->_TSProperties->PropertiesGPS.CounterGoodValue++;
-
-        if (this->_TSProperties->PropertiesCurrentRide.DateBegin == "0000-00-00T00:00:00")
-        {
-            this->_TSProperties->PropertiesCurrentRide.DateBegin = this->getDatetime();
-        }
-
-        this->_TSProperties->PropertiesCurrentRide.PointID++;
-        this->_TSProperties->PropertiesCurrentRide.DateEnd = this->getDatetime();
-        this->_TSProperties->PropertiesCurrentRide.Temperature = this->_TSProperties->PropertiesTemperature.Temperature;
-        this->_TSProperties->PropertiesCurrentRide.DurationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
-        // idPoint;lat;long;alt;temperature;speed;date;effectiveTime(durée)
-        this->_TSProperties->PropertiesCurrentRide.CurrentPoint = String(this->_TSProperties->PropertiesCurrentRide.PointID) + ";" +
-                                                                  String(this->_latitude, 10) + ";" +
-                                                                  String(this->_longitude, 10) + ";" +
-                                                                  String(this->_altitude) + ";" +
-                                                                  String(this->_TSProperties->PropertiesCurrentRide.Temperature) + ";" +
-                                                                  String(this->_speed) + ";" +
-                                                                  this->getDatetime() + ";" +
-                                                                  String(this->_TSProperties->PropertiesCurrentRide.DurationS);
-        this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
+        this->_TSProperties->PropertiesCurrentRide.DateBegin = this->getDatetime();
     }
+
+    this->_TSProperties->PropertiesCurrentRide.PointID++;
+    this->_TSProperties->PropertiesCurrentRide.DateEnd = this->getDatetime();
+    this->_TSProperties->PropertiesCurrentRide.Temperature = this->_TSProperties->PropertiesTemperature.Temperature;
+    this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
+    this->_TSProperties->PropertiesCurrentRide.CurrentPoint = String(this->_TSProperties->PropertiesCurrentRide.PointID) + ";" +
+                                                              String(this->_latitude, 10) + ";" +
+                                                              String(this->_longitude, 10) + ";" +
+                                                              String(this->_altitude) + ";" +
+                                                              String(this->_TSProperties->PropertiesCurrentRide.Temperature) + ";" +
+                                                              String(this->_speed) + ";" +
+                                                              this->getDatetime() + ";" +
+                                                              String(this->_TSProperties->PropertiesCurrentRide.DurationS);
+
+    this->_TSProperties->PropertiesCurrentRide.Distance += this->_distanceBetweenLastPointAndCurrentPoint;
+    this->_TSProperties->PropertiesCurrentRide.MaxSpeed = max(this->_TSProperties->PropertiesCurrentRide.MaxSpeed, this->_speed);
+    this->_TSProperties->PropertiesCurrentRide.AvgSpeed = (this->_TSProperties->PropertiesCurrentRide.Distance / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
+
+    this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
 }
 
 String GSMTiny::getDate()
@@ -405,4 +415,31 @@ void GSMTiny::setWorkModeGPS()
 bool GSMTiny::isInitialized()
 {
     return this->_isInitialized;
+}
+
+double GSMTiny::distanceBetweenInMeters(double lat1, double long1, double lat2, double long2)
+{
+    /* Méthode provient de TinyGPS++ */
+
+    // returns distance in meters between two positions, both specified
+    // as signed decimal-degrees latitude and longitude. Uses great-circle
+    // distance computation for hypothetical sphere of radius 6372795 meters.
+    // Because Earth is no exact sphere, rounding errors may be up to 0.5%.
+    // Courtesy of Maarten Lamers
+    double delta = radians(long1 - long2);
+    double sdlong = sin(delta);
+    double cdlong = cos(delta);
+    lat1 = radians(lat1);
+    lat2 = radians(lat2);
+    double slat1 = sin(lat1);
+    double clat1 = cos(lat1);
+    double slat2 = sin(lat2);
+    double clat2 = cos(lat2);
+    delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
+    delta = sq(delta);
+    delta += sq(clat2 * sdlong);
+    delta = sqrt(delta);
+    double denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
+    delta = atan2(delta, denom);
+    return delta * 6372795;
 }

@@ -5,8 +5,6 @@
 #include "TSProperties.h"
 #include <TinyGsmClient.h>
 
-
-
 class GSMTiny : public IGSM
 {
 private:
@@ -16,10 +14,19 @@ private:
     bool _isInitialized;
     bool _isGpsOn;
     bool _isModemOn;
-    // bool _isFixValid; // ???
     bool _isGPSFixed;
 
-    // int _pointId;
+    // float _sommeSpeed;
+    // uint _nbPoints;
+
+    float _distanceBetweenLastPointAndCurrentPoint;
+    float _maxDistanceTresholdInMeters;
+
+    float _durationS;
+    float _maxDurationTresholdInSeconds;
+
+    float _lastValidLatitude;
+    float _lastValidLongitude;
 
     float _latitude;
     float _longitude;
@@ -34,9 +41,6 @@ private:
     int _hour;
     int _minute;
     int _seconde;
-
-    // int CounterGoodValue;
-    // int CounterTotal;
 
     String getDate();
     String getTime();
@@ -54,7 +58,11 @@ private:
 
     bool isFixValid();
     bool isGPSFixed();
-    void saveFixToTSProperties();
+    void saveGPSDatasToTSProperties();
+    void saveCurrentRideDatasToTSProperties();
+
+    /* Méthode provient de TinyGPS++ */
+    double distanceBetweenInMeters(double lat1, double long1, double lat2, double long2);
 
 public:
     GSMTiny(TSProperties *TSProperties);
@@ -63,5 +71,4 @@ public:
     void init() override;
     void tick() override;
     bool isInitialized() override;
-
 };
