@@ -57,38 +57,6 @@ void SDCard::tick()
         this->processCurrentRide();
         this->processSendRide();
     }
-    
-    // this->setPointsToSendFromFile();
-    // this->setStatsToSendFromFile();
-    // this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
-    // 
-    // Serial.println("SDCard");
-    // Serial.println("Writing to test.txt...");
-    // File file = SD.open("/test.txt", FILE_WRITE);
-    // if (file)
-    // {
-    //     file.println("Testing 1, 2, 3.");
-    //     file.close();
-    //     Serial.println("done.");
-    // }
-    // else
-    // {
-    //     Serial.println("error opening test.txt");
-    // }
-    // Serial.println("Reading from test.txt...");
-    // file = SD.open("/test.txt");
-    // if (file)
-    // {
-    //     while (file.available())
-    //     {
-    //         Serial.write(file.read());
-    //     }
-    //     file.close();
-    // }
-    // else
-    // {
-    //     Serial.println("error opening test.txt");
-    // }
 };
 
 void SDCard::checkFiles()
@@ -300,13 +268,6 @@ void SDCard::setPointsToSendFromFile()
         this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
         Serial.println("SDCard Points ready to send: " + String(this->_TSProperties->PropertiesCompletedRideToSend.Point));
     }
-    // else if (this->_TSProperties->PropertiesCompletedRideToSend.IsReceived)
-    // {
-    //     this->_currentFileSendPoints.close();
-    //     this->_isSendingPoints = false;
-    //     this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
-    //     this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
-    // }
 };
 
 void SDCard::processSendRide()
@@ -337,8 +298,6 @@ void SDCard::processSendRide()
 
             this->_isSendingPoints = true;
             this->_isSendingRide = true;
-            // this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
-            //     = this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId;
             this->_TSProperties->PropertiesCompletedRideToSend.CurrentPointNumber = 0;
             this->_TSProperties->PropertiesCompletedRideToSend.IsReady = true;
             this->_TSProperties->PropertiesCompletedRideToSend.IsReceived = false;
@@ -350,10 +309,8 @@ void SDCard::processSendRide()
             && this->_TSProperties->PropertiesCompletedRideToSend.IsStatsReceived
             && this->_isSendingPoints)
         {
-            // Serial.println("SDCard tick send points");
             this->setPointsToSendFromFile();
         }
-        
     }
 };
 
@@ -365,13 +322,20 @@ void SDCard::deleteCurrentRideFiles()
         + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId) 
         + String(SDCARD_FILE_STATS_NAME) 
         + String(SDCARD_FILE_EXTENSION));
-    Serial.println(String("Completed Ride Stats file deleted: ") + String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId));
+    Serial.println(String("Completed Ride Stats file deleted: ") 
+        + String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId)
+        + String(SDCARD_FILE_STATS_NAME) 
+        + String(SDCARD_FILE_EXTENSION));
+        
     SD.remove(
         SDCARD_ROOT_PATH
         + String("/")
         +String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId) 
         + String(SDCARD_FILE_POINTS_NAME) 
         + String(SDCARD_FILE_EXTENSION));
-    Serial.println(String("Completed Ride Points file deleted: ") + String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId));
+    Serial.println(String("Completed Ride Points file deleted: ") 
+        + String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId)
+        + String(SDCARD_FILE_STATS_NAME) 
+        + String(SDCARD_FILE_EXTENSION));
 };
 

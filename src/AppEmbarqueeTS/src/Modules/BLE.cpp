@@ -62,7 +62,7 @@ class CompletedRideReceiveDataCallbacks
                 BLE::isCompletedRidePointReceived = true;
                 BLE::isCompletedRidePointSending = false;
             }
-            p_characteristic->setValue("sending");
+            // p_characteristic->setValue("sending");
         }
     }
 };
@@ -206,7 +206,6 @@ void BLE::sendCompletedRideStats()
             BLE::isCompletedRideStatsReceived = false;
             BLE::currentPointNumber = BLE_CONFIRME_STATS;
         }
-        Serial.println("BLE Stats sent: " + this->_TSProperties->PropertiesCompletedRideToSend.Stats);
         this->_CRNotificationCaracteristic->notify();
 
         Serial.println("BLE Completed Ride stats sent");
