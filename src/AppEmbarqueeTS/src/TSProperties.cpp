@@ -54,6 +54,7 @@ void TSProperties::initProperties()
     this->PropertiesCompletedRideToSend.Point = "";
     this->PropertiesCompletedRideToSend.CurrentPointNumber = 0;
     this->PropertiesCompletedRideToSend.NbPoints = 0;
+    this->PropertiesCompletedRideToSend.IsStatsReceived = false;
     this->PropertiesCompletedRideToSend.IsPointReady = false;
     this->PropertiesCompletedRideToSend.IsPointReceived = false;
     this->PropertiesCompletedRideToSend.IsReady = false;
