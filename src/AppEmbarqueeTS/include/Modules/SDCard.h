@@ -24,6 +24,7 @@ private:
 
     File _currentFileSendPoints;
     unsigned long _positionCursorFileSendPoints;
+    bool _isSendingRide;
     bool _isSendingPoints;
 
     void checkFiles();

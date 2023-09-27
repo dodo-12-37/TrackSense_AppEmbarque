@@ -97,7 +97,8 @@ BLE::~BLE()
 };
 
 void BLE::tick() 
-{            
+{
+    this->_TSProperties->PropertiesBluetooth.IsDeviceBluetoothConnected = BLE::isDeviceConnected;
     if (BLE::isDeviceConnected)
     {
         if (this->_TSProperties->PropertiesCompletedRideToSend.IsReady)

@@ -12,6 +12,7 @@ SDCard::SDCard(TSProperties* TSProperties)
     _currentStatsFileName(""),
     _currentFileSendPoints(),
     _positionCursorFileSendPoints(0),
+    _isSendingRide(false),
     _isSendingPoints(false)
 {
     this->_queueCompletedRideIds = StringQueue();
@@ -231,12 +232,12 @@ void SDCard::setStatsToSend()
         String line = stats.readStringUntil(';');
         content += line;
         content += ";";
-        Serial.println("Content: " + content);
+        // Serial.println("Content: " + content);
         compt++;
 
         if (compt == SDCARD_POSITION_NUMBER_OF_POINTS)
         {
-            Serial.println("SDCard Number of points line:" + line);
+            Serial.println("SDCard Number of points : " + line);
             this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = line.toInt();
         }
     }
@@ -270,17 +271,23 @@ void SDCard::setPointsToSendFromFile()
             && !this->_currentFileSendPoints)
     {
         File root = SD.open(SDCARD_ROOT_PATH);
+        // Serial.println("SDCard Root opened");
+        // Serial.println("SDCard RideId: " + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId);
 
         this->_currentPointsFileName = 
             this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
             + SDCARD_FILE_POINTS_NAME 
             + SDCARD_FILE_EXTENSION;
 
+        // Serial.println("SDCard Points file name: " + this->_currentPointsFileName);
+
         while (File file = root.openNextFile())
         {
             String name = file.name();
+            // Serial.println("SDCard current file name: " + name);
             if (name == this->_currentPointsFileName)
             {
+                // Serial.println("SDCard Points file find");
                 this->_currentFileSendPoints = file;
                 break;
             }
@@ -290,8 +297,8 @@ void SDCard::setPointsToSendFromFile()
 
         // this->_currentFileSendPoints = SD.open(this->_currentPointsFileName, FILE_READ);
         this->_positionCursorFileSendPoints = 0;
-        Serial.println("SDCard Points file opened: " + this->_currentPointsFileName);
-        Serial.println("SDCard points file is open: " + String(!this->_currentFileSendPoints));
+        // Serial.println("SDCard Points file opened: " + this->_currentPointsFileName);
+        // Serial.println("SDCard points file is open: " + String(!this->_currentFileSendPoints));
     }
 
     if (!this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady
@@ -333,8 +340,8 @@ void SDCard::setPointsToSendFromFile()
         
         this->_positionCursorFileSendPoints = this->_currentFileSendPoints.position();
 
-        Serial.println("SDCard current point number: " + String(this->_TSProperties->PropertiesCompletedRideToSend.CurrentPointNumber));
-        Serial.println("SDCard Number of points : " + String(this->_TSProperties->PropertiesCompletedRideToSend.NbPoints));
+        // Serial.println("SDCard current point number: " + String(this->_TSProperties->PropertiesCompletedRideToSend.CurrentPointNumber));
+        // Serial.println("SDCard Number of points : " + String(this->_TSProperties->PropertiesCompletedRideToSend.NbPoints));
 
         // ++this->_TSProperties->PropertiesCompletedRideToSend.CurrentPointNumber;
         //
@@ -357,7 +364,9 @@ void SDCard::setPointsToSendFromFile()
 
 void SDCard::processSendRide()
 {
-    if (this->_queueCompletedRideIds.getSize() > 0)
+    if (this->_TSProperties->PropertiesBluetooth.IsDeviceBluetoothConnected 
+        && (this->_queueCompletedRideIds.getSize() > 0
+        || this->_isSendingRide))
     {
         if (!this->_TSProperties->PropertiesCompletedRideToSend.IsReady)
         {
@@ -368,6 +377,7 @@ void SDCard::processSendRide()
             Serial.println("SDCard stats ready to send !");
 
             this->_isSendingPoints = true;
+            this->_isSendingRide = true;
             this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId 
                 = this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId;
             this->_TSProperties->PropertiesCompletedRideToSend.CurrentPointNumber = 0;
@@ -378,6 +388,7 @@ void SDCard::processSendRide()
         }
         else if (this->_isSendingPoints)
         {
+            Serial.println("SDCard tick send points");
             this->setPointsToSendFromFile();
         }
         else if (this->_TSProperties->PropertiesCompletedRideToSend.IsReceived)
@@ -385,6 +396,7 @@ void SDCard::processSendRide()
             this->_currentFileSendPoints.close();
             this->deleteCurrentRideFiles();
             this->_isSendingPoints = false;
+            this->_isSendingRide = false;
             this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
             this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
         }
