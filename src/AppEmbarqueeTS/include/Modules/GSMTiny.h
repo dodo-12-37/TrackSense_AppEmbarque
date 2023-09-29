@@ -19,7 +19,7 @@ private:
     // float _sommeSpeed;
     // uint _nbPoints;
 
-    double _distanceBetweenLastPointAndCurrentPoint;
+    double _distanceMetersBetweenLastPointAndCurrentPoint;
     unsigned long _maxDistanceTresholdInMeters;
 
     unsigned long _durationS;

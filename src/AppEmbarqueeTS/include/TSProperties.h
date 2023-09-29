@@ -26,7 +26,7 @@ public:
         String PlannedRideId;
         float MaxSpeed;
         float AverageSpeed;
-        double DistanceTotal;
+        double DistanceTotalMeters;
 
         unsigned long DurationS;
         unsigned long StartTimeMS;
@@ -53,7 +53,7 @@ public:
             this->PlannedRideId = "00000000-0000-0000-0000-000000000000";
             this->MaxSpeed = 0;
             this->AverageSpeed = 0;
-            this->DistanceTotal = 0;
+            this->DistanceTotalMeters = 0;
             this->DurationS = 0;
             this->DateBegin = "0000-00-00T00:00:00";
             this->DateEnd = "0000-00-00T00:00:00";
