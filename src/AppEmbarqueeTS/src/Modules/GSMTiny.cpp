@@ -105,7 +105,7 @@ void GSMTiny::tick()
 
             if (this->_TSProperties->PropertiesGPS.IsFixValid)
             {
-                if (this->_lastValidLatitude == 0 && this->_lastValidLongitude == 0)
+                if (this->_lastValidLatitude != 0 && this->_lastValidLongitude != 0)
                 {
                     this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
                 }
