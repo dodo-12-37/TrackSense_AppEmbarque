@@ -3,10 +3,13 @@
 // #include <Fonts/BebasNeue_Regular18pt7b.h> // Font logo TrackSense
 // #include <Fonts/BebasNeue_Regular6pt7b.h>  // Font logo TrackSense
 // #include <Fonts/BebasNeue_Regular24pt7b.h> // Font logo TrackSense
-// #include <Fonts/FreeSansBold9pt7b.h> // Vraiment le meilleur à date
+#include <Fonts/FreeSansBold9pt7b.h> // Vraiment le meilleur à date
 // #include <Fonts/FreeSansBold12pt7b.h> // Vraiment le meilleur à date
 // #include <Fonts/FreeSansBold18pt7b.h> // Vraiment le meilleur à date
 // #include <Fonts/FreeSansBold24pt7b.h> // Vraiment le meilleur à date
+#include <Fonts/FreeSansOblique9pt7b.h> // Vraiment le meilleur à date
+#include <Fonts/FreeSans9pt7b.h>
+#include <Fonts/FreeSans18pt7b.h>
 // #include <Fonts/FreeSerifBold9pt7b.h> // look good
 // #include <Fonts/FreeMonoBold9pt7b.h>  // look good mais bug
 // #include <Fonts/FreeSerifBold12pt7b.h>  // jolie, mais pas ce qu'on veut avoir
@@ -19,6 +22,7 @@ ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSPropert
     delay(1000);
     this->tft->begin();
     this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
+    this->canvas->setTextWrap(false);
 
     // tft->setFont(&BebasNeue_Regular24pt7b);
     // tft->setFont(&FreeSansBold12pt7b);
@@ -45,6 +49,7 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
     int16_t coordX = 17; // "T" coordX = 16
     int16_t coordY = 65; // "T" coordX = 65
     this->canvas->setTextSize(7);
+    this->canvas->setFont();
 
     int16_t coordX_ = 0;
     int16_t coordY_ = 0;
@@ -117,6 +122,9 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
     this->canvas->drawCircle(120, 120, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
     this->canvas->drawCircle(119, 120, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
     this->canvas->drawCircle(120, 119, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
+
+    this->canvas->setFont(&FreeSans9pt7b);
+
 }
 
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
@@ -164,7 +172,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
         this->canvas->setTextSize(3);
     }
 
-    this->canvas->setCursor((coordX + largeurX) * 1.05, coordBarreVerteY + hauteurY / 4);
+    this->canvas->setCursor((coordX + largeurX) * 1.01, coordBarreVerteY + hauteurY / 2);
     this->setTextColor();
     const String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
     this->canvas->printf("%-3s", strBatteryLevel.c_str());
@@ -210,6 +218,18 @@ void ScreenGC9A01::drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeu
         this->canvas->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
     }
 }
+
+void ScreenGC9A01::drawStatistics(String title, String value, String unit, int16_t titleCoordX, int16_t valueCoordX, int16_t unitCoordX, int16_t coordY)
+{
+    // this->canvas->setTextWrap(false);
+    this->setTextSize(1);
+    this->setFont(1);
+    this->printText(title, titleCoordX, coordY);
+    this->printText(unit, unitCoordX, coordY);
+    this->setFont(2);
+    this->printText(value, valueCoordX, coordY);
+    // this->canvas->setTextWrap(true);
+}
 #pragma endregion Elements
 
 /*
@@ -246,6 +266,37 @@ int ScreenGC9A01::calculateXCoordTextToCenter(String text)
     this->canvas->getTextBounds(text, 10, 10, &x, &y, &textWidth, &textHeight);
 
     return (TFT_WIDTH - textWidth) / 2;
+}
+
+void ScreenGC9A01::setFont(uint id)
+{
+    switch (id)
+    {
+    case 0:
+        this->canvas->setFont();
+        break;
+
+    case 1:
+        this->canvas->setFont(&FreeSans9pt7b);
+        break;
+
+    case 2:
+        this->canvas->setFont(&FreeSansBold9pt7b);
+        break;
+
+    case 3:
+        this->canvas->setFont(&FreeSansOblique9pt7b);
+        break;
+
+    case 4:
+        this->canvas->setFont(&FreeSans18pt7b);
+        break;
+
+    default:
+        // this->canvas->setFont(&FreeSans9pt7b);
+        this->canvas->setFont();
+        break;
+    }
 }
 
 int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)

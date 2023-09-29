@@ -9,22 +9,22 @@
 
 #if SPI_TFCard
 
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 12        // 25       // Chip select control pin
+    #define TFT_BLK -1       // LED back-light
+    #define TFT_CS 12        // 25       // Chip select control pin
     #define TFT_DC 25           // 02          // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
+    #define TFT_RST -1      // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_CLK 14  // In some display driver board, it might be written as "SCL" and so on.
     // #define TFT_MISO 02          // Ne semble pas être utile, car non tactile
 
 #else // VSPI
 
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 05        // 25     // Chip select control pin
+    #define TFT_BLK -1       // LED back-light
+    #define TFT_CS 05        // 25     // Chip select control pin
     #define TFT_DC 00           // 19        // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
+    #define TFT_RST -1      // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_CLK 18  // In some display driver board, it might be written as "SCL" and so on.
     // #define TFT_MISO 19          // Ne semble pas être utile, car non tactile
 
 #endif
@@ -46,7 +46,7 @@
 // Adafruit_GC9A01A Display(TFT_CS, TFT_DC);
 Adafruit_GC9A01A Display(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 
-// create a flicker free pnject for each data to be printed with the flicker free option
+// create a flicker free print object for each data to be printed with the flicker free option
 // the library used template scheme so you need to pass the data type in <>
 FlickerFreePrint<Adafruit_GC9A01A> Data1(&Display, C_WHITE, C_BLACK);
 FlickerFreePrint<Adafruit_GC9A01A> Data2(&Display, C_WHITE, C_BLACK);

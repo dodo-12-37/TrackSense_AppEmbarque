@@ -20,20 +20,19 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _isModemOn(false),
                                                _isGPSFixed(false),
                                                _distanceBetweenLastPointAndCurrentPoint(0),
-                                               _maxDistanceTresholdInMeters(5),
+                                               _maxDistanceTresholdInMeters(10),
                                                _lastValidLatitude(0),
                                                _lastValidLongitude(0),
                                                _durationS(0),
                                                _maxDurationTresholdInSeconds(30)
 {
     this->modem = new TinyGsm(SerialAT);
-    // Set GSM module baud rate
-    // SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
     this->init();
 }
 
 GSMTiny::~GSMTiny()
 {
+    ;
 }
 
 void GSMTiny::init()
@@ -96,6 +95,10 @@ void GSMTiny::tick()
             this->gpsPowerOn();
         }
 
+        this->_durationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
+        this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
+        Serial.println("DurationS : " + String(this->_durationS));
+
         if (this->readDatas())
         {
             this->saveGPSDatasToTSProperties();
@@ -103,10 +106,8 @@ void GSMTiny::tick()
             if (this->_TSProperties->PropertiesGPS.IsFixValid)
             {
                 this->_distanceBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
-                this->_durationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
 
-                if (this->_distanceBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters ||
-                    this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds)
+                if (this->_distanceBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters)    // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
                 {
                     this->saveCurrentRideDatasToTSProperties();
 
@@ -229,7 +230,7 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
     this->_TSProperties->PropertiesCurrentRide.PointID++;
     this->_TSProperties->PropertiesCurrentRide.DateEnd = this->getDatetime();
     this->_TSProperties->PropertiesCurrentRide.Temperature = this->_TSProperties->PropertiesTemperature.Temperature;
-    this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
+    // this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
     this->_TSProperties->PropertiesCurrentRide.CurrentPoint = String(this->_TSProperties->PropertiesCurrentRide.PointID) + ";" +
                                                               String(this->_latitude, 10) + ";" +
                                                               String(this->_longitude, 10) + ";" +
@@ -239,9 +240,9 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
                                                               this->getDatetime() + ";" +
                                                               String(this->_TSProperties->PropertiesCurrentRide.DurationS);
 
-    this->_TSProperties->PropertiesCurrentRide.Distance += this->_distanceBetweenLastPointAndCurrentPoint;
+    this->_TSProperties->PropertiesCurrentRide.DistanceTotal += this->_distanceBetweenLastPointAndCurrentPoint;
     this->_TSProperties->PropertiesCurrentRide.MaxSpeed = max(this->_TSProperties->PropertiesCurrentRide.MaxSpeed, this->_speed);
-    this->_TSProperties->PropertiesCurrentRide.AvgSpeed = (this->_TSProperties->PropertiesCurrentRide.Distance / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
+    this->_TSProperties->PropertiesCurrentRide.AverageSpeed = (this->_TSProperties->PropertiesCurrentRide.DistanceTotal / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
 
     this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
 }
