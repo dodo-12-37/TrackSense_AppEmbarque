@@ -233,6 +233,8 @@ public:
         int CurrentPointNumber;
         int NbPoints;
 
+        bool IsStatsReceived;
+
         bool IsPointReady;
         bool IsPointReceived;
 
