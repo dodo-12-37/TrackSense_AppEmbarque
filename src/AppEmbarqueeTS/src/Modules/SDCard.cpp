@@ -152,7 +152,7 @@ void SDCard::writeStatsFile()
         this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
         this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
         this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
-        this->_TSProperties->PropertiesCurrentRide.DistanceTotal + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters + ";" +
         this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
         this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
 

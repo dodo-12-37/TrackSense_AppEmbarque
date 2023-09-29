@@ -239,7 +239,7 @@ void ControlerScreen::drawRideStatisticsPage()
     this->_screen->setFont(2);
     this->_screen->printText("Statistics", this->_screen->calculateXCoordTextToCenter("Statistics"), 65);
 
-    this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotal, 2), "Km", 10, 80, 185, 95);
+    this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters, 2), "Km", 10, 80, 185, 95);
 
     uint dureeHour = this->_TSProperties->PropertiesCurrentRide.DurationS / 3600;
     uint dureeMinutes = (this->_TSProperties->PropertiesCurrentRide.DurationS % 3600) / 60;

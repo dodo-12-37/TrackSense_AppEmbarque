@@ -19,7 +19,7 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _isGpsOn(false),
                                                _isModemOn(false),
                                                _isGPSFixed(false),
-                                               _distanceBetweenLastPointAndCurrentPoint(0),
+                                               _distanceMetersBetweenLastPointAndCurrentPoint(0),
                                                _maxDistanceTresholdInMeters(10),
                                                _lastValidLatitude(0),
                                                _lastValidLongitude(0),
@@ -105,11 +105,30 @@ void GSMTiny::tick()
 
             if (this->_TSProperties->PropertiesGPS.IsFixValid)
             {
-                this->_distanceBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
+                if (this->_lastValidLatitude == 0 && this->_lastValidLongitude == 0)
+                {
+                    this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
+                }
+                else
+                {
+                    this->_distanceMetersBetweenLastPointAndCurrentPoint = 0;
+                }
+                
 
-                if (this->_distanceBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters)    // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
+                if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters) // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
                 {
                     this->saveCurrentRideDatasToTSProperties();
+
+                    Serial.println("Distance between last point and current point : " + String(this->_distanceMetersBetweenLastPointAndCurrentPoint));
+
+                    Serial.println("PointID : " + String(this->_TSProperties->PropertiesCurrentRide.PointID));
+                    Serial.println("NbPoints : " + String(this->_TSProperties->PropertiesCurrentRide.NbPoints));
+                    Serial.println("DistanceTotalMeters : " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters));
+
+                    Serial.println("lat : " + String(this->_latitude));
+                    Serial.println("long : " + String(this->_longitude));
+                    Serial.println("last lat : " + String(this->_lastValidLatitude));
+                    Serial.println("last long : " + String(this->_lastValidLongitude));
 
                     this->_lastValidLatitude = this->_latitude;
                     this->_lastValidLongitude = this->_longitude;
@@ -240,9 +259,9 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
                                                               this->getDatetime() + ";" +
                                                               String(this->_TSProperties->PropertiesCurrentRide.DurationS);
 
-    this->_TSProperties->PropertiesCurrentRide.DistanceTotal += this->_distanceBetweenLastPointAndCurrentPoint;
+    this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters += this->_distanceMetersBetweenLastPointAndCurrentPoint;
     this->_TSProperties->PropertiesCurrentRide.MaxSpeed = max(this->_TSProperties->PropertiesCurrentRide.MaxSpeed, this->_speed);
-    this->_TSProperties->PropertiesCurrentRide.AverageSpeed = (this->_TSProperties->PropertiesCurrentRide.DistanceTotal / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
+    this->_TSProperties->PropertiesCurrentRide.AverageSpeed = (this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
 
     this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
 }
