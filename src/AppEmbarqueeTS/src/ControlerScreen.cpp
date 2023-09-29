@@ -130,11 +130,13 @@ void ControlerScreen::drawInitTSPage()
 {
     // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
     // {
-        this->_screen->drawLogoTS();
+    this->_screen->drawLogoTS();
 
-        this->_screen->setTextColor();
-        this->_screen->setTextSize(2);
-        this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 190);
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(1);
+    this->_screen->setFont(3);
+    this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 210);
+    this->_screen->setFont(1);
     // }
 }
 
@@ -145,12 +147,12 @@ void ControlerScreen::drawHomePage()
 #else
     // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
     // {
-        this->_screen->drawLogoTS();
+    this->_screen->drawLogoTS();
     // }
 
     int batteryLengthInPixels = 50;
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
-                               20,
+                               15,
                                batteryLengthInPixels,
                                this->_TSProperties->PropertiesBattery.BatteryLevel);
 
@@ -178,13 +180,15 @@ void ControlerScreen::drawRidePage()
 
     // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
     // {
-        this->_screen->setTextColor();
-        this->_screen->setTextSize(3);
-        this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 60);
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(2);
+    this->_screen->setFont(2);
+    this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 65);
 
-        this->_screen->setTextColor();
-        this->_screen->setTextSize(3);
-        this->_screen->printText("Km/h", this->_screen->calculateXCoordTextToCenter("Km/h"), 190);
+    this->_screen->setFont(1);
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(2);
+    this->_screen->printText("Km/h", this->_screen->calculateXCoordTextToCenter("Km/h"), 220);
     // }
 
     if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.IsGPSFixed)
@@ -203,12 +207,14 @@ void ControlerScreen::drawRidePage()
         speed = "---";
     }
 
-    this->_screen->setTextSize(7);
-    this->_screen->printText(speed, this->_screen->calculateXCoordTextToCenter(speed), 110);
+    this->_screen->setFont(2);
+    this->_screen->setTextSize(4);
+    this->_screen->printText(speed, this->_screen->calculateXCoordTextToCenter(speed), 155);
 
+    this->_screen->setFont(1);
     int batteryLengthInPixels = 50;
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
-                               20,
+                               8,
                                batteryLengthInPixels,
                                this->_TSProperties->PropertiesBattery.BatteryLevel);
 
@@ -228,11 +234,23 @@ void ControlerScreen::drawGoHomePage()
 
 void ControlerScreen::drawRideStatisticsPage()
 {
-    int batteryLengthInPixels = 150;
-    this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
-                               100,
-                               batteryLengthInPixels,
-                               this->_TSProperties->PropertiesBattery.BatteryLevel);
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(2);
+    this->_screen->setFont(2);
+    this->_screen->printText("Statistics", this->_screen->calculateXCoordTextToCenter("Statistics"), 65);
+
+    this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotal, 2), "Km", 10, 80, 185, 95);
+
+    uint dureeHour = this->_TSProperties->PropertiesCurrentRide.DurationS / 3600;
+    uint dureeMinutes = (this->_TSProperties->PropertiesCurrentRide.DurationS % 3600) / 60;
+    uint dureeSecondes = this->_TSProperties->PropertiesCurrentRide.DurationS % 60;
+    char buffer[8]; // Un tampon pour stocker la chaîne formatée
+    sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
+    this->_screen->drawStatistics("Duree:", String(buffer), "h:m:s", 10, 80, 185, 120);
+
+    this->_screen->drawStatistics("V.Moy:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeed, 2), "Km/h", 10, 80, 185, 145);
+
+    this->_screen->drawStatistics("V.Max:", String(this->_TSProperties->PropertiesCurrentRide.MaxSpeed, 2), "Km/h", 10, 80, 185, 170);
 }
 
 void ControlerScreen::drawErrorPage()

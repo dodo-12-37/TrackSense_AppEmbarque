@@ -19,14 +19,14 @@ private:
     // float _sommeSpeed;
     // uint _nbPoints;
 
-    float _distanceBetweenLastPointAndCurrentPoint;
-    float _maxDistanceTresholdInMeters;
+    double _distanceBetweenLastPointAndCurrentPoint;
+    unsigned long _maxDistanceTresholdInMeters;
 
-    float _durationS;
-    float _maxDurationTresholdInSeconds;
+    unsigned long _durationS;
+    unsigned long _maxDurationTresholdInSeconds;
 
-    float _lastValidLatitude;
-    float _lastValidLongitude;
+    double _lastValidLatitude;
+    double _lastValidLongitude;
 
     float _latitude;
     float _longitude;

@@ -29,6 +29,7 @@ public:
     void drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX) override;
     void drawError() override;
     void drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX) override;
+    void drawStatistics(String title, String value, String unit, int16_t titleCoordX, int16_t valueCoordX, int16_t unitCoordX, int16_t coordY) override;
     // void drawSignal();
 
     /* Calculations */
@@ -40,6 +41,7 @@ public:
     void drawBackgroundColor(uint16_t darkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR, uint16_t lightModeColor = TFT_LIGHT_MODE_BACKGROUND_COLOR) override;
     // void drawBackgroundImage();
     void setRotation(u_int8_t rotation) override;
+    void setFont(uint id) override;
     void printText(String text, int16_t coordX, int16_t coordY) override;
     void setTextSize(uint8_t size) override;
     void setTextColor(uint16_t textDarkModeColor = TFT_DARK_MODE_TEXT_COLOR,

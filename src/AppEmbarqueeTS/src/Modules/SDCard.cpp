@@ -180,11 +180,11 @@ void SDCard::writeStatsFile()
         this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
         this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
         this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
-        this->_TSProperties->PropertiesCurrentRide.AvgSpeed + ";" +
+        this->_TSProperties->PropertiesCurrentRide.AverageSpeed + ";" +
         this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
         this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
         this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
-        this->_TSProperties->PropertiesCurrentRide.Distance + ";" +
+        this->_TSProperties->PropertiesCurrentRide.DistanceTotal + ";" +
         this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
         this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
 
@@ -250,11 +250,11 @@ void SDCard::setStatsToSend()
     //     this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
-    //     this->_TSProperties->PropertiesCurrentRide.AvgSpeed + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.AverageSpeed + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
-    //     this->_TSProperties->PropertiesCurrentRide.Distance + ";" +
+    //     this->_TSProperties->PropertiesCurrentRide.DistanceTotal + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.NbPoints + ";" +
     //     this->_TSProperties->PropertiesCurrentRide.NbFalls + ";";
 
