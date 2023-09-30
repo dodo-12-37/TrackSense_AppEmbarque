@@ -42,6 +42,20 @@ private:
     int _minute;
     int _seconde;
 
+    float _latitude2;
+    float _longitude2;
+    float _altitude2;
+    float _speed2;
+    int _visibleSatellites2;
+    int _usedSatellites2;
+    float _accuracy2;
+    int _year2;
+    int _month2;
+    int _day2;
+    int _hour2;
+    int _minute2;
+    int _seconde2;
+
     String getDate();
     String getTime();
     String getDatetime();

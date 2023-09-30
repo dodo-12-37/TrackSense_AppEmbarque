@@ -403,7 +403,7 @@ void ScreenGC9A01::testGPS()
         this->setTextColor(GC9A01A_RED, GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE);
     }
 
-    this->canvas->setTextSize(2);
+    this->canvas->setTextSize(1);
 
     this->canvas->setCursor(40, 40);
     String strCounterGoodValue = "Good: " + String(this->_TSProperties->PropertiesGPS.CounterGoodValue);

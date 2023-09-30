@@ -147,8 +147,8 @@ void SDCard::writeStatsFile()
     String content = 
         this->_TSProperties->PropertiesCurrentRide.CompletedRideId + ";" +
         this->_TSProperties->PropertiesCurrentRide.PlannedRideId + ";" +
-        this->_TSProperties->PropertiesCurrentRide.MaxSpeed + ";" +
-        this->_TSProperties->PropertiesCurrentRide.AverageSpeed + ";" +
+        this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH + ";" +
+        this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH + ";" +
         this->_TSProperties->PropertiesCurrentRide.DateBegin + ";" +
         this->_TSProperties->PropertiesCurrentRide.DateEnd + ";" +
         this->_TSProperties->PropertiesCurrentRide.DurationS + ";" +
