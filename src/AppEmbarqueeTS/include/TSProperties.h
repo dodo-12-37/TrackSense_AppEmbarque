@@ -3,8 +3,6 @@
 // #include "TSProperties.h"
 #include "Configurations.h"
 
-
-
 class TSProperties
 {
 public:
@@ -24,14 +22,14 @@ public:
 
         String CompletedRideId;
         String PlannedRideId;
-        float MaxSpeed;
-        float AverageSpeed;
+        float MaxSpeedKMPH;
+        float AverageSpeedKMPH;
         double DistanceTotalMeters;
 
         unsigned long DurationS;
         unsigned long StartTimeMS;
         unsigned long EndTimeMS;
-        
+
         String DateBegin;
         String DateEnd;
         String CurrentPoint;
@@ -42,17 +40,37 @@ public:
         bool IsPointReadyToSave;
         float Temperature;
 
+        String formatDurationHMS()
+        {
+            uint dureeHour = this->DurationS / 3600;
+            uint dureeMinutes = (this->DurationS % 3600) / 60;
+            uint dureeSecondes = this->DurationS % 60;
+            char buffer[8]; // Un tampon pour stocker la chaîne formatée
+            sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
+            return String(buffer);
+        }
+
+        void formatDurationHMS(String &text)
+        {
+            uint dureeHour = this->DurationS / 3600;
+            uint dureeMinutes = (this->DurationS % 3600) / 60;
+            uint dureeSecondes = this->DurationS % 60;
+            char buffer[8]; // Un tampon pour stocker la chaîne formatée
+            sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
+            text = String(buffer);
+            // return String(buffer);
+        }
 
         void resetCurrentRide()
         {
             this->IsRideStarted = false;
             this->IsRidePaused = false;
             this->IsRideFinished = false;
-            
+
             this->CompletedRideId = "00000000-0000-0000-0000-000000000000";
             this->PlannedRideId = "00000000-0000-0000-0000-000000000000";
-            this->MaxSpeed = 0;
-            this->AverageSpeed = 0;
+            this->MaxSpeedKMPH = 0;
+            this->AverageSpeedKMPH = 0;
             this->DistanceTotalMeters = 0;
             this->DurationS = 0;
             this->DateBegin = "0000-00-00T00:00:00";
@@ -137,7 +155,8 @@ public:
             5 : Global Statistics Page
             6 : Go Home Page
             -1 : Init TS Page
-            -2 : No Page (error)
+            -2 : Ending Ride Page
+            -3 : No Page (error)
         */
         int ActiveScreen;
         bool IsNewActivePage;

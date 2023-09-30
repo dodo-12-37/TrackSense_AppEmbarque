@@ -52,7 +52,8 @@
     5 : Global Statistics Page
     6 : Go Home Page
     -1 : Init TS Page
-    -2 : No Page (error)
+    -2 : Ending Ride Page
+    -3 : No Page (error)
 */
 #define HOME_PAGE_ID 0
 #define RIDE_PAGE_ID 1
@@ -62,7 +63,8 @@
 #define GLOBAL_STATISTICS_PAGE_ID 5
 #define GO_HOME_PAGE_ID 6
 #define INIT_TS_PAGE_ID -1
-#define ERROR_PAGE_ID -2
+#define ENDING_RIDE_PAGE_ID -2
+#define ERROR_PAGE_ID -3
 
 /*----- SD Card -----*/
 #define PIN_SDCARD_MOSI 15

@@ -105,30 +105,27 @@ void GSMTiny::tick()
 
             if (this->_TSProperties->PropertiesGPS.IsFixValid)
             {
-                if (this->_lastValidLatitude != 0 && this->_lastValidLongitude != 0)
+                if (this->_lastValidLatitude == 0 && this->_lastValidLongitude == 0)
                 {
-                    this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
+                    this->_lastValidLatitude = this->_latitude;
+                    this->_lastValidLongitude = this->_longitude;
                 }
-                else
-                {
-                    this->_distanceMetersBetweenLastPointAndCurrentPoint = 0;
-                }
-                
+                this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
 
                 if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters) // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
                 {
                     this->saveCurrentRideDatasToTSProperties();
-
+                    // #if DEBUG_GSM
                     Serial.println("Distance between last point and current point : " + String(this->_distanceMetersBetweenLastPointAndCurrentPoint));
 
                     Serial.println("PointID : " + String(this->_TSProperties->PropertiesCurrentRide.PointID));
                     Serial.println("NbPoints : " + String(this->_TSProperties->PropertiesCurrentRide.NbPoints));
-                    Serial.println("DistanceTotalMeters : " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters));
-
-                    Serial.println("lat : " + String(this->_latitude));
-                    Serial.println("long : " + String(this->_longitude));
-                    Serial.println("last lat : " + String(this->_lastValidLatitude));
-                    Serial.println("last long : " + String(this->_lastValidLongitude));
+                    Serial.println("DistanceTotalMeters : " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters, 2));
+                    Serial.println("lat : " + String(this->_latitude, 10));
+                    Serial.println("long : " + String(this->_longitude, 10));
+                    Serial.println("last lat : " + String(this->_lastValidLatitude, 10));
+                    Serial.println("last long : " + String(this->_lastValidLongitude, 10));
+                    // #endif
 
                     this->_lastValidLatitude = this->_latitude;
                     this->_lastValidLongitude = this->_longitude;
@@ -139,6 +136,8 @@ void GSMTiny::tick()
         {
             Serial.println("Write GPS : Location is not Valid");
         }
+
+        this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH = (this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / this->_durationS) * 3.6;
     }
     else
     {
@@ -159,7 +158,9 @@ bool GSMTiny::readDatas()
         Serial.println("Requesting current GPS/GNSS/GLONASS location");
 
         if (this->modem->getGPS(&this->_latitude, &this->_longitude, &this->_speed, &this->_altitude, &this->_visibleSatellites, &this->_usedSatellites,
-                                &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde))
+                                &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde) &&
+            this->modem->getGPS(&this->_latitude2, &this->_longitude2, &this->_speed2, &this->_altitude2, &this->_visibleSatellites2, &this->_usedSatellites2,
+                                &this->_accuracy2, &this->_year2, &this->_month2, &this->_day2, &this->_hour2, &this->_minute2, &this->_seconde2))
         {
             result = true;
 
@@ -186,7 +187,7 @@ bool GSMTiny::readDatas()
             // delay(10000L);
         }
 
-        Serial.println("=======================================");
+        // Serial.println("=======================================");
         // this->CounterTotal++;
         this->_TSProperties->PropertiesGPS.CounterTotal++;
     }
@@ -198,9 +199,14 @@ bool GSMTiny::isFixValid()
 {
     bool result = false;
 
-    if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00)
+    if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00 && this->_accuracy < 2 && this->_altitude != 0 &&
+        this->_latitude2 != 0 && this->_longitude2 != 0 && this->_usedSatellites2 >= 4 && this->_speed2 != -9999.00 && this->_accuracy2 < 2 && this->_altitude2 != 0)
     {
-        result = true;
+        if (this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude) < this->_maxDistanceTresholdInMeters)
+        {
+            Serial.println("Distance between 2 points : " + String(this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude)));
+            result = true;
+        }
     }
 
     return result;
@@ -235,6 +241,8 @@ void GSMTiny::saveGPSDatasToTSProperties()
     this->_TSProperties->PropertiesGPS.Seconde = this->_seconde;
     this->_TSProperties->PropertiesGPS.IsFixValid = this->isFixValid();
     this->_TSProperties->PropertiesGPS.IsGPSFixed = this->isGPSFixed();
+
+    Serial.println("--------------------------------------------Accuracy : " + String(this->_TSProperties->PropertiesGPS.Accuracy));
 }
 
 void GSMTiny::saveCurrentRideDatasToTSProperties()
@@ -247,6 +255,7 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
     }
 
     this->_TSProperties->PropertiesCurrentRide.PointID++;
+    this->_TSProperties->PropertiesCurrentRide.NbPoints++;
     this->_TSProperties->PropertiesCurrentRide.DateEnd = this->getDatetime();
     this->_TSProperties->PropertiesCurrentRide.Temperature = this->_TSProperties->PropertiesTemperature.Temperature;
     // this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
@@ -260,8 +269,8 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
                                                               String(this->_TSProperties->PropertiesCurrentRide.DurationS);
 
     this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters += this->_distanceMetersBetweenLastPointAndCurrentPoint;
-    this->_TSProperties->PropertiesCurrentRide.MaxSpeed = max(this->_TSProperties->PropertiesCurrentRide.MaxSpeed, this->_speed);
-    this->_TSProperties->PropertiesCurrentRide.AverageSpeed = (this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
+    this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH = max(this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH, this->_speed);
+    // this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH = (this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
 
     this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
 }
@@ -280,7 +289,7 @@ String GSMTiny::getDate()
     }
 
     String result = String(this->_year) + "-" + month + "-" + day;
-    Serial.println("Date : " + result);
+    // Serial.println("Date : " + result);
     return result;
 }
 
@@ -303,7 +312,7 @@ String GSMTiny::getTime()
     }
 
     String result = hour + ":" + minute + ":" + seconde;
-    Serial.println("Time : " + result);
+    // Serial.println("Time : " + result);
     return result;
 }
 
@@ -311,7 +320,7 @@ String GSMTiny::getDatetime()
 {
     // AppMobile doit recevoir ceci : 2023-09-03T14:30:00
     String result = this->getDate() + "T" + this->getTime();
-    Serial.println("Datetime : " + result);
+    // Serial.println("Datetime : " + result);
     return result;
 }
 

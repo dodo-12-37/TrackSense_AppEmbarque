@@ -3,7 +3,8 @@
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
                                                                _currentActivePage(INIT_TS_PAGE_ID),
-                                                               _lastActivePage(HOME_PAGE_ID)
+                                                               _lastActivePage(HOME_PAGE_ID),
+                                                               _timeToDisplayEndingRidePageMS(15000)
 {
     this->_screen = new ScreenGC9A01(this->_TSProperties);
     this->tick();
@@ -24,7 +25,8 @@ ControlerScreen::~ControlerScreen()
     5 : Global Statistics Page
     6 : Go Home Page
     -1 : Init TS Page
-    -2 : No Page (error)
+    -2 : Ending Ride Page
+    -3 : No Page (error)
 */
 void ControlerScreen::tick()
 {
@@ -42,16 +44,9 @@ void ControlerScreen::tick()
     if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
-        // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
     }
 
     this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
-
-    // if (this->_TSProperties->PropertiesScreen.IsNewActivePage)
-    // {
-    //     this->_screen->drawBackgroundColor();
-    //     // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    // }
 
     Serial.print("Active Screen : ");
     Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
@@ -74,7 +69,6 @@ void ControlerScreen::tick()
         else
         {
             this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-            // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
         }
         break;
 
@@ -86,7 +80,6 @@ void ControlerScreen::tick()
         else
         {
             this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-            // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
         }
         break;
 
@@ -106,14 +99,25 @@ void ControlerScreen::tick()
         this->drawGoHomePage();
         break;
 
-    default:                   // -2
+    case ENDING_RIDE_PAGE_ID: // -2
+        if (this->_TSProperties->PropertiesCurrentRide.EndTimeMS + this->_timeToDisplayEndingRidePageMS >= millis())
+        {
+            this->drawEndingRidePage();
+        }
+        else
+        {
+            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+        }
+
+        break;
+
+    default:                   // -3
         this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
         break;
     }
 
     this->_screen->drawOnScreen();
 
-    // this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
     this->_lastActivePage = this->_currentActivePage;
 }
 
@@ -239,18 +243,36 @@ void ControlerScreen::drawRideStatisticsPage()
     this->_screen->setFont(2);
     this->_screen->printText("Statistics", this->_screen->calculateXCoordTextToCenter("Statistics"), 65);
 
-    this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters, 2), "Km", 10, 80, 185, 95);
+    this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000, 3), "Km", 10, 80, 185, 95);
 
-    uint dureeHour = this->_TSProperties->PropertiesCurrentRide.DurationS / 3600;
-    uint dureeMinutes = (this->_TSProperties->PropertiesCurrentRide.DurationS % 3600) / 60;
-    uint dureeSecondes = this->_TSProperties->PropertiesCurrentRide.DurationS % 60;
-    char buffer[8]; // Un tampon pour stocker la chaîne formatée
-    sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
-    this->_screen->drawStatistics("Duree:", String(buffer), "h:m:s", 10, 80, 185, 120);
+    // uint dureeHour = this->_TSProperties->PropertiesCurrentRide.DurationS / 3600;
+    // uint dureeMinutes = (this->_TSProperties->PropertiesCurrentRide.DurationS % 3600) / 60;
+    // uint dureeSecondes = this->_TSProperties->PropertiesCurrentRide.DurationS % 60;
+    // char buffer[8]; // Un tampon pour stocker la chaîne formatée
+    // sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
+    this->_screen->drawStatistics("Duree:", this->_TSProperties->PropertiesCurrentRide.formatDurationHMS(), "h:m:s", 10, 80, 185, 120);
 
-    this->_screen->drawStatistics("V.Moy:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeed, 2), "Km/h", 10, 80, 185, 145);
+    this->_screen->drawStatistics("S.Moy:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH, 2), "Km/h", 10, 80, 185, 145);
 
-    this->_screen->drawStatistics("V.Max:", String(this->_TSProperties->PropertiesCurrentRide.MaxSpeed, 2), "Km/h", 10, 80, 185, 170);
+    this->_screen->drawStatistics("S.Max:", String(this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH, 2), "Km/h", 10, 80, 185, 170);
+}
+
+void ControlerScreen::drawEndingRidePage()
+{
+    this->_screen->setTextColor();
+    this->_screen->setTextSize(2);
+    this->_screen->setFont(2);
+    this->_screen->printText("Ending Ride", this->_screen->calculateXCoordTextToCenter("Ending Ride"), 75);
+
+    this->_screen->setTextSize(1);
+    this->_screen->setFont(1);
+
+    String formatDurationHMS = this->_TSProperties->PropertiesCurrentRide.formatDurationHMS();
+    String text = "Your ride last " + formatDurationHMS + " hour.";
+    this->_screen->printText(text, this->_screen->calculateXCoordTextToCenter(text), 110);
+
+    String text2 = "And you ride " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000.0, 2) + " Km.";
+    this->_screen->printText(text2, this->_screen->calculateXCoordTextToCenter(text2), 135);
 }
 
 void ControlerScreen::drawErrorPage()
