@@ -191,7 +191,8 @@ void ControlerButtons::finishRide()
 
         this->_TSProperties->PropertiesCurrentRide.IsRideReadyToSave = true;
 
-        this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+        // this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+        this->_TSProperties->PropertiesScreen.ActiveScreen = ENDING_RIDE_PAGE_ID;
         // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
         this->_TSProperties->PropertiesGPS.CounterTotal = 0;

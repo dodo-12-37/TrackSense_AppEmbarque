@@ -15,6 +15,8 @@ private:
     ScreenGC9A01 *_screen;
     int _currentActivePage;
     int _lastActivePage;
+    unsigned long _timeToDisplayEndingRidePageMS;
+    // unsigned long _time;
     // int _lastLastActivePage;
     // int _counterSamePage;
 
@@ -27,6 +29,7 @@ private:
     void drawGlobalStatisticsPage() override;
     void drawGoHomePage() override;
     void drawRideStatisticsPage() override;
+    void drawEndingRidePage() override;
     void drawErrorPage() override;
 
     /* Showing modes */
@@ -46,7 +49,8 @@ public:
         5 : Global Statistics Page
         6 : Go Home Page
         -1 : Init TS Page
-        -2 : No Page (error)
+        -2 : Ending Ride Page
+        -3 : No Page (error)
     */
     void tick() override;
 
