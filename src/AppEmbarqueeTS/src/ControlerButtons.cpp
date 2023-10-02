@@ -127,7 +127,7 @@ void ControlerButtons::changePageUp()
 {
     this->_TSProperties->PropertiesScreen.ActiveScreen++;
 
-    if (this->_TSProperties->PropertiesScreen.ActiveScreen >= NB_ACTIVE_PAGES)
+    if (this->_TSProperties->PropertiesScreen.ActiveScreen >= NB_ACTIVE_PAGES || this->_TSProperties->PropertiesScreen.ActiveScreen < 0)
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
     }
@@ -150,7 +150,7 @@ void ControlerButtons::changePageDown()
 {
     this->_TSProperties->PropertiesScreen.ActiveScreen--;
 
-    if (this->_TSProperties->PropertiesScreen.ActiveScreen < 0)
+    if (this->_TSProperties->PropertiesScreen.ActiveScreen < 0 || this->_TSProperties->PropertiesScreen.ActiveScreen > NB_ACTIVE_PAGES)
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = NB_ACTIVE_PAGES - 1;
     }

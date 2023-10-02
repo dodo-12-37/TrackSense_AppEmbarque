@@ -15,7 +15,7 @@
 // #include <Fonts/FreeSerifBold12pt7b.h>  // jolie, mais pas ce qu'on veut avoir
 // #include <Fonts/FreeMonoBold24pt7b.h>   // jolie, mais pas ce qu'on veut avoir
 
-ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties)
+ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
@@ -243,8 +243,33 @@ void ScreenGC9A01::drawStatistics(String title, String value, String unit, int16
 
 void ScreenGC9A01::drawOnScreen()
 {
-    this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
+    uint16_t temp = this->calculateScreenBuffer();
+
+    if (this->_lastBuffer != temp)
+    {
+        this->_lastBuffer = temp;
+        this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
+    }
+    
     this->canvas->fillScreen(GC9A01A_BLACK);
+}
+
+uint16_t ScreenGC9A01::calculateScreenBuffer()
+{
+    uint16_t width = this->canvas->width();
+    uint16_t height = this->canvas->height();
+    unsigned long temp = 0;
+
+    for (uint16_t y = 0; y < height; ++y) 
+    {
+        for (uint16_t x = 0; x < width; ++x)
+        {
+            uint16_t pixel = this->canvas->getPixel(x, y);
+            temp += pixel;
+        }   
+    }
+
+    return temp;
 }
 
 int ScreenGC9A01::calculateXCoordTextToCenter(String text)

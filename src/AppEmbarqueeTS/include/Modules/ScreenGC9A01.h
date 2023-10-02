@@ -15,6 +15,10 @@ private:
     Adafruit_GC9A01A *tft;
     GFXcanvas16 *canvas;
 
+    uint16_t _lastBuffer;
+
+    uint16_t calculateScreenBuffer();
+
 public:
     ScreenGC9A01(TSProperties *TSProperties);
     ~ScreenGC9A01();
