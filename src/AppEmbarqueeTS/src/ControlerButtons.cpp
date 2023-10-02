@@ -171,6 +171,7 @@ void ControlerButtons::startRide()
 
         this->_TSProperties->PropertiesCurrentRide.StartTimeMS = millis();
 
+        this->_guidGenerator->seed(this->_TSProperties->PropertiesCurrentRide.StartTimeMS);
         this->_guidGenerator->generate();
         this->_TSProperties->PropertiesCurrentRide.CompletedRideId = this->_guidGenerator->toCharArray();
 
