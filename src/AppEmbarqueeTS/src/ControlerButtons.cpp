@@ -127,12 +127,10 @@ void ControlerButtons::changePageUp()
 {
     this->_TSProperties->PropertiesScreen.ActiveScreen++;
 
-    if (this->_TSProperties->PropertiesScreen.ActiveScreen >= NB_ACTIVE_PAGES)
+    if (this->_TSProperties->PropertiesScreen.ActiveScreen >= NB_ACTIVE_PAGES || this->_TSProperties->PropertiesScreen.ActiveScreen < 0)
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = 0;
     }
-
-    // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 /*
@@ -150,12 +148,10 @@ void ControlerButtons::changePageDown()
 {
     this->_TSProperties->PropertiesScreen.ActiveScreen--;
 
-    if (this->_TSProperties->PropertiesScreen.ActiveScreen < 0)
+    if (this->_TSProperties->PropertiesScreen.ActiveScreen < 0 || this->_TSProperties->PropertiesScreen.ActiveScreen > NB_ACTIVE_PAGES)
     {
         this->_TSProperties->PropertiesScreen.ActiveScreen = NB_ACTIVE_PAGES - 1;
     }
-
-    // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 }
 
 void ControlerButtons::startRide()
@@ -171,11 +167,12 @@ void ControlerButtons::startRide()
 
         this->_TSProperties->PropertiesCurrentRide.StartTimeMS = millis();
 
+        this->_guidGenerator->setRandomMode();
+        this->_guidGenerator->seed(this->_TSProperties->PropertiesCurrentRide.StartTimeMS);
         this->_guidGenerator->generate();
         this->_TSProperties->PropertiesCurrentRide.CompletedRideId = this->_guidGenerator->toCharArray();
 
         this->_TSProperties->PropertiesScreen.ActiveScreen = RIDE_PAGE_ID;
-        // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
     }
 }
 
@@ -191,9 +188,7 @@ void ControlerButtons::finishRide()
 
         this->_TSProperties->PropertiesCurrentRide.IsRideReadyToSave = true;
 
-        // this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
         this->_TSProperties->PropertiesScreen.ActiveScreen = ENDING_RIDE_PAGE_ID;
-        // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
 
         this->_TSProperties->PropertiesGPS.CounterTotal = 0;
         this->_TSProperties->PropertiesGPS.CounterGoodValue = 0;

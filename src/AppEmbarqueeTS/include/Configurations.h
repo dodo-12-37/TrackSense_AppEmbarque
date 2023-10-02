@@ -122,7 +122,7 @@
 #define BLE_CONFIRME_STATS 0
 
 #define BLE_DELAY_SEND_STATS_MS 1000
-#define BLE_DELAY_SEND_POINT_MS 200
+#define BLE_DELAY_SEND_POINT_MS 1000
 #define BLE_DELAY_ADVERTISING_MS 500
 
 // Service et caracterisiques pour CompletedRide
