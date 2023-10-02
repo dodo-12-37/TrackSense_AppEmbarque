@@ -4,7 +4,7 @@ ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSP
                                                                _screen(nullptr),
                                                                _currentActivePage(INIT_TS_PAGE_ID),
                                                                _lastActivePage(HOME_PAGE_ID),
-                                                               _timeToDisplayEndingRidePageMS(15000)
+                                                               _timeToDisplayEndingRidePageMS(10000)
 {
     this->_screen = new ScreenGC9A01(this->_TSProperties);
     this->tick();
