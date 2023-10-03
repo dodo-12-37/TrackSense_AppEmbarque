@@ -18,6 +18,7 @@ private:
     uint16_t _lastBuffer;
 
     uint16_t calculateScreenBuffer();
+    int arrondiPourcentageAux5UnitesPres(int pourcentage);
 
 public:
     ScreenGC9A01(TSProperties *TSProperties);
