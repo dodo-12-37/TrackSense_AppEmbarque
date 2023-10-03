@@ -144,6 +144,22 @@ void ControlerScreen::drawInitTSPage()
     // }
 }
 
+int ControlerScreen::arrondiPourcentageAux5UnitesPres(int pourcentage)
+{
+    int temp = pourcentage % 5;
+
+    if (temp < 3)
+    {
+        pourcentage -= temp;
+    }
+    else
+    {
+        pourcentage += (5 - temp);
+    }
+
+    return pourcentage;
+}
+
 void ControlerScreen::drawHomePage()
 {
 #if DEBUG_BUTTONS
@@ -158,7 +174,8 @@ void ControlerScreen::drawHomePage()
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
                                15,
                                batteryLengthInPixels,
-                               this->_TSProperties->PropertiesBattery.BatteryLevel);
+                               //    this->_TSProperties->PropertiesBattery.BatteryLevel);
+                               this->arrondiPourcentageAux5UnitesPres((int)this->_TSProperties->PropertiesBattery.BatteryLevel));
 
     int rideStartedLengthInPixels = 40;
     this->_screen->drawIsRideStarted(this->_screen->calculateXCoordItemToCenter(rideStartedLengthInPixels), 185, rideStartedLengthInPixels);
@@ -220,7 +237,8 @@ void ControlerScreen::drawRidePage()
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
                                8,
                                batteryLengthInPixels,
-                               this->_TSProperties->PropertiesBattery.BatteryLevel);
+                               //    this->_TSProperties->PropertiesBattery.BatteryLevel);
+                               this->arrondiPourcentageAux5UnitesPres((int)this->_TSProperties->PropertiesBattery.BatteryLevel));
 
     // this->_screen->drawIsGPSValid(40, 170, 30);
 #endif

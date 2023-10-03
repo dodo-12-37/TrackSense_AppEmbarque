@@ -127,6 +127,22 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
 
 }
 
+int ScreenGC9A01::arrondiPourcentageAux5UnitesPres(int pourcentage)
+{
+    int temp = pourcentage % 5;
+
+    if (temp < 3)
+    {
+        pourcentage -= temp;
+    }
+    else
+    {
+        pourcentage += (5 - temp);
+    }
+
+    return pourcentage;
+}
+
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
 {
     double hauteurY = largeurX / 2;
@@ -136,11 +152,14 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     double coordBarreVerteX = coordX + (zoneBarreVerteX - barreVerteX) / 2;
     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
 
+    // int pourcentageArrondi = this->arrondiPourcentageAux5UnitesPres(pourcentage);
+
     // this->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY);                                       // Contour
     // this->drawFillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2); // ti boute        + hauteurY / 2 - 16/2
     this->canvas->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     this->canvas->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
 
+    // switch (pourcentageArrondi)
     switch (pourcentage)
     {
     case 0 ... 20:
@@ -174,7 +193,9 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 
     this->canvas->setCursor((coordX + largeurX) * 1.01, coordBarreVerteY + hauteurY / 2);
     this->setTextColor();
-    const String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
+    // const String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
+    const String strBatteryLevel = String(pourcentage) + "%";
+    // const String strBatteryLevel = String(pourcentageArrondi) + "%";
     this->canvas->printf("%-3s", strBatteryLevel.c_str());
 }
 
@@ -251,7 +272,8 @@ void ScreenGC9A01::drawOnScreen()
         this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
     }
     
-    this->canvas->fillScreen(GC9A01A_BLACK);
+    // this->canvas->fillScreen(GC9A01A_BLACK);
+    this->drawBackgroundColor();
 }
 
 uint16_t ScreenGC9A01::calculateScreenBuffer()
