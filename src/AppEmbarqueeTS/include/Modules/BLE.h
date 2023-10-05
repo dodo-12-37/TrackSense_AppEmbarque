@@ -32,8 +32,6 @@ private:
     unsigned long _lastTimePointSent;
     unsigned long _lastTimeAdvertiesingStarted;
 
-    bool _isBLEOnStandy;
-
     void initBLE();
     void initAdvertising();
     void initCompletedRideService();

@@ -80,7 +80,7 @@ BLE::BLE(TSProperties* TSProperties)
     _lastTimeStatsSent(0),
     _lastTimePointSent(0),
     _lastTimeAdvertiesingStarted(0),
-    _isBLEOnStandy(false)
+    _isBLELowPowerMode(false)
 {
     this->initBLE();
     this->initCompletedRideService();
@@ -100,6 +100,7 @@ BLE::~BLE()
 void BLE::tick() 
 {
     this->_TSProperties->PropertiesBluetooth.IsDeviceBluetoothConnected = BLE::isDeviceConnected;
+
     if (BLE::isDeviceConnected)
     {
         if (this->_TSProperties->PropertiesCompletedRideToSend.IsReady)
@@ -107,34 +108,52 @@ void BLE::tick()
             this->_TSProperties->PropertiesCompletedRideToSend.IsStatsReceived = BLE::isCompletedRideStatsReceived;
             if (!BLE::isCompletedRideStatsReceived || BLE::isCompletedRideStatsSending) // Renvoie les stats tant qu'on a pas la confirmation de reception
                 {
-                    Serial.println("Envoie des stats");
+                    Serial.println("BLE Send Stats");
                     this->sendCompletedRideStats();
                 }
                 else if (BLE::isCompletedRidePointReceived)
                 {
-                    Serial.println("Confirmation reception point");
+                    Serial.println("BLE Confirm Point Received");
                     this->confirmPointReceived();
                 }
                 else if (BLE::isCompletedRideStatsReceived
                             && (this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady))
                 {
-                    Serial.println("Envoie du point");
+                    Serial.println("BLE Send Point");
                     this->sendCompletedRideCurrentPoint();
                 }
         }
     }
-    else if (!BLE::isDeviceConnected && !BLE::isAdvertiesingStarted && !this->_TSProperties->PropertiesTS.IsOnStanby && !this->_isBLEOnStandy)
+    else if (!this->_TSProperties->PropertiesTS.IsOnStanby && !BLE::isAdvertiesingStarted)
     {
-        Serial.println("Restart Advertising");
+        Serial.println("BLE Restart Advertising");
         this->_serverBLE->startAdvertising();
         BLE::isAdvertiesingStarted = true;
     }
-    else if (!BLE::isDeviceConnected && this->_TSProperties->PropertiesTS.IsOnStanby && !this->_isBLEOnStandy)
+    else if (this->_TSProperties->PropertiesTS.IsOnStanby && BLE::isAdvertiesingStarted)
     {
+        Serial.println("BLE Stop Advertising");
         BLEDevice::stopAdvertising();
-        BLEDevice::se
         BLE::isAdvertiesingStarted = false;
-        this->_isBLEOnStandy = true;
+    }
+
+    if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted 
+            && !this->_TSProperties->PropertiesCurrentRide.IsRidePaused
+            && !this->_TSProperties->PropertiesCompletedRideToSend.IsReady
+            && !this->_isBLELowPowerMode)
+    {
+        Serial.println("BLE Low Power Mode");
+        BLEDevice::setPower(ESP_PWR_LVL_N9, ESP_BLE_PWR_TYPE_DEFAULT);
+        this->_isBLELowPowerMode = true;
+    }
+    else if (this->_isBLELowPowerMode 
+                && ( !this->_TSProperties->PropertiesCurrentRide.IsRideStarted 
+                    || this->_TSProperties->PropertiesCurrentRide.IsRidePaused
+                    || this->_TSProperties->PropertiesCompletedRideToSend.IsReady))
+    {
+        Serial.println("BLE Normal Mode");
+        BLEDevice::setPower(ESP_PWR_LVL_P3, ESP_BLE_PWR_TYPE_DEFAULT);
+        this->_isBLELowPowerMode = false;
     }
 };
 
