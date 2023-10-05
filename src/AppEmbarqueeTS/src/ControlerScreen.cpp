@@ -2,8 +2,8 @@
 
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
-                                                            //    _currentActivePage(INIT_TS_PAGE_ID),
-                                                            //    _lastActivePage(HOME_PAGE_ID),
+                                                               //    _currentActivePage(INIT_TS_PAGE_ID),
+                                                               //    _lastActivePage(HOME_PAGE_ID),
                                                                _timeToDisplayEndingRidePageMS(10000)
 {
     this->_screen = new ScreenGC9A01(this->_TSProperties);
@@ -41,84 +41,94 @@ void ControlerScreen::tick()
     //     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
     // }
 
-    if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
+    if (this->_TSProperties->PropertiesTS.IsOnStanby)
     {
-        this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
+        Serial.println("IsOnStanby");
+        this->_screen->drawBackgroundColor(GC9A01A_BLUE, GC9A01A_BLUE);
+        this->_screen->setTextSize(4);
+        this->_screen->printText("Veille", this->_screen->calculateXCoordTextToCenter("Veille"), 140);
     }
-
-    this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
-
-    Serial.print("Active Screen : ");
-    Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
-
-    switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
+    else
     {
-    case INIT_TS_PAGE_ID: // -1
-        this->drawInitTSPage();
-        break;
-
-    case HOME_PAGE_ID: // 0
-        this->drawHomePage();
-        break;
-
-    case RIDE_PAGE_ID: // 1
-        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+        if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
         {
-            this->drawRidePage();
-        }
-        else
-        {
-            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-        }
-        break;
-
-    case RIDE_STATISTICS_PAGE_ID: // 2
-        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
-        {
-            this->drawRideStatisticsPage();
-        }
-        else
-        {
-            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
-        }
-        break;
-
-    case COMPASS_PAGE_ID: // 3
-        this->drawCompassPage();
-        break;
-
-    case RIDE_DIRECTION_PAGE_ID: // 4
-        this->drawRideDirectionPage();
-        break;
-
-    case GLOBAL_STATISTICS_PAGE_ID: // 5
-        this->drawGlobalStatisticsPage();
-        break;
-
-    case GO_HOME_PAGE_ID: // 6
-        this->drawGoHomePage();
-        break;
-
-    case ENDING_RIDE_PAGE_ID: // -2
-        if (this->_TSProperties->PropertiesCurrentRide.EndTimeMS + this->_timeToDisplayEndingRidePageMS >= millis())
-        {
-            this->drawEndingRidePage();
-        }
-        else
-        {
-            this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+            this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
         }
 
-        break;
+        this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
-    default:                   // -3
-        this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
-        break;
+        Serial.print("Active Screen : ");
+        Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
+
+        switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
+        {
+        case INIT_TS_PAGE_ID: // -1
+            this->drawInitTSPage();
+            break;
+
+        case HOME_PAGE_ID: // 0
+            this->drawHomePage();
+            break;
+
+        case RIDE_PAGE_ID: // 1
+            if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+            {
+                this->drawRidePage();
+            }
+            else
+            {
+                this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+            }
+            break;
+
+        case RIDE_STATISTICS_PAGE_ID: // 2
+            if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+            {
+                this->drawRideStatisticsPage();
+            }
+            else
+            {
+                this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+            }
+            break;
+
+        case COMPASS_PAGE_ID: // 3
+            this->drawCompassPage();
+            break;
+
+        case RIDE_DIRECTION_PAGE_ID: // 4
+            this->drawRideDirectionPage();
+            break;
+
+        case GLOBAL_STATISTICS_PAGE_ID: // 5
+            this->drawGlobalStatisticsPage();
+            break;
+
+        case GO_HOME_PAGE_ID: // 6
+            this->drawGoHomePage();
+            break;
+
+        case ENDING_RIDE_PAGE_ID: // -2
+            if (this->_TSProperties->PropertiesCurrentRide.EndTimeMS + this->_timeToDisplayEndingRidePageMS >= millis())
+            {
+                this->drawEndingRidePage();
+            }
+            else
+            {
+                this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
+            }
+
+            break;
+
+        default:                   // -3
+            this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
+            break;
+        }
+
+        // this->_lastActivePage = this->_currentActivePage;
     }
 
     this->_screen->drawOnScreen();
-
-    // this->_lastActivePage = this->_currentActivePage;
 }
 
 /*

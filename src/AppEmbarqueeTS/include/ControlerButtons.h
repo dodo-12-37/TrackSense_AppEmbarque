@@ -15,13 +15,12 @@ private:
     IButton* _button1;
     IButton* _button2;
 
-    long _lastDateChangement;
-
     UUID* _guidGenerator;
 
     // bool _isPressedButton1;
     // bool _isPressedButton2;
 
+    long _lastDateChangementStateButtons;
     int _finalStateButton1;
     int _finalStateButton2;    
 
@@ -34,9 +33,11 @@ private:
     void makeNoiseBuzzer();
     void goHome();
 
+
 public:
     ControlerButtons(TSProperties* TSProperties);
     ~ControlerButtons();
 
     void tick();
+    void resetLastDateChangementStateButtons();
 };

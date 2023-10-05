@@ -142,6 +142,8 @@ public:
         // bool IsButton2Pressed;
         int Button1State;
         int Button2State;
+        unsigned long TimeBeforeInactivityMS; //BUTTON_INACTIVITY_TIME_MS
+
     } PropertiesButtons;
 
     /* datas Screen */
