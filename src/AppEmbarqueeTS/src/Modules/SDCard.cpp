@@ -283,6 +283,7 @@ void SDCard::processSendRide()
             this->deleteCurrentRideFiles();
             this->_isSendingPoints = false;
             this->_isSendingRide = false;
+            this->_TSProperties->PropertiesCompletedRideToSend.IsStatsReceived = false;
             this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = false;
             this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
             this->_TSProperties->PropertiesCompletedRideToSend.IsReceived = false;
