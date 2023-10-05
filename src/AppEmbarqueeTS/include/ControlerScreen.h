@@ -13,8 +13,8 @@ class ControlerScreen : public IControlerScreen
 private:
     TSProperties *_TSProperties;
     ScreenGC9A01 *_screen;
-    int _currentActivePage;
-    int _lastActivePage;
+    // int _currentActivePage;
+    // int _lastActivePage;
     unsigned long _timeToDisplayEndingRidePageMS;
     // unsigned long _time;
     // int _lastLastActivePage;

@@ -15,6 +15,8 @@ private:
     IButton* _button1;
     IButton* _button2;
 
+    long _lastDateChangement;
+
     UUID* _guidGenerator;
 
     // bool _isPressedButton1;

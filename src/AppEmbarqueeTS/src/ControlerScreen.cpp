@@ -2,8 +2,8 @@
 
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
-                                                               _currentActivePage(INIT_TS_PAGE_ID),
-                                                               _lastActivePage(HOME_PAGE_ID),
+                                                            //    _currentActivePage(INIT_TS_PAGE_ID),
+                                                            //    _lastActivePage(HOME_PAGE_ID),
                                                                _timeToDisplayEndingRidePageMS(10000)
 {
     this->_screen = new ScreenGC9A01(this->_TSProperties);
@@ -30,16 +30,16 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    this->_currentActivePage = this->_TSProperties->PropertiesScreen.ActiveScreen;
+    // this->_currentActivePage = this->_TSProperties->PropertiesScreen.ActiveScreen;
 
-    if (this->_currentActivePage == this->_lastActivePage)
-    {
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
-    }
-    else
-    {
-        this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
-    }
+    // if (this->_currentActivePage == this->_lastActivePage)
+    // {
+    //     this->_TSProperties->PropertiesScreen.IsNewActivePage = false;
+    // }
+    // else
+    // {
+    //     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
+    // }
 
     if (!this->_TSProperties->PropertiesTS.IsInitializedGSM)
     {
@@ -118,7 +118,7 @@ void ControlerScreen::tick()
 
     this->_screen->drawOnScreen();
 
-    this->_lastActivePage = this->_currentActivePage;
+    // this->_lastActivePage = this->_currentActivePage;
 }
 
 /*

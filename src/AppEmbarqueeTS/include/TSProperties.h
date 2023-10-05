@@ -11,6 +11,7 @@ public:
     {
         bool IsInitializingTS;
         bool IsInitializedGSM;
+        bool IsOnStanby;    // mode veille
     } PropertiesTS;
 
     /* datas Current ride */
@@ -159,7 +160,7 @@ public:
             -3 : No Page (error)
         */
         int ActiveScreen;
-        bool IsNewActivePage;
+        // bool IsNewActivePage;
         bool IsDarkMode;
 
         /*

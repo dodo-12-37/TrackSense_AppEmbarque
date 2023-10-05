@@ -7,7 +7,8 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
                                                                  // _isPressedButton2(false),
                                                                  _finalStateButton1(0),
                                                                  _finalStateButton2(0),
-                                                                 _guidGenerator(nullptr)
+                                                                 _guidGenerator(nullptr),
+                                                                 _lastDateChangement(0)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
@@ -20,14 +21,24 @@ ControlerButtons::~ControlerButtons()
 
 void ControlerButtons::tick()
 {
+    long dateActuelle = millis();
+
     // this->_isPressedButton1 = this->_button1->getIsPressedButton();   // 0 == not pressed    // 1 == pressed
     // this->_isPressedButton2 = this->_button2->getIsPressedButton();
 
     this->_finalStateButton1 = this->_button1->getFinalState(); // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     this->_finalStateButton2 = this->_button2->getFinalState();
 
+#if DEBUG_BUTTONS
     this->_TSProperties->PropertiesButtons.Button1State = this->_finalStateButton1;
     this->_TSProperties->PropertiesButtons.Button2State = this->_finalStateButton2;
+#endif
+
+    if (this->_finalStateButton1 != 0 || this->_finalStateButton2 != 0)
+    {
+        this->_lastDateChangement = dateActuelle;
+        this->_TSProperties->PropertiesTS.IsOnStanby = false;
+    }
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
 
@@ -36,6 +47,13 @@ void ControlerButtons::tick()
     case 0:
         /* Nothing Happened... */
         Serial.println("No button pressed");
+        if (!this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
+        {
+            if (dateActuelle - this->_lastDateChangement > BUTTON_INACTIVITY_TIME_MS)
+            {
+                this->_TSProperties->PropertiesTS.IsOnStanby = true;
+            }
+        }
         break;
 
     case 1:
@@ -60,7 +78,7 @@ void ControlerButtons::tick()
 
     case 3:
         /* Trigger The Buzzer */
-        Serial.println("Button 1 DOUBLE SHORT press");
+        Serial.println("Button 1 DOUBLE SHORT press"); // Impossible !!!
         this->makeNoiseBuzzer();
         break;
 
@@ -101,7 +119,7 @@ void ControlerButtons::tick()
 
     case 12:
         /* Trigger The Buzzer */
-        Serial.println("Button 2 DOUBLE SHORT press");
+        Serial.println("Button 2 DOUBLE SHORT press"); // Impossible !!!
         this->makeNoiseBuzzer();
         break;
 
