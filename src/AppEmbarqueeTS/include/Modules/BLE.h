@@ -32,11 +32,14 @@ private:
     unsigned long _lastTimePointSent;
     unsigned long _lastTimeAdvertiesingStarted;
 
+    bool _isBLELowPowerMode;
+
     void initBLE();
     void initAdvertising();
     void initCompletedRideService();
     void initCompletedRideCaracteristics();
     void initCompletedRideDescriptors();
+    void startServices();
     void sendCompletedRideStats();
     void sendCompletedRideCurrentPoint();
     void confirmPointReceived();

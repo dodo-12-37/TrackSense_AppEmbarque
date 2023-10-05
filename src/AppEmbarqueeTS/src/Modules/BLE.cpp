@@ -86,8 +86,9 @@ BLE::BLE(TSProperties* TSProperties)
     this->initCompletedRideService();
     this->initCompletedRideCaracteristics();
     this->initCompletedRideDescriptors();
-    this->_completedRideService->start();
+    this->startServices();
     this->initAdvertising();
+    
     Serial.println("Start Advertising");
     this->_serverBLE->startAdvertising();
     BLE::isAdvertiesingStarted = true;
@@ -95,6 +96,7 @@ BLE::BLE(TSProperties* TSProperties)
 
 BLE::~BLE()
 {
+    ;
 };
 
 void BLE::tick() 
@@ -139,17 +141,15 @@ void BLE::tick()
 
     if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted 
             && !this->_TSProperties->PropertiesCurrentRide.IsRidePaused
-            && !this->_TSProperties->PropertiesCompletedRideToSend.IsReady
             && !this->_isBLELowPowerMode)
     {
         Serial.println("BLE Low Power Mode");
-        BLEDevice::setPower(ESP_PWR_LVL_N9, ESP_BLE_PWR_TYPE_DEFAULT);
+        BLEDevice::setPower(ESP_PWR_LVL_N6, ESP_BLE_PWR_TYPE_DEFAULT);
         this->_isBLELowPowerMode = true;
     }
     else if (this->_isBLELowPowerMode 
-                && ( !this->_TSProperties->PropertiesCurrentRide.IsRideStarted 
-                    || this->_TSProperties->PropertiesCurrentRide.IsRidePaused
-                    || this->_TSProperties->PropertiesCompletedRideToSend.IsReady))
+                && (!this->_TSProperties->PropertiesCurrentRide.IsRideStarted 
+                    || this->_TSProperties->PropertiesCurrentRide.IsRidePaused))
     {
         Serial.println("BLE Normal Mode");
         BLEDevice::setPower(ESP_PWR_LVL_P3, ESP_BLE_PWR_TYPE_DEFAULT);
@@ -163,8 +163,6 @@ void BLE::initBLE()
 
     this->_serverBLE = BLEDevice::createServer();
     this->_serverBLE->setCallbacks(new ServerBLECallbacks());
-
-    Serial.println("BLE initialized");
 };
 
 void BLE::initAdvertising()
@@ -177,13 +175,11 @@ void BLE::initAdvertising()
 
     this->_advertisingBLE->addServiceUUID(BLE_COMPLETED_RIDE_SERVICE_UUID);
     this->_advertisingBLE->start();
-    Serial.println("Advertising initialized");
 };
 
 void BLE::initCompletedRideService()
 {
     this->_completedRideService = this->_serverBLE->createService(BLE_COMPLETED_RIDE_SERVICE_UUID);
-    Serial.println("Completed Ride Service initialized");
 };
 
 void BLE::initCompletedRideCaracteristics()
@@ -196,8 +192,6 @@ void BLE::initCompletedRideCaracteristics()
         createCharacteristic(BLE_COMPLETED_RIDE_NOTIFICATION_CARACTRISTIC, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY);
     this->_CRNotificationCaracteristic->setValue("sending");
     this->_CRNotificationCaracteristic->setCallbacks(new CompletedRideReceiveDataCallbacks());
-
-    Serial.println("Completed Ride Caracteristics initialized");
 };
 
 void BLE::initCompletedRideDescriptors()
@@ -209,8 +203,11 @@ void BLE::initCompletedRideDescriptors()
     this->_CRNotificationDescriptor = new BLEDescriptor(BLE_COMPLETED_RIDE_DESCRIPTOR_NOTIFICATION_UUID);
     this->_CRNotificationDescriptor->setValue(BLE_COMPLETED_RIDE_DESCRIPTOR_NOTIF_NAME);
     this->_CRNotificationCaracteristic->addDescriptor(this->_CRNotificationDescriptor);
+};
 
-    Serial.println("Completed Ride Descriptors initialized");
+void BLE::startServices()
+{
+    this->_completedRideService->start();
 };
 
 void BLE::sendCompletedRideStats()
