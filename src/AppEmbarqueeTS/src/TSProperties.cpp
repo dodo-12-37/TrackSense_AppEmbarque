@@ -24,6 +24,8 @@ void TSProperties::initProperties()
     // TS
     this->PropertiesTS.IsInitializingTS = true;
     this->PropertiesTS.IsInitializedGSM = true;
+    this->PropertiesTS.IsOnStanby = false;
+
 
     // Battery
     this->PropertiesBattery.BatteryLevel = 0;
@@ -31,6 +33,7 @@ void TSProperties::initProperties()
     // Buttons
     this->PropertiesButtons.Button1State = 0;
     this->PropertiesButtons.Button2State = 0;
+    this->PropertiesButtons.TimeBeforeInactivityMS = BUTTON_INACTIVITY_TIME_MS;
 
     // Buzzer
     this->PropertiesBuzzer.IsBuzzerOn = false;
@@ -39,7 +42,7 @@ void TSProperties::initProperties()
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
     this->PropertiesScreen.ScreenRotation = 0;
-    this->PropertiesScreen.IsNewActivePage = true;
+    // this->PropertiesScreen.IsNewActivePage = true;
 
     // Current Ride
     this->PropertiesCurrentRide.IsRideStarted = false;

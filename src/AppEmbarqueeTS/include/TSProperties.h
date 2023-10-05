@@ -11,7 +11,7 @@ public:
     {
         bool IsInitializingTS;
         bool IsInitializedGSM;
-        bool IsOnStanby;
+        bool IsOnStanby;    // mode veille
     } PropertiesTS;
 
     /* datas Current ride */
@@ -142,6 +142,8 @@ public:
         // bool IsButton2Pressed;
         int Button1State;
         int Button2State;
+        unsigned long TimeBeforeInactivityMS; //BUTTON_INACTIVITY_TIME_MS
+
     } PropertiesButtons;
 
     /* datas Screen */
@@ -160,7 +162,7 @@ public:
             -3 : No Page (error)
         */
         int ActiveScreen;
-        bool IsNewActivePage;
+        // bool IsNewActivePage;
         bool IsDarkMode;
 
         /*

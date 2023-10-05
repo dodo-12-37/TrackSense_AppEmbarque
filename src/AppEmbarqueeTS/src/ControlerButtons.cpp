@@ -7,11 +7,15 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
                                                                  // _isPressedButton2(false),
                                                                  _finalStateButton1(0),
                                                                  _finalStateButton2(0),
-                                                                 _guidGenerator(nullptr)
+                                                                 _guidGenerator(nullptr),
+                                                                 _lastDateChangementStateButtons(millis())
+                                                                //  _lastDateChangementStateButtons(millis() + BUTTON_INACTIVITY_TIME_MS)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
     this->_guidGenerator = new UUID();
+
+    // this->tick();
 }
 
 ControlerButtons::~ControlerButtons()
@@ -26,8 +30,19 @@ void ControlerButtons::tick()
     this->_finalStateButton1 = this->_button1->getFinalState(); // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     this->_finalStateButton2 = this->_button2->getFinalState();
 
+    long dateActuelle = millis();
+
+#if DEBUG_BUTTONS
     this->_TSProperties->PropertiesButtons.Button1State = this->_finalStateButton1;
     this->_TSProperties->PropertiesButtons.Button2State = this->_finalStateButton2;
+#endif
+
+    if (this->_finalStateButton1 != 0 || this->_finalStateButton2 != 0)
+    {
+        this->_lastDateChangementStateButtons = dateActuelle;
+        this->_TSProperties->PropertiesTS.IsOnStanby = false;
+        // Serial.println("++++++++++++++++++++++ Reset _lastDateChangementStateButtons ++++++++++++++++++++++");
+    }
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
 
@@ -36,6 +51,14 @@ void ControlerButtons::tick()
     case 0:
         /* Nothing Happened... */
         Serial.println("No button pressed");
+        if (!this->_TSProperties->PropertiesCurrentRide.IsRideStarted) //  && !this->_TSProperties->PropertiesTS.IsInitializingTS
+        {
+            if (dateActuelle - this->_lastDateChangementStateButtons > this->_TSProperties->PropertiesButtons.TimeBeforeInactivityMS)
+            {
+                this->_TSProperties->PropertiesTS.IsOnStanby = true;
+                // Serial.println("++++++++++++++++++++++ IsOnStanby = true ++++++++++++++++++++++");
+            }
+        }
         break;
 
     case 1:
@@ -60,7 +83,7 @@ void ControlerButtons::tick()
 
     case 3:
         /* Trigger The Buzzer */
-        Serial.println("Button 1 DOUBLE SHORT press");
+        Serial.println("Button 1 DOUBLE SHORT press"); // Impossible !!!
         this->makeNoiseBuzzer();
         break;
 
@@ -101,7 +124,7 @@ void ControlerButtons::tick()
 
     case 12:
         /* Trigger The Buzzer */
-        Serial.println("Button 2 DOUBLE SHORT press");
+        Serial.println("Button 2 DOUBLE SHORT press"); // Impossible !!!
         this->makeNoiseBuzzer();
         break;
 
@@ -232,4 +255,9 @@ void ControlerButtons::goHome()
         -2 : No Page (error)
     */
     this->_TSProperties->PropertiesScreen.ActiveScreen = GO_HOME_PAGE_ID;
+}
+
+void ControlerButtons::resetLastDateChangementStateButtons()
+{
+    this->_lastDateChangementStateButtons = millis();
 }
