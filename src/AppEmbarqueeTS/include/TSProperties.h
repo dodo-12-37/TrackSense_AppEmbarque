@@ -11,6 +11,7 @@ public:
     {
         bool IsInitializingTS;
         bool IsInitializedGSM;
+        bool IsOnStanby;
     } PropertiesTS;
 
     /* datas Current ride */

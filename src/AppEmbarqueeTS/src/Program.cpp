@@ -27,6 +27,7 @@ Program::Program() : _TSProperties(nullptr),
     // this->_gsm->init();
 
     this->_TSProperties->PropertiesTS.IsInitializingTS = false;
+    this->_TSProperties->PropertiesTS.IsOnStanby = false;
     this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
     this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
 }

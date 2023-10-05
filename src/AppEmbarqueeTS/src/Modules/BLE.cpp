@@ -79,7 +79,8 @@ BLE::BLE(TSProperties* TSProperties)
     _CRNotificationDescriptor(nullptr),
     _lastTimeStatsSent(0),
     _lastTimePointSent(0),
-    _lastTimeAdvertiesingStarted(0)
+    _lastTimeAdvertiesingStarted(0),
+    _isBLEOnStandy(false)
 {
     this->initBLE();
     this->initCompletedRideService();
@@ -122,16 +123,18 @@ void BLE::tick()
                 }
         }
     }
-    else
+    else if (!BLE::isDeviceConnected && !BLE::isAdvertiesingStarted && !this->_TSProperties->PropertiesTS.IsOnStanby && !this->_isBLEOnStandy)
     {
-        unsigned long currentTime = millis();
-
-        if ( (currentTime - this->_lastTimeAdvertiesingStarted) > BLE_DELAY_ADVERTISING_MS)
-        {
-            this->_lastTimeAdvertiesingStarted = currentTime;
-            Serial.println("Restart Advertising");
-            this->_serverBLE->startAdvertising();
-        }   
+        Serial.println("Restart Advertising");
+        this->_serverBLE->startAdvertising();
+        BLE::isAdvertiesingStarted = true;
+    }
+    else if (!BLE::isDeviceConnected && this->_TSProperties->PropertiesTS.IsOnStanby && !this->_isBLEOnStandy)
+    {
+        BLEDevice::stopAdvertising();
+        BLEDevice::se
+        BLE::isAdvertiesingStarted = false;
+        this->_isBLEOnStandy = true;
     }
 };
 
