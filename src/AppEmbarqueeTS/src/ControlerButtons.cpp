@@ -9,7 +9,7 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
                                                                  _finalStateButton2(0),
                                                                  _guidGenerator(nullptr),
                                                                  _lastDateChangementStateButtons(millis())
-                                                                //  _lastDateChangementStateButtons(millis() + BUTTON_INACTIVITY_TIME_MS)
+//  _lastDateChangementStateButtons(millis() + BUTTON_INACTIVITY_TIME_MS)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
@@ -63,8 +63,11 @@ void ControlerButtons::tick()
 
     case 1:
         /* Change Page Up */
-        Serial.println("Button 1 SHORT press");
-        this->changePageUp();
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted) // À retirer pour quand on ajoutera la boussole
+        {
+            Serial.println("Button 1 SHORT press");
+            this->changePageUp();
+        }
         break;
 
     case 2:
@@ -89,8 +92,11 @@ void ControlerButtons::tick()
 
     case 4:
         /* Change Page Down */
-        Serial.println("Button 2 SHORT press");
-        this->changePageDown();
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted) // À retirer pour quand on ajoutera la boussole
+        {
+            Serial.println("Button 2 SHORT press");
+            this->changePageDown();
+        }
         break;
 
     case 5:
@@ -144,7 +150,19 @@ void ControlerButtons::tick()
     5 : Global Statistics Page
     6 : Go Home Page
     -1 : Init TS Page
-    -2 : No Page (error)
+    -2 : Ending Ride Page
+    -3 : No Page (error)
+
+    0 : Page Accueil
+    1 : Page Trajet
+    2 : Page Statistiques Trajet
+    3 : Page Boussole
+    4 : Page Direction Trajet
+    5 : Page Statistiques Globales
+    6 : Page Retour Maison
+    -1 : Page Init TS
+    -2 : Page Fin Trajet
+    -3 : Page Erreur
 */
 void ControlerButtons::changePageUp()
 {
@@ -165,7 +183,19 @@ void ControlerButtons::changePageUp()
     5 : Global Statistics Page
     6 : Go Home Page
     -1 : Init TS Page
-    -2 : No Page (error)
+    -2 : Ending Ride Page
+    -3 : No Page (error)
+
+    0 : Page Accueil
+    1 : Page Trajet
+    2 : Page Statistiques Trajet
+    3 : Page Boussole
+    4 : Page Direction Trajet
+    5 : Page Statistiques Globales
+    6 : Page Retour Maison
+    -1 : Page Init TS
+    -2 : Page Fin Trajet
+    -3 : Page Erreur
 */
 void ControlerButtons::changePageDown()
 {
@@ -243,17 +273,6 @@ void ControlerButtons::makeNoiseBuzzer()
 
 void ControlerButtons::goHome()
 {
-    /*
-        0 : Home Page
-        1 : Ride Page
-        2 : Ride Statistics Page
-        3 : Compass Page
-        4 : Ride Direction Page
-        5 : Global Statistics Page
-        6 : Go Home Page
-        -1 : Init TS Page
-        -2 : No Page (error)
-    */
     this->_TSProperties->PropertiesScreen.ActiveScreen = GO_HOME_PAGE_ID;
 }
 
