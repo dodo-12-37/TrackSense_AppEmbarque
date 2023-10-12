@@ -25,7 +25,7 @@ void TSProperties::initProperties()
     this->PropertiesTS.IsInitializingTS = true;
     this->PropertiesTS.IsInitializedGSM = true;
     this->PropertiesTS.IsOnStanby = false;
-
+    this->PropertiesTS.IsFrenchMode = true; // À récupérer dans la mémoire avec les paramètres du cellulaire un jour
 
     // Battery
     this->PropertiesBattery.BatteryLevel = 0;
@@ -42,7 +42,6 @@ void TSProperties::initProperties()
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
     this->PropertiesScreen.ScreenRotation = 0;
-    // this->PropertiesScreen.IsNewActivePage = true;
 
     // Current Ride
     this->PropertiesCurrentRide.IsRideStarted = false;

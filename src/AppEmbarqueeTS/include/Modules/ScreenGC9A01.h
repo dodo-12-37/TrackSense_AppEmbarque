@@ -49,6 +49,7 @@ public:
     void setFont(uint id) override;
     void printText(String text, int16_t coordX, int16_t coordY) override;
     void setTextSize(uint8_t size) override;
+    void setTextWrap(boolean wrap) override;
     void setTextColor(uint16_t textDarkModeColor = TFT_DARK_MODE_TEXT_COLOR,
                       uint16_t backgroundDarkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR,
                       uint16_t textLightModeColor = TFT_LIGHT_MODE_TEXT_COLOR,
