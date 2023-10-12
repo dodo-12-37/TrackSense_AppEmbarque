@@ -16,9 +16,10 @@ private:
     GFXcanvas16 *canvas;
 
     uint16_t _lastBuffer;
+    uint _lastBatteryLevel;
 
     uint16_t calculateScreenBuffer();
-    int arrondiPourcentageAux5UnitesPres(int pourcentage);
+    // int arrondiPourcentageAux5UnitesPres(int pourcentage);
 
 public:
     ScreenGC9A01(TSProperties *TSProperties);
@@ -30,7 +31,7 @@ public:
 
     /* Elements */
     void drawLogoTS() override;
-    void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage) override;
+    void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, uint pourcentage) override;
     void drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX) override;
     void drawError() override;
     void drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX) override;
