@@ -9,7 +9,7 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
                                                                  _finalStateButton2(0),
                                                                  _guidGenerator(nullptr),
                                                                  _lastDateChangementStateButtons(millis())
-                                                                //  _lastDateChangementStateButtons(millis() + BUTTON_INACTIVITY_TIME_MS)
+//  _lastDateChangementStateButtons(millis() + BUTTON_INACTIVITY_TIME_MS)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
@@ -63,8 +63,11 @@ void ControlerButtons::tick()
 
     case 1:
         /* Change Page Up */
-        Serial.println("Button 1 SHORT press");
-        this->changePageUp();
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted) // À retirer pour quand on ajoutera la boussole
+        {
+            Serial.println("Button 1 SHORT press");
+            this->changePageUp();
+        }
         break;
 
     case 2:
@@ -89,8 +92,11 @@ void ControlerButtons::tick()
 
     case 4:
         /* Change Page Down */
-        Serial.println("Button 2 SHORT press");
-        this->changePageDown();
+        if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted) // À retirer pour quand on ajoutera la boussole
+        {
+            Serial.println("Button 2 SHORT press");
+            this->changePageDown();
+        }
         break;
 
     case 5:
