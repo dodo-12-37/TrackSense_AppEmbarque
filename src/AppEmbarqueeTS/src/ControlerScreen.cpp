@@ -24,6 +24,17 @@ ControlerScreen::~ControlerScreen()
     -1 : Init TS Page
     -2 : Ending Ride Page
     -3 : No Page (error)
+
+    0 : Page Accueil
+    1 : Page Trajet
+    2 : Page Statistiques Trajet
+    3 : Page Boussole
+    4 : Page Direction Trajet
+    5 : Page Statistiques Globales
+    6 : Page Retour Maison
+    -1 : Page Init TS
+    -2 : Page Fin Trajet
+    -3 : Page Erreur
 */
 void ControlerScreen::tick()
 {
@@ -131,7 +142,16 @@ void ControlerScreen::drawInitTSPage()
     this->_screen->setTextColor();
     this->_screen->setTextSize(1);
     this->_screen->setFont(3);
-    this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 210);
+
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        this->_screen->printText("Initialisation", this->_screen->calculateXCoordTextToCenter("Initialisation"), 210);
+    }
+    else // Anglais
+    {
+        this->_screen->printText("Initializing", this->_screen->calculateXCoordTextToCenter("Initializing"), 210);
+    }
+
     this->_screen->setFont(1);
 }
 
@@ -190,7 +210,15 @@ void ControlerScreen::drawRidePage()
     this->_screen->setTextColor();
     this->_screen->setTextSize(2);
     this->_screen->setFont(2);
-    this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 65);
+
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        this->_screen->printText("Trajet", this->_screen->calculateXCoordTextToCenter("Trajet"), 65);
+    }
+    else // Anglais
+    {
+        this->_screen->printText("Ride Page", this->_screen->calculateXCoordTextToCenter("Ride Page"), 65);
+    }
 
     this->_screen->setFont(1);
     this->_screen->setTextColor();
@@ -242,12 +270,27 @@ void ControlerScreen::drawRideStatisticsPage()
     this->_screen->setTextColor();
     this->_screen->setTextSize(2);
     this->_screen->setFont(2);
-    this->_screen->printText("Statistics", this->_screen->calculateXCoordTextToCenter("Statistics"), 65);
 
-    this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000, 3), "Km", 10, 80, 185, 95);
-    this->_screen->drawStatistics("Duree:", this->_TSProperties->PropertiesCurrentRide.formatDurationHMS(), "h:m:s", 10, 80, 185, 120);
-    this->_screen->drawStatistics("S.Moy:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH, 2), "Km/h", 10, 80, 185, 145);
-    this->_screen->drawStatistics("S.Max:", String(this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH, 2), "Km/h", 10, 80, 185, 170);
+    this->_screen->printText("Stats", this->_screen->calculateXCoordTextToCenter("Stats"), 65); // Français & Anglais
+
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        // this->_screen->printText("Statistiques", this->_screen->calculateXCoordTextToCenter("Statistiques"), 65);
+
+        this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000, 3), "Km", 10, 85, 185, 95);
+        this->_screen->drawStatistics("Duree:", this->_TSProperties->PropertiesCurrentRide.formatDurationHMS(), "h:m:s", 10, 85, 185, 120);
+        this->_screen->drawStatistics("V.Moy:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH, 2), "Km/h", 10, 85, 185, 145);
+        this->_screen->drawStatistics("V.Max:", String(this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH, 2), "Km/h", 10, 85, 185, 170);
+    }
+    else // Anglais
+    {
+        // this->_screen->printText("Statistics", this->_screen->calculateXCoordTextToCenter("Statistics"), 65);
+
+        this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000, 3), "Km", 10, 90, 185, 95);
+        this->_screen->drawStatistics("Dur.:", this->_TSProperties->PropertiesCurrentRide.formatDurationHMS(), "h:m:s", 10, 90, 185, 120);
+        this->_screen->drawStatistics("Avg. S.:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH, 2), "Km/h", 10, 90, 185, 145);
+        this->_screen->drawStatistics("Max S.:", String(this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH, 2), "Km/h", 10, 90, 185, 170);
+    }
 }
 
 void ControlerScreen::drawEndingRidePage()
@@ -255,17 +298,40 @@ void ControlerScreen::drawEndingRidePage()
     this->_screen->setTextColor();
     this->_screen->setTextSize(2);
     this->_screen->setFont(2);
-    this->_screen->printText("Ending Ride", this->_screen->calculateXCoordTextToCenter("Ending Ride"), 75);
+
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        this->_screen->printText("Fin Trajet", this->_screen->calculateXCoordTextToCenter("Fin Trajet"), 75);
+    }
+    else // Anglais
+    {
+        this->_screen->printText("Ending Ride", this->_screen->calculateXCoordTextToCenter("Ending Ride"), 75);
+    }
 
     this->_screen->setTextSize(1);
     this->_screen->setFont(1);
-
     String formatDurationHMS = this->_TSProperties->PropertiesCurrentRide.formatDurationHMS();
-    String text = "Your ride last " + formatDurationHMS + " hour.";
-    this->_screen->printText(text, this->_screen->calculateXCoordTextToCenter(text), 110);
 
-    String text2 = "And you ride " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000.0, 2) + " Km.";
-    this->_screen->printText(text2, this->_screen->calculateXCoordTextToCenter(text2), 135);
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        String textDuration1 = "Votre trajet a duree ";
+        String textDuration2 = formatDurationHMS + " heures.";
+        this->_screen->printText(textDuration1, this->_screen->calculateXCoordTextToCenter(textDuration1), 120);
+        this->_screen->printText(textDuration2, this->_screen->calculateXCoordTextToCenter(textDuration2), 145);
+
+        String textDistance1 = "Et vous avez roulez ";
+        String textDistance2 = String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000.0, 2) + " Km.";
+        this->_screen->printText(textDistance1, this->_screen->calculateXCoordTextToCenter(textDistance1), 185);
+        this->_screen->printText(textDistance2, this->_screen->calculateXCoordTextToCenter(textDistance2), 210);
+    }
+    else // Anglais
+    {
+        String textDuration = "Your ride last " + formatDurationHMS + " hours.";
+        this->_screen->printText(textDuration, this->_screen->calculateXCoordTextToCenter(textDuration), 135);
+
+        String textDistance = "And you ride " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000.0, 2) + " Km.";
+        this->_screen->printText(textDistance, this->_screen->calculateXCoordTextToCenter(textDistance), 175);
+    }
 }
 
 void ControlerScreen::drawErrorPage()
