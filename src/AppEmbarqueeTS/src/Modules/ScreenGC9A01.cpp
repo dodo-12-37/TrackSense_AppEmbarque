@@ -124,7 +124,6 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
     this->canvas->drawCircle(120, 119, 120, GC9A01A_WHITE); // Center X = 119.5 (0 to 239)    // Center Y = 119.5 (0 to 239)    // rayon = 120
 
     this->canvas->setFont(&FreeSans9pt7b);
-
 }
 
 int ScreenGC9A01::arrondiPourcentageAux5UnitesPres(int pourcentage)
@@ -219,7 +218,15 @@ void ScreenGC9A01::drawError()
     this->setTextColor(GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE, GC9A01A_RED);
     this->canvas->setTextSize(5);
     this->canvas->setCursor(15, 110);
-    this->canvas->printf("%-8s", "ERROR !");
+
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        this->canvas->printf("%-9s", "ERREUR !");
+    }
+    else // Anglais
+    {
+        this->canvas->printf("%-8s", "ERROR !");
+    }
 }
 
 void ScreenGC9A01::drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX)
@@ -271,7 +278,7 @@ void ScreenGC9A01::drawOnScreen()
         this->_lastBuffer = temp;
         this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
     }
-    
+
     this->drawBackgroundColor();
 }
 
@@ -281,13 +288,13 @@ uint16_t ScreenGC9A01::calculateScreenBuffer()
     uint16_t height = this->canvas->height();
     unsigned long temp = 0;
 
-    for (uint16_t y = 0; y < height; ++y) 
+    for (uint16_t y = 0; y < height; ++y)
     {
         for (uint16_t x = 0; x < width; ++x)
         {
             uint16_t pixel = this->canvas->getPixel(x, y);
             temp += pixel;
-        }   
+        }
     }
 
     return temp;
@@ -385,6 +392,11 @@ void ScreenGC9A01::setRotation(u_int8_t rotation)
 void ScreenGC9A01::setTextSize(uint8_t size)
 {
     this->canvas->setTextSize(size);
+}
+
+void ScreenGC9A01::setTextWrap(boolean wrap)
+{
+    this->canvas->setTextWrap(wrap);
 }
 
 void ScreenGC9A01::printText(String text, int16_t coordX, int16_t coordY)
@@ -490,11 +502,19 @@ void ScreenGC9A01::testButtonsScreen()
     this->setTextColor();
     this->canvas->setTextSize(3);
     this->canvas->setCursor(35, 50);
-    this->canvas->printf("%-10s", "Home Page");
+
+    if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+    {
+        this->canvas->printf("%-10s", "Accueil");
+    }
+    else // Anglais
+    {
+        this->canvas->printf("%-10s", "Home Page");
+    }
 
     this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
 
-    char *formatChar = (char *)"%-29s";
+    char *formatChar = (char *)"%-33s";
 
     this->canvas->setCursor(2, 100);
     this->canvas->setTextSize(2);
@@ -506,61 +526,131 @@ void ScreenGC9A01::testButtonsScreen()
     if (isButton1Pressed == 0 & isButton2Pressed == 0) // not pressed
     {
         /* Nothing */
-        this->canvas->printf(formatChar, "No button pressed !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Aucun bouton pressé !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "No button pressed !");
+        }
         // Serial.println("No button pressed");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 0) // short press button 1
     {
         /* Change Screen Menu Up */
-        this->canvas->printf(formatChar, "Button 1 SHORT press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode)
+        {
+            this->canvas->printf(formatChar, "Bouton 1 pression COURT !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Button 1 SHORT press !");
+        }
         // Serial.println("Button 1 SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 1) // short press button 2
     {
         /* Change Screen Menu Down */
-        this->canvas->printf(formatChar, "Button 2 SHORT press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Bouton 2 pression COURT !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Button 2 SHORT press !");
+        }
         // Serial.println("Button 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 0) // long press button 1
     {
         /* Start/Stop Ride */
-        this->canvas->printf(formatChar, "Button 1 LONG press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Bouton 1 pression LONGUE !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Button 1 LONG press !");
+        }
         // Serial.println("Button 1 LONG press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 2) // long press button 2
     {
         /* Pause/Restart Ride */
-        this->canvas->printf(formatChar, "Button 2 LONG press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Bouton 2 pression LONGUE !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Button 2 LONG press !");
+        }
         // Serial.println("Button 2 LONG press");
     }
     else if (isButton1Pressed == 3 & isButton2Pressed == 0) // double short press button 1
     {
         /* Trigger The Buzzer */
-        this->canvas->printf(formatChar, "Button 1 DOUBLE SHORT press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Bouton 1 DOUBLE pression COURT !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Button 1 DOUBLE SHORT press !");
+        }
         // Serial.println("Button 1 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 3) // double short press button 2
     {
         /* Trigger The Buzzer */
-        this->canvas->printf(formatChar, "Button 2 DOUBLE SHORT press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Bouton 2 DOUBLE pression COURT !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Button 2 DOUBLE SHORT press !");
+        }
         // Serial.println("Button 2 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 1) // short press button 1 and 2
     {
         /* Activate GoHome Mode */
-        this->canvas->printf(formatChar, "Buttons 1 and 2 SHORT press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Boutons 1 and 2 pression COURT !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Buttons 1 and 2 SHORT press !");
+        }
         // Serial.println("Buttons 1 and 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 2) // long press button 1 and 2
     {
         /* Trigger The Buzzer */
-        this->canvas->printf(formatChar, "Buttons 1 and 2 LONG press !");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "Boutons 1 and 2 pression LONGUE !");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "Buttons 1 and 2 LONG press !");
+        }
         // Serial.println("Buttons 1 and 2 LONG press");
     }
     else
     {
         /* Nothing Good Happened... */
-        this->canvas->printf(formatChar, "BUTTONS ERROR !!!");
+        if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
+        {
+            this->canvas->printf(formatChar, "BOUTONS ERREUR !!!");
+        }
+        else // Anglais
+        {
+            this->canvas->printf(formatChar, "BUTTONS ERROR !!!");
+        }
         // Serial.println("BUTTONS ERROR !!!");
     }
 }

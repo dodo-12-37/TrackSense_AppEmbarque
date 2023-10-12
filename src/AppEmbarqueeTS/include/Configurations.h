@@ -54,6 +54,17 @@
     -1 : Init TS Page
     -2 : Ending Ride Page
     -3 : No Page (error)
+
+    0 : Page Accueil
+    1 : Page Trajet
+    2 : Page Statistiques Trajet
+    3 : Page Boussole
+    4 : Page Direction Trajet
+    5 : Page Statistiques Globales
+    6 : Page Retour Maison
+    -1 : Page Init TS
+    -2 : Page Fin Trajet
+    -3 : Page Erreur
 */
 #define HOME_PAGE_ID 0
 #define RIDE_PAGE_ID 1

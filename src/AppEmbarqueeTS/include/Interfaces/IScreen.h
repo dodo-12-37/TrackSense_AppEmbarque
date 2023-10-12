@@ -30,6 +30,7 @@ public:
     virtual void setTextSize(uint8_t size) = 0;
     virtual void setFont(uint id) = 0;
     virtual void printText(String text, int16_t coordX, int16_t coordY) = 0;
+    virtual void setTextWrap(boolean wrap) = 0;
     virtual void drawBackgroundColor(uint16_t darkModeColor, uint16_t lightModeColor) = 0;
 
     virtual void drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
