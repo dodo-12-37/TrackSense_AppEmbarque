@@ -1,5 +1,5 @@
 #pragma once
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 
 

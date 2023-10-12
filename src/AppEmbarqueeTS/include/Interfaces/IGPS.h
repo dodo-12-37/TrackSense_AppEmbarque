@@ -1,6 +1,6 @@
 /*======================* Est devenu IGSM ======================*/
 // #pragma once
-// #include "TrackSenseProperties.h"
+// #include "TSProperties.h"
 
 
 

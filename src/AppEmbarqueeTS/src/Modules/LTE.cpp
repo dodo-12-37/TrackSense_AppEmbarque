@@ -2,7 +2,7 @@
 
 
 
-// LTE::LTE(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
+// LTE::LTE(TSProperties* TSProperties) : _TSProperties(TSProperties)
 // {
 // }
 

@@ -9,39 +9,40 @@
 
 #include "Interfaces/IBLE.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 class BLE 
     : public IBLE
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
     BLEServer* _serverBLE;
     BLEAdvertising* _advertisingBLE;
 
     BLEService* _completedRideService;
 
-    BLECharacteristic* _CRStatsCaracteristic;
-    BLECharacteristic* _CRPointCaracteristic;
-    BLECharacteristic* _CRPointNumberCaracteristic;
-    BLECharacteristic* _CRIsReadyCaracteristic;
+    BLECharacteristic* _CRDataCaracteristic;
+    BLECharacteristic* _CRNotificationCaracteristic;
 
-    BLEDescriptor* _CRStatsDescriptor;
-    BLEDescriptor* _CRPointDescriptor;
-    BLEDescriptor* _CRPointNumberDescriptor;
-    BLEDescriptor* _CRIsReadyDescriptor;
+    BLEDescriptor* _CRDataDescriptor;
+    BLEDescriptor* _CRNotificationDescriptor;
 
     unsigned long _lastTimeStatsSent;
     unsigned long _lastTimePointSent;
+    unsigned long _lastTimeAdvertiesingStarted;
+
+    bool _isBLELowPowerMode;
 
     void initBLE();
     void initAdvertising();
     void initCompletedRideService();
     void initCompletedRideCaracteristics();
     void initCompletedRideDescriptors();
+    void startServices();
     void sendCompletedRideStats();
     void sendCompletedRideCurrentPoint();
+    void confirmPointReceived();
 
 public:
     static bool isDeviceConnected;
@@ -49,8 +50,10 @@ public:
     static bool isCompletedRideStatsReceived;
     static bool isCompletedRidePointSending;
     static bool isCompletedRidePointReceived;
+    static bool isAdvertiesingStarted;
+    static int currentPointNumber;
 
-    BLE(TrackSenseProperties* trackSenseProperties);
+    BLE(TSProperties* TSProperties);
     ~BLE();
 
     void tick() override;

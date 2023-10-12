@@ -4,7 +4,7 @@
 
 /*----- DEBUG -----*/
 #define DEBUG_BUTTONS false
-#define DEBUG_GSM true
+#define DEBUG_GSM false
 
 
 /*----- Screen -----*/
@@ -22,13 +22,13 @@
 
 #else // VSPI
 
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 05        // 25     // Chip select control pin
-    #define TFT_DC 00           // 19        // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 23 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 18  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 19          // Ne semble pas être utile, car non tactile
+    #define TFT_BLK -1 //12 // LED back-light. "BLK" or "BLK"
+    #define TFT_CS 5        // 25     // Chip select control pin. "CS" or "SS"
+    #define TFT_DC 0        // 19        // Data Command control pin
+    #define TFT_RST -1      // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
+    #define TFT_MOSI 23     // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
+    #define TFT_CLK 18      // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
+    #define TFT_MISO 19     // Ne semble pas être utile, car non tactile
 
 #endif
 
@@ -39,6 +39,32 @@
 #define TFT_LIGHT_MODE_TEXT_COLOR GC9A01A_BLACK
 #define TFT_DARK_MODE_BACKGROUND_COLOR GC9A01A_BLACK
 #define TFT_DARK_MODE_TEXT_COLOR GC9A01A_WHITE
+
+
+/*----- Page ID -----*/
+#define NB_ACTIVE_PAGES 3   // 3 == Home Page, Ride Page, Ride Statistics Page
+/*
+    0 : Home Page
+    1 : Ride Page
+    2 : Ride Statistics Page
+    3 : Compass Page
+    4 : Ride Direction Page
+    5 : Global Statistics Page
+    6 : Go Home Page
+    -1 : Init TS Page
+    -2 : Ending Ride Page
+    -3 : No Page (error)
+*/
+#define HOME_PAGE_ID 0
+#define RIDE_PAGE_ID 1
+#define RIDE_STATISTICS_PAGE_ID 2
+#define COMPASS_PAGE_ID 3
+#define RIDE_DIRECTION_PAGE_ID 4
+#define GLOBAL_STATISTICS_PAGE_ID 5
+#define GO_HOME_PAGE_ID 6
+#define INIT_TS_PAGE_ID -1
+#define ENDING_RIDE_PAGE_ID -2
+#define ERROR_PAGE_ID -3
 
 /*----- SD Card -----*/
 #define PIN_SDCARD_MOSI 15
@@ -51,6 +77,8 @@
 #define SDCARD_FILE_EXTENSION ".csv"
 #define SDCARD_FILE_STATS_NAME "_stats"
 #define SDCARD_FILE_POINTS_NAME "_points"
+#define SDCARD_POSITION_NUMBER_OF_POINTS 9
+#define SDCARD_NUMBER_ELEMENTS_OF_POINT 8
 
 /*----- GSM LilyGO T-SIM7000G (GPS, LTE) -----*/
 // Exemple point
@@ -82,7 +110,7 @@
 #define PIN_BUTTON1 33
 #define PIN_BUTTON2 34
 #define BUTTON_LONG_PRESS_DURATION_MS 2000
-#define BUTTON_INACTIVITY_TIME_MS 10000
+#define BUTTON_INACTIVITY_TIME_MS 300000 // 5 minutes
 
 
 /*----- BLE -----*/
@@ -91,25 +119,18 @@
 #define BLE_TRUE "true"
 #define BLE_FALSE "false"
 #define BLE_OK "ok"
+#define BLE_CONFIRME_STATS 0
 
-#define BLE_DELAY_SEND_STATS_MS 2000
-#define BLE_DELAY_SEND_POINT_MS 500
+#define BLE_DELAY_SEND_STATS_MS 1000
+#define BLE_DELAY_SEND_POINT_MS 1000
 
 // Service et caracterisiques pour CompletedRide
 #define BLE_COMPLETED_RIDE_SERVICE_UUID "62ffab64-3646-4fb9-88d8-541deb961192"
 
-#define BLE_COMPLETED_RIDE_CARACTRISTIC_STATS "51656aa8-b795-427f-a96c-c4b6c57430dd"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_STATS_NAME "Completed Ride Stats"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_STATS_UUID "5a2b4a0f-8ddd-4c69-a825-dbab5822ba0e"
+#define BLE_COMPLETED_RIDE_CARACTRISTIC_DATA "51656aa8-b795-427f-a96c-c4b6c57430dd"
+#define BLE_COMPLETED_RIDE_DESCRIPTOR_DATA_NAME "Completed Ride Stats"
+#define BLE_COMPLETED_RIDE_DESCRIPTOR_DATA_UUID "5a2b4a0f-8ddd-4c69-a825-dbab5822ba0e"
 
-#define BLE_COMPLETED_RIDE_CHARACTERISTIC_IS_STATS_READY "9456444a-4b5f-11ee-be56-0242ac120002"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_NAME "Completed Ride Stats Is Ready"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_IS_READY_UUID "ff1b5451-f570-430e-85a0-09b866593aad"
-
-#define BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT "42154deb-5828-4876-8d4f-eaec38fa1ea7"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NAME "Completed Ride Point"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_UUID "35267417-01b5-4fe1-adc6-365edf6cb6ec"
-
-#define BLE_COMPLETED_RIDE_CHARACTERISTIC_POINT_NUMBER "c5799499-9053-4a9e-a2d5-b8814c5ff12b"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_NAME "Completed Ride Point"
-#define BLE_COMPLETED_RIDE_DESCRIPTOR_POINT_NUMBER_UUID "e4c18d44-dde8-4344-982a-404260c08056"
+#define BLE_COMPLETED_RIDE_NOTIFICATION_CARACTRISTIC "61656aa8-b795-427f-a96c-c4b6c57430dd"
+#define BLE_COMPLETED_RIDE_DESCRIPTOR_NOTIF_NAME "Notification"
+#define BLE_COMPLETED_RIDE_DESCRIPTOR_NOTIFICATION_UUID "6a2b4a0f-8ddd-4c69-a825-dbab5822ba0e"

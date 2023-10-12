@@ -1,10 +1,12 @@
 #include "Modules/ButtonTactile.h"
 
-ButtonTactile::ButtonTactile(const uint8_t pinButton) : _pinButton(pinButton),
-                                                        _lastStateButton(LOW),
-                                                        _lastDateChange(0),
-                                                        _lastStableStateButton(LOW),
-                                                        _durationDebounce(25)
+ButtonTactile::ButtonTactile(const uint8_t pinButton, TSProperties *TSProperties) : _pinButton(pinButton),
+                                                                                                    _lastStateButton(LOW),
+                                                                                                    _lastDateChange(0),
+                                                                                                    _lastStableStateButton(LOW),
+                                                                                                    _durationDebounce(25),
+                                                                                                    _buttonState(LOW),
+                                                                                                    _TSProperties(TSProperties)
 {
     pinMode(this->_pinButton, INPUT);
 }
@@ -21,15 +23,23 @@ int ButtonTactile::getFinalState()
 
     if (actualTime - this->_lastDateChange > this->_durationDebounce)
     {
+        // ajout pour test son bouton
+        if (this->_lastStableStateButton == LOW && this->_buttonState == HIGH)
+        {
+            // tone(PIN_BUZZER, 450, 50);
+            this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true;
+        }
+
+        if (this->_lastStableStateButton == HIGH && this->_buttonState == HIGH && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)
+        {
+            // tone(PIN_BUZZER, 550, 100);
+            this->_TSProperties->PropertiesBuzzer.IsBuzzerOn = true;
+            finalState = 2; // 2 == long press
+        }
 
         if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange < BUTTON_LONG_PRESS_DURATION_MS)
         {
             finalState = 1; // 1 == short press
-        }
-
-        if (this->_lastStableStateButton == HIGH && this->_buttonState == LOW && actualTime - this->_lastDateChange >= BUTTON_LONG_PRESS_DURATION_MS)
-        {
-            finalState = 2; // 2 == long press
         }
 
         /* Manque gestion des double pressions longues et courtes ...  */
