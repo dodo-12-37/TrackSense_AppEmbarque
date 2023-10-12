@@ -2,7 +2,7 @@
 
 
 
-AccelerometerMPU6050::AccelerometerMPU6050(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
+AccelerometerMPU6050::AccelerometerMPU6050(TSProperties* TSProperties) : _TSProperties(TSProperties)
 {
 }
 
