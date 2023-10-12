@@ -176,19 +176,13 @@ bool GSMTiny::readDatas()
             Serial.println("Retrieving GPS/GNSS/GLONASS location again as a string");
             String gps_raw = this->modem->getGPSraw();
             Serial.println("GPS/GNSS Based Location String: " + gps_raw);
-
-            // Serial.println("=======================================");
-            // delay(5000L);
 #endif
         }
         else
         {
             Serial.println("Couldn't get GPS/GNSS/GLONASS location.");
-            // delay(10000L);
         }
 
-        // Serial.println("=======================================");
-        // this->CounterTotal++;
         this->_TSProperties->PropertiesGPS.CounterTotal++;
     }
 

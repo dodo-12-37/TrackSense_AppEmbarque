@@ -272,7 +272,6 @@ void ScreenGC9A01::drawOnScreen()
         this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
     }
     
-    // this->canvas->fillScreen(GC9A01A_BLACK);
     this->drawBackgroundColor();
 }
 
@@ -381,7 +380,6 @@ void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
 void ScreenGC9A01::setRotation(u_int8_t rotation)
 {
     this->canvas->setRotation(rotation);
-    // this->tft->setRotation(rotation);
 }
 
 void ScreenGC9A01::setTextSize(uint8_t size)
@@ -502,7 +500,6 @@ void ScreenGC9A01::testButtonsScreen()
     this->canvas->setTextSize(2);
     this->setTextColor();
 
-    // int isButton1Pressed = digitalRead(PIN_BUTTON1); // 33
     int isButton1Pressed = this->_TSProperties->PropertiesButtons.Button1State;
     int isButton2Pressed = this->_TSProperties->PropertiesButtons.Button2State;
 

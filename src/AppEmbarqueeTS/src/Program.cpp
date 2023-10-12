@@ -48,6 +48,4 @@ void Program::execute()
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-
-    delay(1000);
 }
