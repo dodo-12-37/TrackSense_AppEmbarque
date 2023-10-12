@@ -109,21 +109,21 @@ void BLE::tick()
         {
             this->_TSProperties->PropertiesCompletedRideToSend.IsStatsReceived = BLE::isCompletedRideStatsReceived;
             if (!BLE::isCompletedRideStatsReceived || BLE::isCompletedRideStatsSending) // Renvoie les stats tant qu'on a pas la confirmation de reception
-                {
-                    Serial.println("BLE Send Stats");
-                    this->sendCompletedRideStats();
-                }
-                else if (BLE::isCompletedRidePointReceived)
-                {
-                    Serial.println("BLE Confirm Point Received");
-                    this->confirmPointReceived();
-                }
-                else if (BLE::isCompletedRideStatsReceived
-                            && (this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady))
-                {
-                    Serial.println("BLE Send Point");
-                    this->sendCompletedRideCurrentPoint();
-                }
+            {
+                Serial.println("BLE Send Stats");
+                this->sendCompletedRideStats();
+            }
+            else if (BLE::isCompletedRidePointReceived)
+            {
+                Serial.println("BLE Confirm Point Received");
+                this->confirmPointReceived();
+            }
+            else if (BLE::isCompletedRideStatsReceived
+                        && (this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady))
+            {
+                Serial.println("BLE Send Point");
+                this->sendCompletedRideCurrentPoint();
+            }
         }
     }
     else if (!this->_TSProperties->PropertiesTS.IsOnStanby && !BLE::isAdvertiesingStarted)
