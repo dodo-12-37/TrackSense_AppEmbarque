@@ -10,7 +10,7 @@ public:
 
     /* Elements */
     virtual void drawLogoTS() = 0;
-    virtual void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage) = 0;
+    virtual void drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, uint pourcentage) = 0;
     virtual void drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX) = 0;
     virtual void drawError() = 0;
     virtual void drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX) = 0;
