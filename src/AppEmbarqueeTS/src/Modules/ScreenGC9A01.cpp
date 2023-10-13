@@ -447,7 +447,7 @@ void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t hei
 
 void ScreenGC9A01::testGPS()
 {
-    char *formatChar = (char *)"%-19s";
+    char *formatChar = (char *)"%-21s";
 
     if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.UsedSatellites >= 4)
     {
@@ -463,40 +463,41 @@ void ScreenGC9A01::testGPS()
     }
 
     this->canvas->setTextSize(1);
+    this->setFont(1);
 
     this->canvas->setCursor(40, 40);
-    String strCounterGoodValue = "Good: " + String(this->_TSProperties->PropertiesGPS.CounterGoodValue);
+    String strCounterGoodValue = "Good:   " + String(this->_TSProperties->PropertiesGPS.CounterGoodValue);
     this->canvas->printf("%-15s", strCounterGoodValue.c_str());
 
     this->canvas->setCursor(30, 60);
-    String strCounterTotal = "Total: " + String(this->_TSProperties->PropertiesGPS.CounterTotal);
+    String strCounterTotal = "Total:   " + String(this->_TSProperties->PropertiesGPS.CounterTotal);
     this->canvas->printf("%-11s", strCounterTotal.c_str());
 
     this->canvas->setCursor(15, 85);
-    String strUsedSatellite = "Used Sat: " + String(this->_TSProperties->PropertiesGPS.UsedSatellites);
+    String strUsedSatellite = "Used Sat:   " + String(this->_TSProperties->PropertiesGPS.UsedSatellites);
     this->canvas->printf(formatChar, strUsedSatellite.c_str());
 
     this->canvas->setCursor(2, 110);
-    String strLatitude = "Lat: " + String(this->_TSProperties->PropertiesGPS.Latitude, 10);
+    String strLatitude = "Lat:   " + String(this->_TSProperties->PropertiesGPS.Latitude, 10);
     this->canvas->printf(formatChar, strLatitude.c_str());
 
     this->canvas->setCursor(2, 130);
-    String strLongitude = "Lon: " + String(this->_TSProperties->PropertiesGPS.Longitude, 10);
+    String strLongitude = "Lon:   " + String(this->_TSProperties->PropertiesGPS.Longitude, 10);
     this->canvas->printf(formatChar, strLongitude.c_str());
 
     this->canvas->setCursor(12, 150);
-    String strAltitude = "Alt: " + String(this->_TSProperties->PropertiesGPS.Altitude, 8);
+    String strAltitude = "Alt:   " + String(this->_TSProperties->PropertiesGPS.Altitude, 8);
     this->canvas->printf(formatChar, strAltitude.c_str());
 
     this->canvas->setCursor(20, 170);
-    String strSpeed = "Speed: " + String(this->_TSProperties->PropertiesGPS.Speed, 4);
+    String strSpeed = "Speed:   " + String(this->_TSProperties->PropertiesGPS.Speed, 4);
     this->canvas->printf(formatChar, strSpeed.c_str());
 
     this->canvas->setCursor(40, 190);
-    String strAccuracy = "Accu: " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
+    String strAccuracy = "Accu:   " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
     this->canvas->printf(formatChar, strAccuracy.c_str());
 
-    this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevel);
+    // this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevel);
 }
 
 void ScreenGC9A01::testButtonsScreen()
