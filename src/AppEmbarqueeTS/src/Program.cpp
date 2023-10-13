@@ -25,7 +25,6 @@ Program::Program() : _TSProperties(nullptr),
     this->_buzzer = new Buzzer(this->_TSProperties);
 
     this->_TSProperties->PropertiesTS.IsInitializingTS = false;
-    // this->_TSProperties->PropertiesScreen.IsNewActivePage = true;
     this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
 
     this->_controlerButtons->resetLastDateChangementStateButtons();

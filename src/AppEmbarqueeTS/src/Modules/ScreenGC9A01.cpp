@@ -15,11 +15,11 @@
 // #include <Fonts/FreeSerifBold12pt7b.h>  // jolie, mais pas ce qu'on veut avoir
 // #include <Fonts/FreeMonoBold24pt7b.h>   // jolie, mais pas ce qu'on veut avoir
 
-ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0)
+ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0), _lastBatteryLevel(0)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
-    delay(1000);
+
     this->tft->begin();
     this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
     this->canvas->setTextWrap(false);
@@ -126,23 +126,23 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
     this->canvas->setFont(&FreeSans9pt7b);
 }
 
-int ScreenGC9A01::arrondiPourcentageAux5UnitesPres(int pourcentage)
-{
-    int temp = pourcentage % 5;
+// int ScreenGC9A01::arrondiPourcentageAux5UnitesPres(int pourcentage)
+// {
+//     int temp = pourcentage % 5;
 
-    if (temp < 3)
-    {
-        pourcentage -= temp;
-    }
-    else
-    {
-        pourcentage += (5 - temp);
-    }
+//     if (temp < 3)
+//     {
+//         pourcentage -= temp;
+//     }
+//     else
+//     {
+//         pourcentage += (5 - temp);
+//     }
 
-    return pourcentage;
-}
+//     return pourcentage;
+// }
 
-void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, int pourcentage)
+void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, uint pourcentage)
 {
     double hauteurY = largeurX / 2;
     double zoneBarreVerteX = largeurX * 0.875;
@@ -151,14 +151,18 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     double coordBarreVerteX = coordX + (zoneBarreVerteX - barreVerteX) / 2;
     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
 
-    // int pourcentageArrondi = this->arrondiPourcentageAux5UnitesPres(pourcentage);
-
-    // this->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY);                                       // Contour
-    // this->drawFillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2); // ti boute        + hauteurY / 2 - 16/2
     this->canvas->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     this->canvas->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
 
-    // switch (pourcentageArrondi)
+    if (pourcentage < this->_lastBatteryLevel + 2 && pourcentage > this->_lastBatteryLevel - 2)
+    {
+        pourcentage = this->_lastBatteryLevel;
+    }
+    else
+    {
+        this->_lastBatteryLevel = pourcentage;
+    }
+
     switch (pourcentage)
     {
     case 0 ... 20:
@@ -192,9 +196,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 
     this->canvas->setCursor((coordX + largeurX) * 1.01, coordBarreVerteY + hauteurY / 2);
     this->setTextColor();
-    // const String strBatteryLevel = String(this->_TSProperties->PropertiesBattery.BatteryLevel, 0) + "%";
     const String strBatteryLevel = String(pourcentage) + "%";
-    // const String strBatteryLevel = String(pourcentageArrondi) + "%";
     this->canvas->printf("%-3s", strBatteryLevel.c_str());
 }
 
@@ -445,7 +447,7 @@ void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t hei
 
 void ScreenGC9A01::testGPS()
 {
-    char *formatChar = (char *)"%-19s";
+    char *formatChar = (char *)"%-21s";
 
     if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.UsedSatellites >= 4)
     {
@@ -461,40 +463,41 @@ void ScreenGC9A01::testGPS()
     }
 
     this->canvas->setTextSize(1);
+    this->setFont(1);
 
     this->canvas->setCursor(40, 40);
-    String strCounterGoodValue = "Good: " + String(this->_TSProperties->PropertiesGPS.CounterGoodValue);
+    String strCounterGoodValue = "Good:   " + String(this->_TSProperties->PropertiesGPS.CounterGoodValue);
     this->canvas->printf("%-15s", strCounterGoodValue.c_str());
 
     this->canvas->setCursor(30, 60);
-    String strCounterTotal = "Total: " + String(this->_TSProperties->PropertiesGPS.CounterTotal);
+    String strCounterTotal = "Total:   " + String(this->_TSProperties->PropertiesGPS.CounterTotal);
     this->canvas->printf("%-11s", strCounterTotal.c_str());
 
     this->canvas->setCursor(15, 85);
-    String strUsedSatellite = "Used Sat: " + String(this->_TSProperties->PropertiesGPS.UsedSatellites);
+    String strUsedSatellite = "Used Sat:   " + String(this->_TSProperties->PropertiesGPS.UsedSatellites);
     this->canvas->printf(formatChar, strUsedSatellite.c_str());
 
     this->canvas->setCursor(2, 110);
-    String strLatitude = "Lat: " + String(this->_TSProperties->PropertiesGPS.Latitude, 10);
+    String strLatitude = "Lat:   " + String(this->_TSProperties->PropertiesGPS.Latitude, 10);
     this->canvas->printf(formatChar, strLatitude.c_str());
 
     this->canvas->setCursor(2, 130);
-    String strLongitude = "Lon: " + String(this->_TSProperties->PropertiesGPS.Longitude, 10);
+    String strLongitude = "Lon:   " + String(this->_TSProperties->PropertiesGPS.Longitude, 10);
     this->canvas->printf(formatChar, strLongitude.c_str());
 
     this->canvas->setCursor(12, 150);
-    String strAltitude = "Alt: " + String(this->_TSProperties->PropertiesGPS.Altitude, 8);
+    String strAltitude = "Alt:   " + String(this->_TSProperties->PropertiesGPS.Altitude, 8);
     this->canvas->printf(formatChar, strAltitude.c_str());
 
     this->canvas->setCursor(20, 170);
-    String strSpeed = "Speed: " + String(this->_TSProperties->PropertiesGPS.Speed, 4);
+    String strSpeed = "Speed:   " + String(this->_TSProperties->PropertiesGPS.Speed, 4);
     this->canvas->printf(formatChar, strSpeed.c_str());
 
     this->canvas->setCursor(40, 190);
-    String strAccuracy = "Accu: " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
+    String strAccuracy = "Accu:   " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
     this->canvas->printf(formatChar, strAccuracy.c_str());
 
-    this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevel);
+    // this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevel);
 }
 
 void ScreenGC9A01::testButtonsScreen()

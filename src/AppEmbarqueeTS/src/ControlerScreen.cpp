@@ -182,8 +182,8 @@ void ControlerScreen::drawHomePage()
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
                                15,
                                batteryLengthInPixels,
-                               //    this->_TSProperties->PropertiesBattery.BatteryLevel);
-                               this->arrondiPourcentageAux5UnitesPres((int)this->_TSProperties->PropertiesBattery.BatteryLevel));
+                               this->_TSProperties->PropertiesBattery.BatteryLevel);
+    //    this->arrondiPourcentageAux5UnitesPres((uint)this->_TSProperties->PropertiesBattery.BatteryLevel));
 
     int rideStartedLengthInPixels = 40;
     this->_screen->drawIsRideStarted(this->_screen->calculateXCoordItemToCenter(rideStartedLengthInPixels), 185, rideStartedLengthInPixels);
@@ -250,8 +250,8 @@ void ControlerScreen::drawRidePage()
     this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
                                8,
                                batteryLengthInPixels,
-                               //    this->_TSProperties->PropertiesBattery.BatteryLevel);
-                               this->arrondiPourcentageAux5UnitesPres((int)this->_TSProperties->PropertiesBattery.BatteryLevel));
+                               this->_TSProperties->PropertiesBattery.BatteryLevel);
+    //    this->arrondiPourcentageAux5UnitesPres((uint)this->_TSProperties->PropertiesBattery.BatteryLevel));
 #endif
 }
 
