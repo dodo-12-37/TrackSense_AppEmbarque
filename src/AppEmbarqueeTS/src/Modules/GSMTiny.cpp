@@ -24,9 +24,26 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _lastValidLatitude(0),
                                                _lastValidLongitude(0),
                                                _durationS(0),
-                                               _maxDurationTresholdInSeconds(30)
+                                               _maxDurationTresholdInSeconds(30),
+                                               _lastReadTimeMS(0)
+//    ,
+//    _latitude2(0),
+//    _longitude2(0),
+//    _speed2(0),
+//    _altitude2(0),
+//    _visibleSatellites2(0),
+//    _usedSatellites2(0),
+//    _accuracy2(0),
+//    _year2(0),
+//    _month2(0),
+//    _day2(0),
+//    _hour2(0),
+//    _minute2(0),
+//    _seconde2(0)
 {
     this->modem = new TinyGsm(SerialAT);
+    pinMode(PIN_GSM_PWR, OUTPUT);
+
     this->init();
 }
 
@@ -70,13 +87,27 @@ void GSMTiny::init()
 
     this->gpsRestart();
     this->setWorkModeGPS();
+
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
     this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
+
+
+    uint8_t battChargeState = 0;
+    int8_t battPercent = 0;
+    uint16_t battVoltage = 0;
+    this->modem->getBattStats(battChargeState, battPercent, battVoltage);
+    Serial.println("battChargeState : " + String(battChargeState));
+    Serial.println("battPercent : " + String(battPercent));
+    Serial.println("battVoltage : " + String(battVoltage / 1000.0F, 3));
+
+    this->gpsPowerOff();
+    delay(5000);
 }
 
 void GSMTiny::tick()
 {
+    long actualTime = millis();
 
     /* PropertiesBattery */
     this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
@@ -95,46 +126,51 @@ void GSMTiny::tick()
             this->gpsPowerOn();
         }
 
-        this->_durationS = (millis() - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
-        this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
-        Serial.println("DurationS : " + String(this->_durationS));
-
-        if (this->readDatas())
+        if (actualTime - this->_lastReadTimeMS > 1000)
         {
-            this->saveGPSDatasToTSProperties();
+            this->_durationS = (actualTime - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
+            this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
+            Serial.println("DurationS : " + String(this->_durationS));
 
-            if (this->_TSProperties->PropertiesGPS.IsFixValid)
+            this->_lastReadTimeMS = actualTime;
+
+            if (this->readDatas())
             {
-                if (this->_lastValidLatitude == 0 && this->_lastValidLongitude == 0)
+                this->saveGPSDatasToTSProperties();
+
+                if (this->_TSProperties->PropertiesGPS.IsFixValid)
                 {
-                    this->_lastValidLatitude = this->_latitude;
-                    this->_lastValidLongitude = this->_longitude;
-                }
-                this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
+                    if (this->_lastValidLatitude == 0 && this->_lastValidLongitude == 0)
+                    {
+                        this->_lastValidLatitude = this->_latitude;
+                        this->_lastValidLongitude = this->_longitude;
+                    }
+                    this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
 
-                if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters) // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
-                {
-                    this->saveCurrentRideDatasToTSProperties();
-                    // #if DEBUG_GSM
-                    Serial.println("Distance between last point and current point : " + String(this->_distanceMetersBetweenLastPointAndCurrentPoint));
+                    if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters) // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
+                    {
+                        this->saveCurrentRideDatasToTSProperties();
+#if DEBUG_GSM
+                        Serial.println("Distance between last point and current point : " + String(this->_distanceMetersBetweenLastPointAndCurrentPoint));
 
-                    Serial.println("PointID : " + String(this->_TSProperties->PropertiesCurrentRide.PointID));
-                    Serial.println("NbPoints : " + String(this->_TSProperties->PropertiesCurrentRide.NbPoints));
-                    Serial.println("DistanceTotalMeters : " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters, 2));
-                    Serial.println("lat : " + String(this->_latitude, 10));
-                    Serial.println("long : " + String(this->_longitude, 10));
-                    Serial.println("last lat : " + String(this->_lastValidLatitude, 10));
-                    Serial.println("last long : " + String(this->_lastValidLongitude, 10));
-                    // #endif
+                        Serial.println("PointID : " + String(this->_TSProperties->PropertiesCurrentRide.PointID));
+                        Serial.println("NbPoints : " + String(this->_TSProperties->PropertiesCurrentRide.NbPoints));
+                        Serial.println("DistanceTotalMeters : " + String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters, 2));
+                        Serial.println("lat : " + String(this->_latitude, 10));
+                        Serial.println("long : " + String(this->_longitude, 10));
+                        Serial.println("last lat : " + String(this->_lastValidLatitude, 10));
+                        Serial.println("last long : " + String(this->_lastValidLongitude, 10));
+#endif
 
-                    this->_lastValidLatitude = this->_latitude;
-                    this->_lastValidLongitude = this->_longitude;
+                        this->_lastValidLatitude = this->_latitude;
+                        this->_lastValidLongitude = this->_longitude;
+                    }
                 }
             }
-        }
-        else
-        {
-            Serial.println("Write GPS : Location is not Valid");
+            else
+            {
+                Serial.println("Write GPS : Location is not Valid");
+            }
         }
 
         this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH = (this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / this->_durationS) * 3.6;
@@ -158,9 +194,11 @@ bool GSMTiny::readDatas()
         Serial.println("Requesting current GPS/GNSS/GLONASS location");
 
         if (this->modem->getGPS(&this->_latitude, &this->_longitude, &this->_speed, &this->_altitude, &this->_visibleSatellites, &this->_usedSatellites,
-                                &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde) &&
-            this->modem->getGPS(&this->_latitude2, &this->_longitude2, &this->_speed2, &this->_altitude2, &this->_visibleSatellites2, &this->_usedSatellites2,
-                                &this->_accuracy2, &this->_year2, &this->_month2, &this->_day2, &this->_hour2, &this->_minute2, &this->_seconde2))
+                                &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde)
+            //                     &&
+            // this->modem->getGPS(&this->_latitude2, &this->_longitude2, &this->_speed2, &this->_altitude2, &this->_visibleSatellites2, &this->_usedSatellites2,
+            //                     &this->_accuracy2, &this->_year2, &this->_month2, &this->_day2, &this->_hour2, &this->_minute2, &this->_seconde2))
+        )
         {
             result = true;
 
@@ -193,14 +231,16 @@ bool GSMTiny::isFixValid()
 {
     bool result = false;
 
-    if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00 && this->_accuracy < 2 && this->_altitude != 0 &&
-        this->_latitude2 != 0 && this->_longitude2 != 0 && this->_usedSatellites2 >= 4 && this->_speed2 != -9999.00 && this->_accuracy2 < 2 && this->_altitude2 != 0)
+    if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00 && this->_accuracy < 2 && this->_altitude != 0
+        // &&
+        // this->_latitude2 != 0 && this->_longitude2 != 0 && this->_usedSatellites2 >= 4 && this->_speed2 != -9999.00 && this->_accuracy2 < 2 && this->_altitude2 != 0)
+    )
     {
-        if (this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude) < this->_maxDistanceTresholdInMeters)
-        {
-            Serial.println("Distance between 2 points : " + String(this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude)));
-            result = true;
-        }
+        // if (this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude) < this->_maxDistanceTresholdInMeters)
+        // {
+        // Serial.println("Distance between 2 points : " + String(this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude)));
+        result = true;
+        // }
     }
 
     return result;
@@ -339,15 +379,16 @@ void GSMTiny::gpsPowerOn()
             1 Set the GPIO high level
     */
     Serial.println("Enabling GPS");
-    this->modem->enableGPS();
-
     // Set SIM7000G GPIO4 HIGH ,turn on GPS power
     // CMD:AT+SGPIO=0,4,1,1
     // Only in version 20200415 is there a function to control GPS power
+    // Version 20200415 (Version 1.1)
+    // Version 20191227 (Version 1.0)
     this->modem->sendAT("+SGPIO=0,4,1,1");
     if (this->modem->waitResponse(10000L) != 1)
     {
-        Serial.println(" SGPIO=0,4,1,1 false ");
+        // Serial.println(" SGPIO=0,4,1,1 false ");
+        Serial.println("Set GPS Power HIGH Failed");
     }
 
     this->modem->enableGPS();
@@ -363,13 +404,14 @@ void GSMTiny::gpsPowerOff()
     // Set SIM7000G GPIO4 LOW ,turn off GPS power
     // CMD:AT+SGPIO=0,4,1,0
     // Only in version 20200415 is there a function to control GPS power.
-    // Version 20200415 (Version 1.1)
+    // Version 20200415 (Version 1.1) -> Nous avons cette version.
     // Version 20191227 (Version 1.0)
     // Revision:1529B08SIM7000G
-    this->modem->sendAT("+SGPIO=0,4,1,0"); // devrait pt être "+CGPIO=0,4,1,0"
+    this->modem->sendAT("+SGPIO=0,4,1,0"); // devrait pt être "+CGPIO=0,4,1,0" ou "+SGPIO=0,4,1,0"
     if (this->modem->waitResponse(10000L) != 1)
     {
-        Serial.println(" SGPIO=0,4,1,0 false ");
+        // Serial.println(" SGPIO=0,4,1,0 false ");
+        Serial.println("Set GPS Power LOW Failed");
     }
 
     delay(200);
@@ -385,22 +427,18 @@ void GSMTiny::gpsRestart()
 
 void GSMTiny::modemPowerOn()
 {
-    pinMode(PIN_GSM_PWR, OUTPUT);
     digitalWrite(PIN_GSM_PWR, LOW);
     delay(300);
     digitalWrite(PIN_GSM_PWR, HIGH);
-    // this->modem->enableGPS();
     this->_isModemOn = true;
     delay(1000);
 }
 
 void GSMTiny::modemPowerOff()
 {
-    // this->modem->disableGPS();
-    pinMode(PIN_GSM_PWR, OUTPUT);
-    digitalWrite(PIN_GSM_PWR, LOW);
-    delay(300);
     digitalWrite(PIN_GSM_PWR, HIGH);
+    delay(300);
+    digitalWrite(PIN_GSM_PWR, LOW);
     this->_isModemOn = false;
 }
 
