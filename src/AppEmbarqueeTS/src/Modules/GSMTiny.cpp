@@ -113,6 +113,27 @@ void GSMTiny::init()
 
     this->gpsPowerOff();
     delay(5000);
+
+    /*
+        Initializing modem...
+
+        @10h00
+        Modem datas :
+            battChargeState : 0
+            battPercent : 66 %
+            battVoltage : 3.869 V
+        Multimètre : 
+            battVoltage : 4.188 V
+
+
+        @??h??
+        Modem datas :
+            battChargeState : 
+            battPercent :  %
+            battVoltage :  V
+        Multimètre : 
+            battVoltage :  V
+    */
 }
 
 void GSMTiny::tick()
