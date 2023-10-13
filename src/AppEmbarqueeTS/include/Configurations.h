@@ -3,7 +3,7 @@
 
 /*----- DEBUG -----*/
 #define DEBUG_BUTTONS false
-#define DEBUG_GSM true
+#define DEBUG_GSM false
 
 /*----- Screen -----*/
 #define SPI_TFCard 0 // 1 = SPI, 0 = VSPI
