@@ -27,6 +27,12 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _maxDurationTresholdInSeconds(30)
 {
     this->modem = new TinyGsm(SerialAT);
+
+    // // Set LED OFF
+    // pinMode(PIN_SDCARD_LED, OUTPUT);
+    // Serial.println("Set LED OFF");
+    // digitalWrite(PIN_SDCARD_LED, HIGH);
+    
     this->init();
 }
 
@@ -73,6 +79,10 @@ void GSMTiny::init()
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
     this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
+
+    // delay(5000);
+    // Serial.println("Set LED ON");
+    // digitalWrite(PIN_SDCARD_LED, LOW);
 }
 
 void GSMTiny::tick()
