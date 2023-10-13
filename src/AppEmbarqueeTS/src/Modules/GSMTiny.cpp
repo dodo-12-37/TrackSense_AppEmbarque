@@ -125,7 +125,40 @@ void GSMTiny::init()
         Multimètre : 
             battVoltage : 4.188 V
 
+        @10h45
+        Modem datas :
+            battChargeState : 
+            battPercent : 90 %
+            battVoltage :  V
+        Multimètre : 
+            battVoltage : 4.094 V
 
+        @??h??
+        Modem datas :
+            battChargeState : 
+            battPercent :  %
+            battVoltage :  V
+        Multimètre : 
+            battVoltage :  V
+        
+        @??h??
+        Modem datas :
+            battChargeState : 
+            battPercent :  %
+            battVoltage :  V
+        Multimètre : 
+            battVoltage :  V
+
+        
+        @??h??
+        Modem datas :
+            battChargeState : 
+            battPercent :  %
+            battVoltage :  V
+        Multimètre : 
+            battVoltage :  V
+
+        
         @??h??
         Modem datas :
             battChargeState : 
