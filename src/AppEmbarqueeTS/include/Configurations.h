@@ -1,34 +1,32 @@
 #pragma once
 #include <Arduino.h>
 
-
 /*----- DEBUG -----*/
 #define DEBUG_BUTTONS false
 #define DEBUG_GSM false
-
 
 /*----- Screen -----*/
 #define SPI_TFCard 0 // 1 = SPI, 0 = VSPI
 
 #if SPI_TFCard
-
-    #define TFT_BL_BLK -1       // LED back-light
-    #define TFT_CS_SS 12        // 25       // Chip select control pin
-    #define TFT_DC 25           // 02          // Data Command control pin
-    #define TFT_RES_RST -1      // Reset pin (could connect to Arduino RESET pin)
-    #define TFT_SDA_DIN_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
-    #define TFT_SCL_CLK_SCK 14  // In some display driver board, it might be written as "SCL" and so on.
-    // #define TFT_MISO 02          // Ne semble pas être utile, car non tactile
+// Ne pas considérer cette possibilité de connexion de l'écran. Aucune chance que ça fonctionne. Le PCB peut être modifié à l'avenir.
+#define TFT_BLK -1  // LED back-light
+#define TFT_CS 12   // 25       // Chip select control pin
+#define TFT_DC 25   // 02          // Data Command control pin
+#define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin)
+#define TFT_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+#define TFT_CLK 14  // In some display driver board, it might be written as "SCL" and so on.
+#define TFT_MISO 2  // Ne semble pas être utile, car non tactile
 
 #else // VSPI
 
-    #define TFT_BLK -1 //12 // LED back-light. "BLK" or "BLK"
-    #define TFT_CS 5        // 25     // Chip select control pin. "CS" or "SS"
-    #define TFT_DC 0        // 19        // Data Command control pin
-    #define TFT_RST -1      // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
-    #define TFT_MOSI 23     // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
-    #define TFT_CLK 18      // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
-    #define TFT_MISO 19     // Ne semble pas être utile, car non tactile
+#define TFT_BLK -1  // 12 // LED back-light. "BLK" or "BLK"
+#define TFT_CS 5    // 25     // Chip select control pin. "CS" or "SS"
+#define TFT_DC 0    // 19        // Data Command control pin
+#define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
+#define TFT_MOSI 23 // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
+#define TFT_CLK 18  // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
+#define TFT_MISO 19 // Ne semble pas être utile, car non tactile
 
 #endif
 
@@ -40,9 +38,8 @@
 #define TFT_DARK_MODE_BACKGROUND_COLOR GC9A01A_BLACK
 #define TFT_DARK_MODE_TEXT_COLOR GC9A01A_WHITE
 
-
 /*----- Page ID -----*/
-#define NB_ACTIVE_PAGES 3   // 3 == Home Page, Ride Page, Ride Statistics Page
+#define NB_ACTIVE_PAGES 3 // 3 == Home Page, Ride Page, Ride Statistics Page
 /*
     0 : Home Page
     1 : Ride Page
@@ -82,7 +79,7 @@
 #define PIN_SDCARD_SCLK 14
 #define PIN_SDCARD_CS 13
 #define PIN_SDCARD_MISO 2
-#define PIN_SDCARD_LED 12
+#define PIN_LED 12
 
 #define SDCARD_ROOT_PATH "/cr"
 #define SDCARD_FILE_EXTENSION ".csv"
@@ -99,7 +96,7 @@
 // 00000000-0000-0000-0000-000000000000;00000000-0000-0000-0000-000000000000;00.00;00.00;0000/00/00-00:00:00;0000/00/00-00:00:00;00:00:00;000.0;5;0
 
 #define SerialAT Serial1
-#define GPS_UART_BAUD   115200
+#define GPS_UART_BAUD 115200
 #define PIN_GSM_DTR 25
 #define PIN_GSM_TX 27
 #define PIN_GSM_RX 26
@@ -112,17 +109,14 @@
 #define PIN_GY87_SDA 21
 #define PIN_GY87_SCL 22
 
-
 /*----- Buzzer -----*/
 #define PIN_BUZZER 32
-
 
 /*----- Buttons -----*/
 #define PIN_BUTTON1 33
 #define PIN_BUTTON2 34
 #define BUTTON_LONG_PRESS_DURATION_MS 2000
 #define BUTTON_INACTIVITY_TIME_MS 300000 // 5 minutes
-
 
 /*----- BLE -----*/
 #define BLE_DEVICE_NAME "TrackSense"

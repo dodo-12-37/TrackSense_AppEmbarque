@@ -14,6 +14,7 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
     this->_guidGenerator = new UUID();
+    this->_guidGenerator->setRandomMode();
 
     // this->tick();
 }
@@ -220,7 +221,6 @@ void ControlerButtons::startRide()
 
         this->_TSProperties->PropertiesCurrentRide.StartTimeMS = millis();
 
-        this->_guidGenerator->setRandomMode();
         this->_guidGenerator->seed(this->_TSProperties->PropertiesCurrentRide.StartTimeMS);
         this->_guidGenerator->generate();
         this->_TSProperties->PropertiesCurrentRide.CompletedRideId = this->_guidGenerator->toCharArray();

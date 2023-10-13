@@ -1,12 +1,12 @@
 #include "Modules/ButtonTactile.h"
 
 ButtonTactile::ButtonTactile(const uint8_t pinButton, TSProperties *TSProperties) : _pinButton(pinButton),
-                                                                                                    _lastStateButton(LOW),
-                                                                                                    _lastDateChange(0),
-                                                                                                    _lastStableStateButton(LOW),
-                                                                                                    _durationDebounce(25),
-                                                                                                    _buttonState(LOW),
-                                                                                                    _TSProperties(TSProperties)
+                                                                                    _lastStateButton(LOW),
+                                                                                    _lastDateChange(0),
+                                                                                    _lastStableStateButton(LOW),
+                                                                                    _durationDebounce(25),
+                                                                                    _buttonState(LOW),
+                                                                                    _TSProperties(TSProperties)
 {
     pinMode(this->_pinButton, INPUT);
 }
