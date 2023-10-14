@@ -28,7 +28,7 @@ void TSProperties::initProperties()
     this->PropertiesTS.IsFrenchMode = true; // À récupérer dans la mémoire avec les paramètres du cellulaire un jour
 
     // Battery
-    this->PropertiesBattery.BatteryLevel = 0;
+    this->PropertiesBattery.BatteryLevelPourcentage = 0;
 
     // Buttons
     this->PropertiesButtons.Button1State = 0;

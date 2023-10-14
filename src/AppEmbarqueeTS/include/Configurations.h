@@ -112,6 +112,9 @@
 /*----- Buzzer -----*/
 #define PIN_BUZZER 32
 
+/*----- Battery -----*/
+#define PIN_BATTERY 35
+
 /*----- Buttons -----*/
 #define PIN_BUTTON1 33
 #define PIN_BUTTON2 34

@@ -248,7 +248,7 @@ public:
     /* datas Battery */
     struct TSPropertiesBattery
     {
-        double BatteryLevel;
+        double BatteryLevelPourcentage;
     } PropertiesBattery;
 
     /* datas Buzzer */
