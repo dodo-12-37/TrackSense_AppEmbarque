@@ -233,11 +233,11 @@ void BLE::sendCompletedRideStats()
 
 void BLE::sendCompletedRideCurrentPoint()
 {
-    // unsigned long currentTime = millis();
+    unsigned long currentTime = millis();
 
-    // if ( (currentTime - this->_lastTimePointSent) > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
-    // {
-        // this->_lastTimePointSent = currentTime;
+    if ( (currentTime - this->_lastTimePointSent) > BLE_DELAY_SEND_POINT_MS) // Envoie le point tant qu'on a pas la confirmation de reception
+    {
+        this->_lastTimePointSent = currentTime;
 
         if (!BLE::isCompletedRidePointSending)
         {
@@ -249,7 +249,7 @@ void BLE::sendCompletedRideCurrentPoint()
         }
         // this->_CRNotificationCaracteristic->notify();
 
-    // }
+    }
 };
 
 void BLE::confirmPointReceived()
