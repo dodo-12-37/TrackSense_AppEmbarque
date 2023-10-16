@@ -15,19 +15,28 @@ Program::Program() : _TSProperties(nullptr),
     this->_TSProperties = new TSProperties();
     this->_controlerScreen = new ControlerScreen(this->_TSProperties);
     this->_controlerButtons = new ControlerButtons(this->_TSProperties);
-    this->_ble = new BLE(this->_TSProperties);
-    this->_sdCard = new SDCard(this->_TSProperties);
-    this->_gsm = new GSMTiny(this->_TSProperties);
-    // this->_lte = new LTE(this->_TSProperties);
-    this->_gyroscope = new GyroscopeMPU6050(this->_TSProperties);
-    this->_compass = new CompassHMC5883L(this->_TSProperties);
-    this->_accelerometer = new AccelerometerMPU6050(this->_TSProperties);
+    // this->_ble = new BLE(this->_TSProperties);
+    // this->_sdCard = new SDCard(this->_TSProperties);
+    // this->_gsm = new GSMTiny(this->_TSProperties);
+    // this->_gyroscope = new GyroscopeMPU6050(this->_TSProperties);
+    // this->_compass = new CompassHMC5883L(this->_TSProperties);
+    // this->_accelerometer = new AccelerometerMPU6050(this->_TSProperties);
     this->_buzzer = new Buzzer(this->_TSProperties);
 
     this->_TSProperties->PropertiesTS.IsInitializingTS = false;
     this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
 
     this->_controlerButtons->resetLastDateChangementStateButtons();
+
+    // pinMode(PIN_BATTERY, INPUT);
+
+    // Serial.print("PIN_BATTERY voltage analogue : ");
+    // Serial.print(analogRead(PIN_BATTERY));
+    // Serial.println(" V");
+
+    // Serial.print("PIN_BATTERY voltage digital : ");
+    // Serial.print(digitalRead(PIN_BATTERY));
+    // Serial.println(" V");
 }
 
 Program::~Program()
@@ -40,11 +49,21 @@ void Program::execute()
     this->_controlerButtons->tick();
     this->_buzzer->tick();
     this->_controlerScreen->tick();
-    this->_ble->tick();
-    this->_gsm->tick();
-    this->_sdCard->tick();
-    // this->_lte->tick();
-    this->_gyroscope->tick();
-    this->_compass->tick();
-    this->_accelerometer->tick();
+    // this->_ble->tick();
+    // this->_gsm->tick();
+    // this->_sdCard->tick();
+    // this->_gyroscope->tick();
+    // this->_compass->tick();
+    // this->_accelerometer->tick();
+
+    // float vref = 1100;
+    uint16_t analogueVoltage = analogRead(PIN_BATTERY);
+    // float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
+    float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (1100 / 1000.0);
+    long percent = map(battery_voltage, 0, 1023, 0, 100);   
+
+    String voltage = "Voltage :" + String(battery_voltage) + "V\n";
+    Serial.println(voltage);
+
+    this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = (double)analogueVoltage;
 }

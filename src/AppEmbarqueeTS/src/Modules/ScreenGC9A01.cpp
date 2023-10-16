@@ -497,7 +497,7 @@ void ScreenGC9A01::testGPS()
     String strAccuracy = "Accu:   " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
     this->canvas->printf(formatChar, strAccuracy.c_str());
 
-    // this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevel);
+    // this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage);
 }
 
 void ScreenGC9A01::testButtonsScreen()
@@ -515,7 +515,7 @@ void ScreenGC9A01::testButtonsScreen()
         this->canvas->printf("%-10s", "Home Page");
     }
 
-    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevel);
+    this->drawBattery(70, 140, 100, this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage);
 
     char *formatChar = (char *)"%-33s";
 

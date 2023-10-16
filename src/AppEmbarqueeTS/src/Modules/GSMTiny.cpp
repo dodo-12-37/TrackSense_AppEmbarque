@@ -96,7 +96,7 @@ void GSMTiny::init()
 
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
-    this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
+    // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = this->modem->getBattPercent();
 
     // delay(5000);
     // Serial.println("Set LED ON");
@@ -133,13 +133,13 @@ void GSMTiny::init()
         Multimètre : 
             battVoltage : 4.094 V
 
-        @??h??
+        @11h30
         Modem datas :
             battChargeState : 
-            battPercent :  %
+            battPercent : 90 %
             battVoltage :  V
         Multimètre : 
-            battVoltage :  V
+            battVoltage : 4.067 V
         
         @??h??
         Modem datas :
@@ -174,7 +174,7 @@ void GSMTiny::tick()
     long actualTime = millis();
 
     /* PropertiesBattery */
-    this->_TSProperties->PropertiesBattery.BatteryLevel = this->modem->getBattPercent();
+    // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = this->modem->getBattPercent();
 
     Serial.println("=======================================");
 #if DEBUG_GSM
