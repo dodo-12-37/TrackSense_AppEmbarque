@@ -56,7 +56,7 @@
 #endif
 
 // Hardware SPI on Feather or other boards
-Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+Adafruit_GC9A01A tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 
 unsigned long testFillScreen();
 unsigned long testText();
@@ -83,8 +83,8 @@ void setup()
     pinMode(32, OUTPUT);
     // tone(32, 500, 5000);
 
-    pinMode(TFT_BL_BLK, OUTPUT);
-    digitalWrite(TFT_BL_BLK, HIGH);
+    pinMode(TFT_BLK, OUTPUT);
+    digitalWrite(TFT_BLK, HIGH);
 
     Serial.begin(115200);
     Serial.println("GC9A01A Test!");
@@ -162,8 +162,6 @@ void dessinerBatteryLogo(int16_t coordX, int16_t coordY, int16_t largeurX, int p
     tft.fillRect((coordBarreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #1
     tft.fillRect((coordBarreVerteX + barreVerteX), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #2
     tft.fillRect((coordBarreVerteX + barreVerteX * 2), coordBarreVerteY, (barreVerteX * 0.8125), barreVerteY, GC9A01A_GREEN);  // niveau #3
-
-
 }
 
 void testMaisonScreen()

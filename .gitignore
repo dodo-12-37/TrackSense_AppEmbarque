@@ -404,5 +404,7 @@ FodyWeavers.xsd
 Modèles 3D
 # *.zip
 
-.vscode/extensions.json
+*/.vscode/extensions.json
 
+cr/*.csv
+cr/

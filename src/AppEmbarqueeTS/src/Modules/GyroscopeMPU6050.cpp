@@ -2,7 +2,7 @@
 
 
 
-GyroscopeMPU6050::GyroscopeMPU6050(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
+GyroscopeMPU6050::GyroscopeMPU6050(TSProperties* TSProperties) : _TSProperties(TSProperties)
 {
 }
 

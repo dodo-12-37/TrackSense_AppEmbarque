@@ -49,7 +49,7 @@ TinyGsm modem(SerialAT);
 #define TFT_SCL_CLK_SCK 18
 // #define TFT_MISO 19
 
-Adafruit_GC9A01A tft(TFT_CS_SS, TFT_DC, TFT_SDA_DIN_MOSI, TFT_SCL_CLK_SCK, TFT_RES_RST);
+Adafruit_GC9A01A tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST);
 
 void setup()
 {
@@ -81,6 +81,7 @@ void setup()
     if (!modem.restart())
     {
         Serial.println("Failed to restart modem, attempting to continue without restarting");
+        // modem.init();
     }
 
     // Print modem info
@@ -241,7 +242,7 @@ void printGPSOnScreen(float lat, float lon, float speed, float alt, float accura
     tft.printf("%-11s", strCounterTotal.c_str());
 
     // tft.setCursor(30, 90);
-    // String strIsValid = "IsValid : " + String(locationIsValid ? "true" : "false");
+    // String strIsValid = "IsFixValid : " + String(locationIsValid ? "true" : "false");
     // tft.printf(formatChar, strIsValid.c_str());
 
     tft.setCursor(15, 85);

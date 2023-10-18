@@ -2,7 +2,7 @@
 
 
 
-CompassHMC5883L::CompassHMC5883L(TrackSenseProperties* trackSenseProperties) : _trackSenseProperties(trackSenseProperties)
+CompassHMC5883L::CompassHMC5883L(TSProperties* TSProperties) : _TSProperties(TSProperties)
 {
 }
 

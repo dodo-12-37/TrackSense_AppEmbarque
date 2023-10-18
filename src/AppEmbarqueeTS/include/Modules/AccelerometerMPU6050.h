@@ -2,17 +2,17 @@
 #include <Arduino.h>
 #include "Interfaces/IAccelerometer.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 
 
 class AccelerometerMPU6050 : public IAccelerometer
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
 public:
-    AccelerometerMPU6050(TrackSenseProperties* trackSenseProperties);
+    AccelerometerMPU6050(TSProperties* TSProperties);
     ~AccelerometerMPU6050();
 
     void tick() override;

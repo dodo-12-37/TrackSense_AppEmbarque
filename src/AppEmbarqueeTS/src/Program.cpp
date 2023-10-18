@@ -1,72 +1,69 @@
 #include "Program.h"
 
-
-
-Program::Program() : 
-    _trackSenseProperties(nullptr), 
-    _lte(nullptr), 
-    _gps(nullptr), 
-    _sdCard(nullptr), 
-    _gyroscope(nullptr), 
-    _compass(nullptr), 
-    _accelerometer(nullptr), 
-    _ble(nullptr), 
-    _screen(nullptr), 
-    _buzzer(nullptr)
+Program::Program() : _TSProperties(nullptr),
+                     // _lte(nullptr),
+                     _gsm(nullptr),
+                     _sdCard(nullptr),
+                     _gyroscope(nullptr),
+                     _compass(nullptr),
+                     _accelerometer(nullptr),
+                     _ble(nullptr),
+                     _buzzer(nullptr),
+                     _controlerButtons(nullptr),
+                     _controlerScreen(nullptr)
 {
-    this->_trackSenseProperties = new TrackSenseProperties();
-    this->_controlerButtons = new ControlerButtons(this->_trackSenseProperties);
-    this->_screen = new ScreenGC9A01(this->_trackSenseProperties);
-    this->_ble = new BLE(this->_trackSenseProperties);
-    this->_sdCard = new SDCard(this->_trackSenseProperties);
-    this->_gps = new GPSTinyPlus(this->_trackSenseProperties);
-    this->_lte = new LTE(this->_trackSenseProperties);
-    this->_gyroscope = new GyroscopeMPU6050(this->_trackSenseProperties);
-    this->_compass = new CompassHMC5883L(this->_trackSenseProperties);
-    this->_accelerometer = new AccelerometerMPU6050(this->_trackSenseProperties);
-    this->_buzzer = new Buzzer(this->_trackSenseProperties);
+    this->_TSProperties = new TSProperties();
+    this->_controlerScreen = new ControlerScreen(this->_TSProperties);
+    this->_controlerButtons = new ControlerButtons(this->_TSProperties);
+    // this->_ble = new BLE(this->_TSProperties);
+    // this->_sdCard = new SDCard(this->_TSProperties);
+    // this->_gsm = new GSMTiny(this->_TSProperties);
+    // this->_gyroscope = new GyroscopeMPU6050(this->_TSProperties);
+    // this->_compass = new CompassHMC5883L(this->_TSProperties);
+    // this->_accelerometer = new AccelerometerMPU6050(this->_TSProperties);
+    this->_buzzer = new Buzzer(this->_TSProperties);
 
-    this->initProperties();
+    this->_TSProperties->PropertiesTS.IsInitializingTS = false;
+    this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
 
+    this->_controlerButtons->resetLastDateChangementStateButtons();
+
+    // pinMode(PIN_BATTERY, INPUT);
+
+    // Serial.print("PIN_BATTERY voltage analogue : ");
+    // Serial.print(analogRead(PIN_BATTERY));
+    // Serial.println(" V");
+
+    // Serial.print("PIN_BATTERY voltage digital : ");
+    // Serial.print(digitalRead(PIN_BATTERY));
+    // Serial.println(" V");
 }
 
 Program::~Program()
 {
+    ;
 }
 
 void Program::execute()
 {
-    // Serial.println("Hello World");
     this->_controlerButtons->tick();
-    this->_screen->tick();
-    this->_ble->tick();
-    this->_sdCard->tick();
-    this->_gps->tick();
-    this->_lte->tick();
-    this->_gyroscope->tick();
-    this->_compass->tick();
-    this->_accelerometer->tick();
-    this->_buzzer->tick();   // gossant ou pas :p   // lol
-}
+    this->_buzzer->tick();
+    this->_controlerScreen->tick();
+    // this->_ble->tick();
+    // this->_gsm->tick();
+    // this->_sdCard->tick();
+    // this->_gyroscope->tick();
+    // this->_compass->tick();
+    // this->_accelerometer->tick();
 
-void Program::initProperties()
-{
-    // Buttons
-    this->_trackSenseProperties->PropertiesButtons._button1State = 0;
-    this->_trackSenseProperties->PropertiesButtons._button2State = 0;
+    // float vref = 1100;
+    uint16_t analogueVoltage = analogRead(PIN_BATTERY);
+    // float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
+    float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (1100 / 1000.0);
+    long percent = map(battery_voltage, 0, 1023, 0, 100);   
 
-    // Buzzer
-    this->_trackSenseProperties->PropertiesBuzzer._isBuzzerOn = false;
+    String voltage = "Voltage :" + String(battery_voltage) + "V\n";
+    Serial.println(voltage);
 
-    // Screen
-    this->_trackSenseProperties->PropertiesScreen._activeScreen = 0;
-    // this->_trackSenseProperties->PropertiesScreen._isHomePage = true;
-    // this->_trackSenseProperties->PropertiesScreen._isRidePage = false;
-    // this->_trackSenseProperties->PropertiesScreen._isRideDirectionPage = false;
-    // this->_trackSenseProperties->PropertiesScreen._isRideStatisticsPage = false;
-    // this->_trackSenseProperties->PropertiesScreen._isGlobalStatisticsPage = false;
-    // this->_trackSenseProperties->PropertiesScreen._isCompassPage = false;
-    // this->_trackSenseProperties->PropertiesScreen._isGoHomePage = false;
-    // this->_trackSenseProperties->PropertiesScreen._isDarkMode = true;
-
+    this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = (double)analogueVoltage;
 }

@@ -1,375 +1,512 @@
-// /**
-//  * @file      Arduino_NetworkTest.ino
-//  * @author    Lewis He (lewishe@outlook.com)
-//  * @license   MIT
-//  * @copyright Copyright (c) 2023  Shenzhen Xin Yuan Electronic Technology Co., Ltd
-//  * @date      2023-02-01
-//  * @note      This example function is the SIM7000/SIM7070 network test to
-//  *            determine whether the module can access the network and obtain some access parameters
-//  */
+/**
+ * @file      Arduino_NetworkTest.ino
+ * @author    Lewis He (lewishe@outlook.com)
+ * @license   MIT
+ * @copyright Copyright (c) 2023  Shenzhen Xin Yuan Electronic Technology Co., Ltd
+ * @date      2023-02-01
+ * @note      This example function is the SIM7000/SIM7070 network test to
+ *            determine whether the module can access the network and obtain some access parameters
+ */
 
-// // Set serial for debug console (to the Serial Monitor, default speed 115200)
-// #define SerialMon Serial
+// Set serial for debug console (to the Serial Monitor, default speed 115200)
+#define SerialMon Serial
 
-// // Set serial for AT commands (to the module)
-// // Use Hardware Serial on Mega, Leonardo, Micro
-// #define SerialAT Serial1
+// Set serial for AT commands (to the module)
+// Use Hardware Serial on Mega, Leonardo, Micro
+#define SerialAT Serial1
 
-// #define TINY_GSM_MODEM_SIM7000
-// #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
-// #define SerialAT Serial1
+#define TINY_GSM_MODEM_SIM7000
+#define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
+#define SerialAT Serial1
 
-// // See all AT commands, if wanted
-// // #define DUMP_AT_COMMANDS
+// See all AT commands, if wanted
+// #define DUMP_AT_COMMANDS
 
-// #include <TinyGsmClient.h>
-// #include <SPI.h>
-// #include <SD.h>
-// #include <Ticker.h>
+#include <TinyGsmClient.h>
+#include <SPI.h>
+#include <SD.h>
+#include <Ticker.h>
 
-// #ifdef DUMP_AT_COMMANDS
-// #include <StreamDebugger.h>
-// StreamDebugger debugger(SerialAT, SerialMon);
-// TinyGsm modem(debugger);
-// #else
-// TinyGsm modem(SerialAT);
-// #endif
+#ifdef DUMP_AT_COMMANDS
+#include <StreamDebugger.h>
+StreamDebugger debugger(SerialAT, SerialMon);
+TinyGsm modem(debugger);
+#else
+TinyGsm modem(SerialAT);
+#endif
 
-// #define UART_BAUD 115200 // 9600 //115200
-// #define PIN_DTR 25
-// #define PIN_TX 27
-// #define PIN_RX 26
-// #define PWR_PIN 4
+#define UART_BAUD 115200 // 9600 //115200
+#define PIN_DTR 25
+#define PIN_TX 27
+#define PIN_RX 26
+#define PWR_PIN 4
 
-// #define SD_MISO 2
-// #define SD_MOSI 15
-// #define SD_SCLK 14
-// #define SD_CS 13
-// #define LED_PIN 12
+#define SD_MISO 2
+#define SD_MOSI 15
+#define SD_SCLK 14
+#define SD_CS 13
+#define LED_PIN 12
 
-// void enableGPS(void)
-// {
-//     // Set Modem GPS Power Control Pin to HIGH, turn on GPS power
-//     // Only in version 20200415 is there a function to control GPS power
-//     modem.sendAT("+CGPIO=0,48,1,1");
-//     if (modem.waitResponse(10000L) != 1)
-//     {
-//         DBG("Set GPS Power HIGH Failed");
-//     }
-//     modem.enableGPS();
-// }
+float lat, lon, alt, speed;
 
-// void disableGPS(void)
-// {
-//     // Set Modem GPS Power Control Pin to LOW ,turn off GPS power
-//     // Only in version 20200415 is there a function to control GPS power
-//     modem.sendAT("+CGPIO=0,48,1,0");
-//     if (modem.waitResponse(10000L) != 1)
-//     {
-//         DBG("Set GPS Power LOW Failed");
-//     }
-//     modem.disableGPS();
-// }
+void enableGPS(void)
+{
+    // // Set Modem GPS Power Control Pin to HIGH, turn on GPS power
+    // // Only in version 20200415 is there a function to control GPS power
+    // modem.sendAT("+CGPIO=0,48,1,1"); // Était 48 avant // Était "+CGPIO=0,48,1,1"
+    // if (modem.waitResponse(10000L) != 1)
+    // {
+    //     DBG("Set GPS Power HIGH Failed");
+    // }
+    // modem.enableGPS();
 
-// void modemPowerOn()
-// {
-//     pinMode(PWR_PIN, OUTPUT);
-//     digitalWrite(PWR_PIN, LOW);
-//     delay(1000); // Datasheet Ton mintues = 1S
-//     digitalWrite(PWR_PIN, HIGH);
-// }
+    // Set SIM7000G GPIO4 HIGH ,turn on GPS power
+    // CMD:AT+SGPIO=0,4,1,1
+    // Only in version 20200415 is there a function to control GPS power
+    modem.sendAT("+SGPIO=0,4,1,1");
+    if (modem.waitResponse(10000L) != 1)
+    {
+        Serial.println(" SGPIO=0,4,1,1 false ");
+    }
+    modem.enableGPS();
+}
 
-// void modemPowerOff()
-// {
-//     pinMode(PWR_PIN, OUTPUT);
-//     digitalWrite(PWR_PIN, LOW);
-//     delay(1500); // Datasheet Ton mintues = 1.2S
-//     digitalWrite(PWR_PIN, HIGH);
-// }
+void disableGPS(void)
+{
+    // // Set Modem GPS Power Control Pin to LOW ,turn off GPS power
+    // // Only in version 20200415 is there a function to control GPS power
+    // modem.sendAT("+CGPIO=0,48,1,0");
+    // if (modem.waitResponse(10000L) != 1)
+    // {
+    //     DBG("Set GPS Power LOW Failed");
+    // }
+    // modem.disableGPS();
 
-// void setup()
-// {
-//     // Set console baud rate
-//     SerialMon.begin(115200);
+    // Set SIM7000G GPIO4 LOW ,turn off GPS power
+    // CMD:AT+SGPIO=0,4,1,0
+    // Only in version 20200415 is there a function to control GPS power
+    modem.sendAT("+SGPIO=0,4,1,0"); // devrait pt être "+CGPIO=0,4,1,0"
+    if (modem.waitResponse(10000L) != 1)
+    {
+        Serial.println(" SGPIO=0,4,1,0 false ");
+    }
+    modem.disableGPS();
+}
 
-//     // Set LED OFF
-//     pinMode(LED_PIN, OUTPUT);
-//     digitalWrite(LED_PIN, HIGH);
+void modemPowerOn()
+{
+    pinMode(PWR_PIN, OUTPUT);
+    digitalWrite(PWR_PIN, LOW);
+    delay(1000); // Datasheet Ton mintues = 1S
+    digitalWrite(PWR_PIN, HIGH);
+}
 
-//     modemPowerOn();
+void modemPowerOff()
+{
+    pinMode(PWR_PIN, OUTPUT);
+    digitalWrite(PWR_PIN, LOW);
+    delay(1500); // Datasheet Ton mintues = 1.2S
+    digitalWrite(PWR_PIN, HIGH);
+}
 
-//     SPI.begin(SD_SCLK, SD_MISO, SD_MOSI);
-//     if (!SD.begin(SD_CS))
-//     {
-//         Serial.println("> It looks like you haven't inserted the SD card..");
-//     }
-//     else
-//     {
-//         uint32_t cardSize = SD.cardSize() / (1024 * 1024);
-//         String str = "> SDCard Size: " + String(cardSize) + "MB";
-//         Serial.println(str);
-//     }
+void setup()
+{
+    // Set console baud rate
+    SerialMon.begin(115200);
 
-//     // SD.mkdir("/.test");
+    // Set LED OFF
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, HIGH);
 
-//     SerialAT.begin(UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
+    modemPowerOn();
+    enableGPS();
 
-//     Serial.println("> Check whether Modem is online");
-//     // test modem is online ?
-//     uint32_t timeout = millis();
-//     while (!modem.testAT())
-//     {
-//         Serial.print(".");
-//         if (millis() - timeout > 60000)
-//         {
-//             Serial.println("> It looks like the modem is not responding, trying to restart");
-//             modemPowerOff();
-//             delay(5000);
-//             modemPowerOn();
-//             timeout = millis();
-//         }
-//     }
-//     Serial.println("\nModem is online");
+    SPI.begin(SD_SCLK, SD_MISO, SD_MOSI);
+    if (!SD.begin(SD_CS))
+    {
+        Serial.println("> It looks like you haven't inserted the SD card..");
+    }
+    else
+    {
+        uint32_t cardSize = SD.cardSize() / (1024 * 1024);
+        String str = "> SDCard Size: " + String(cardSize) + "MB";
+        Serial.println(str);
+    }
 
-//     // test sim card is online ?
-//     timeout = millis();
-//     Serial.print("> Get SIM card status");
-//     while (modem.getSimStatus() != SIM_READY)
-//     {
-//         Serial.print(".");
-//         if (millis() - timeout > 60000)
-//         {
-//             Serial.println("It seems that your SIM card has not been detected. Has it been inserted?");
-//             Serial.println("If you have inserted the SIM card, please remove the power supply again and try again!");
-//             return;
-//         }
-//     }
-//     Serial.println();
-//     Serial.println("> SIM card exists");
+    // SD.mkdir("/.test");
 
-//     Serial.println("> /**********************************************************/");
-//     Serial.println("> Please make sure that the location has 2G/NB-IOT signal");
-//     Serial.println("> SIM7000/SIM707G does not support 4G network. Please ensure that the USIM card you use supports 2G/NB access");
-//     Serial.println("> /**********************************************************/");
+    SerialAT.begin(UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
 
-//     String res = modem.getIMEI();
-//     Serial.print("IMEI:");
-//     Serial.println(res);
-//     Serial.println();
+    Serial.println("> Check whether Modem is online");
+    // test modem is online ?
+    uint32_t timeout = millis();
+    while (!modem.testAT())
+    {
+        Serial.print(".");
+        if (millis() - timeout > 60000)
+        {
+            Serial.println("> It looks like the modem is not responding, trying to restart");
+            modemPowerOff();
+            delay(5000);
+            modemPowerOn();
+            timeout = millis();
+        }
+    }
+    Serial.println("\nModem is online");
 
-//     /*
-//      * Tips:
-//      * When you are not sure which method of network access is supported by the network you use,
-//      * please use the automatic mode. If you are sure, please change the parameters to speed up the network access
-//      * * * * */
+    // test sim card is online ?
+    timeout = millis();
+    Serial.print("> Get SIM card status");
+    while (modem.getSimStatus() != SIM_READY)
+    {
+        Serial.print(".");
+        if (millis() - timeout > 60000)
+        {
+            Serial.println("It seems that your SIM card has not been detected. Has it been inserted?");
+            Serial.println("If you have inserted the SIM card, please remove the power supply again and try again!");
+            return;
+        }
+    }
+    Serial.println();
+    Serial.println("> SIM card exists");
 
-//     // Set mobile operation band
-//     modem.sendAT("+CBAND=ALL_MODE");
-//     modem.waitResponse();
+    Serial.println("> /**********************************************************/");
+    Serial.println("> Please make sure that the location has 2G/NB-IOT signal");
+    Serial.println("> SIM7000/SIM707G does not support 4G network. Please ensure that the USIM card you use supports 2G/NB access");
+    Serial.println("> /**********************************************************/");
 
-//     // Args:
-//     // 1 CAT-M
-//     // 2 NB-IoT
-//     // 3 CAT-M and NB-IoT
-//     // Set network preferre to auto
-//     uint8_t perferred = 3;
-//     modem.setPreferredMode(perferred);
+    String res = modem.getIMEI();
+    Serial.print("IMEI:");
+    Serial.println(res);
+    Serial.println();
 
-//     if (perferred == 2)
-//     {
-//         Serial.println("When you select 2, please ensure that your SIM card operator supports NB-IOT");
-//     }
+    /*
+     * Tips:
+     * When you are not sure which method of network access is supported by the network you use,
+     * please use the automatic mode. If you are sure, please change the parameters to speed up the network access
+     * * * * */
 
-//     // Args:
-//     // 2 Automatic
-//     // 13 GSM only
-//     // 38 LTE only
-//     // 51 GSM and LTE only
-//     // Set network mode to auto
-//     modem.setNetworkMode(2);
+    // Set mobile operation band
+    modem.sendAT("+CBAND=ALL_MODE");
+    modem.waitResponse();
 
-//     // Check network signal and registration information
-//     Serial.println("> SIM7000/SIM7070 uses automatic mode to access the network. The access speed may be slow. Please wait patiently");
-//     RegStatus status;
-//     timeout = millis();
-//     do
-//     {
-//         int16_t sq = modem.getSignalQuality();
+    // Args:
+    // 1 CAT-M
+    // 2 NB-IoT
+    // 3 CAT-M and NB-IoT
+    // Set network preferre to auto
+    uint8_t perferred = 1;
+    modem.setPreferredMode(perferred);
 
-//         status = modem.getRegistrationStatus();
+    if (perferred == 2)
+    {
+        Serial.println("When you select 2, please ensure that your SIM card operator supports NB-IOT");
+    }
 
-//         if (status == REG_DENIED)
-//         {
-//             Serial.println("> The SIM card you use has been rejected by the network operator. Please check that the card you use is not bound to a device!");
-//             return;
-//         }
-//         else
-//         {
-//             Serial.print("Signal:");
-//             Serial.println(sq);
-//         }
+    // Args:
+    // 2 Automatic
+    // 13 GSM only
+    // 38 LTE only
+    // 51 GSM and LTE only
+    // Set network mode to auto
+    modem.setNetworkMode(38);
 
-//         if (millis() - timeout > 360000)
-//         {
-//             if (sq == 99)
-//             {
-//                 Serial.println("> It seems that there is no signal. Please check whether the"
-//                                "LTE antenna is connected. Please make sure that the location has 2G/NB-IOT signal\n"
-//                                "SIM7000G does not support 4G network. Please ensure that the USIM card you use supports 2G/NB access");
-//                 return;
-//             }
-//             timeout = millis();
-//         }
+    // Check network signal and registration information
+    Serial.println("> SIM7000/SIM7070 uses automatic mode to access the network. The access speed may be slow. Please wait patiently");
+    RegStatus status;
+    timeout = millis();
+    do
+    {
+        int16_t sq = modem.getSignalQuality();
 
-//         delay(800);
-//     } while (status != REG_OK_HOME && status != REG_OK_ROAMING);
+        status = modem.getRegistrationStatus();
 
-//     Serial.println("Obtain the APN issued by the network");
-//     modem.sendAT("+CGNAPN");
-//     if (modem.waitResponse(3000, res) == 1)
-//     {
-//         res = res.substring(res.indexOf(",") + 1);
-//         res.replace("\"", "");
-//         res.replace("\r", "");
-//         res.replace("\n", "");
-//         res.replace("OK", "");
-//         Serial.print("The APN issued by the network is:");
-//         Serial.println(res);
-//     }
+        if (status == REG_DENIED)
+        {
+            Serial.println("> The SIM card you use has been rejected by the network operator. Please check that the card you use is not bound to a device!");
+            return;
+        }
+        else
+        {
+            Serial.print("Signal:");
+            Serial.println(sq);
+        }
 
-//     modem.sendAT("+CNACT=1");
-//     modem.waitResponse();
+        if (millis() - timeout > 360000)
+        {
+            if (sq == 99)
+            {
+                Serial.println("> It seems that there is no signal. Please check whether the"
+                               "LTE antenna is connected. Please make sure that the location has 2G/NB-IOT signal\n"
+                               "SIM7000G does not support 4G network. Please ensure that the USIM card you use supports 2G/NB access");
+                return;
+            }
+            timeout = millis();
+        }
 
-//     // res = modem.getLocalIP();
-//     do
-//     {
-//         modem.sendAT("+CNACT?");
+        delay(800);
+    } while (status != REG_OK_HOME && status != REG_OK_ROAMING);
 
-//         if (modem.waitResponse("+CNACT: ") == 1)
-//         {
-//             modem.stream.read();
-//             modem.stream.read();
-//             res = modem.stream.readStringUntil('\n');
-//             res.replace("\"", "");
-//             res.replace("\r", "");
-//             res.replace("\n", "");
-//             modem.waitResponse();
-//             Serial.print("The current network IP address is:");
-//             Serial.println(res);
-//         }
+    Serial.println("Obtain the APN issued by the network");
+    modem.sendAT("+CGNAPN");
+    if (modem.waitResponse(3000, res) == 1)
+    {
+        res = res.substring(res.indexOf(",") + 1);
+        res.replace("\"", "");
+        res.replace("\r", "");
+        res.replace("\n", "");
+        res.replace("OK", "");
+        Serial.print("The APN issued by the network is:");
+        Serial.println(res);
+    }
 
-//     } while (res == "0.0.0.0");
+    modem.sendAT("+CNACT=1");
+    modem.waitResponse();
 
-//     res = modem.getIMEI();
-//     Serial.print("IMEI:");
-//     Serial.println(res);
-//     Serial.println();
+    // res = modem.getLocalIP();
+    do
+    {
+        modem.sendAT("+CNACT?");
 
-//     modem.sendAT("+CPSI?");
-//     if (modem.waitResponse("+CPSI: ") == 1)
-//     {
-//         res = modem.stream.readStringUntil('\n');
-//         res.replace("\r", "");
-//         res.replace("\n", "");
-//         modem.waitResponse();
-//         Serial.print("The current network parameter is:");
-//         Serial.println(res);
-//     }
+        if (modem.waitResponse("+CNACT: ") == 1)
+        {
+            modem.stream.read();
+            modem.stream.read();
+            res = modem.stream.readStringUntil('\n');
+            res.replace("\"", "");
+            res.replace("\r", "");
+            res.replace("\n", "");
+            modem.waitResponse();
+            Serial.print("The current network IP address is:");
+            Serial.println(res);
+        }
 
-//     Serial.println("/**********************************************************/");
-//     Serial.println("After the network test is complete, please enter the  ");
-//     Serial.println("AT command in the serial terminal.");
-//     Serial.println("/**********************************************************/\n\n");
+    } while (res == "0.0.0.0");
 
-//     // Serial.println("1");
-//     modem.sendAT("+EMAILCID=0"); // Set parameters of Email
-//     modem.waitResponse();
+    res = modem.getIMEI();
+    Serial.print("IMEI:");
+    Serial.println(res);
+    Serial.println();
 
-//     // Serial.println("2");
-//     modem.sendAT("+EMAILTO=30"); // Set parameters of Email
-//     // modem.waitResponse();
+    modem.sendAT("+CPSI?");
+    if (modem.waitResponse("+CPSI: ") == 1)
+    {
+        res = modem.stream.readStringUntil('\n');
+        res.replace("\r", "");
+        res.replace("\n", "");
+        modem.waitResponse();
+        Serial.print("The current network parameter is:");
+        Serial.println(res);
+    }
 
-//     // Serial.println("3");
-//     modem.sendAT("+SMTPSRV=\"smtp.office365.com\",25"); // Set SMTP server address and port //25
-//     // modem.waitResponse();
+    Serial.println("/**********************************************************/");
+    Serial.println("After the network test is complete, please enter the  ");
+    Serial.println("AT command in the serial terminal.");
+    Serial.println("/**********************************************************/\n\n");
 
-//     // Serial.println("4");
-//     modem.sendAT("+SMTPAUTH=1,\"homedepot37@hotmail.com\",\"Makyo1327\""); // Set user name and password
-//     // modem.waitResponse();
+    // // Serial.println("1");
+    // modem.sendAT("+EMAILCID=0"); // Set parameters of Email
+    // modem.waitResponse();
 
-//     // Serial.println("5");
-//     modem.sendAT("+SMTPFROM=\"homedepot37@hotmail.com\",\"homedepot37@hotmail.com\""); // Set sender address and name
-//     // modem.waitResponse();
+    // // Serial.println("2");
+    // modem.sendAT("+EMAILTO=30"); // Set parameters of Email
+    // // modem.waitResponse();
 
-//     // Serial.println("6");
-//     modem.sendAT("+SMTPRCPT=0,0,\"homedepot37@hotmail.com\",\"homedepot37@hotmail.com\""); // Set the recipient(To:)
-//     // modem.waitResponse();
+    // // Serial.println("3");
+    // modem.sendAT("+SMTPSRV=\"smtp.office365.com\",25"); // Set SMTP server address and port //25
+    // // modem.waitResponse();
 
-//     // Serial.println("7");
-//     modem.sendAT("+SMTPRCPT=0,0,\"dodo-12-37@hotmail.com\",\"Dominique\""); // Set the recipient(To:)
-//     // modem.waitResponse();
+    // // Serial.println("4");
+    // modem.sendAT("+SMTPAUTH=1,\"homedepot37@hotmail.com\",\"Makyo1327\""); // Set user name and password
+    // // modem.waitResponse();
 
-//     // modem.sendAT("+SMTPRCPT=1,0,\"john@sim.com\",\"john\"");    //Set the recipient(Cc:)
-//     // modem.sendAT("+SMTPRCPT=2,0,\"john@sim.com\",\"john\"");    //Set the recipient(Bcc:)
+    // // Serial.println("5");
+    // modem.sendAT("+SMTPFROM=\"homedepot37@hotmail.com\",\"homedepot37@hotmail.com\""); // Set sender address and name
+    // // modem.waitResponse();
 
-//     // Serial.println("8");
-//     modem.sendAT("+SMTPSUB=\"Test\""); // Set the subject
-//     // modem.waitResponse();
+    // // Serial.println("6");
+    // modem.sendAT("+SMTPRCPT=0,0,\"homedepot37@hotmail.com\",\"homedepot37@hotmail.com\""); // Set the recipient(To:)
+    // // modem.waitResponse();
 
-//     // Serial.println("9");
-//     modem.sendAT("+SMTPBODY=19"); // Set the body
-//     // modem.waitResponse();
+    // // Serial.println("7");
+    // modem.sendAT("+SMTPRCPT=0,0,\"dodo-12-37@hotmail.com\",\"Dominique\""); // Set the recipient(To:)
+    // // modem.waitResponse();
 
-//     // Serial.println("10");
-//     modem.sendAT("+SMTPSEND"); // Send the Email
-//     // modem.waitResponse();
+    // // modem.sendAT("+SMTPRCPT=1,0,\"john@sim.com\",\"john\"");    //Set the recipient(Cc:)
+    // // modem.sendAT("+SMTPRCPT=2,0,\"john@sim.com\",\"john\"");    //Set the recipient(Bcc:)
 
-//     // AT+EMAILCID=0 //Set parameters of Email
-//     // AT+EMAILTO=30 //Set parameters of Email
-//     // AT+SMTPSRV="mail.sim.com",25 //Set SMTP server address and port
-//     // AT+SMTPAUTH=1,"ohn","123456" //Set user name and password
-//     // AT+SMTPFROM="john@sim.com","john" //Set sender address and name
-//     // AT+SMTPRCPT=0,0,"john@sim.com","john" //Set the recipient(To:)
-//     // AT+SMTPRCPT=1,0,"john@sim.com","john" //Set the recipient(Cc:)
-//     // AT+SMTPRCPT=2,0,"john@sim.com","john" //Set the recipient(Bcc:)
-//     // AT+SMTPSUB="Test" //Set the subject
-//     // AT+SMTPBODY=19 //Set the body
-//     // AT+SMTPSEND //Send the Email
-// }
+    // // Serial.println("8");
+    // modem.sendAT("+SMTPSUB=\"Test\""); // Set the subject
+    // // modem.waitResponse();
 
-// // float lat, lon, alt, speed;
+    // // Serial.println("9");
+    // modem.sendAT("+SMTPBODY=19"); // Set the body
+    // // modem.waitResponse();
 
-// void loop()
-// {
-//     while (SerialAT.available())
-//     {
-//         SerialMon.write(SerialAT.read());
-//     }
-//     while (SerialMon.available())
-//     {
-//         SerialAT.write(SerialMon.read());
-//     }
+    // // Serial.println("10");
+    // modem.sendAT("+SMTPSEND"); // Send the Email
+    // // modem.waitResponse();
 
-//     // Serial.println();
-//     // Serial.println("****************BATTERY*****************");
-//     // Serial.print("Battery percent: ");
-//     // Serial.print(modem.getBattPercent());
-//     // Serial.println("%");
+    // AT+EMAILCID=0 //Set parameters of Email
+    // AT+EMAILTO=30 //Set parameters of Email
+    // AT+SMTPSRV="mail.sim.com",25 //Set SMTP server address and port
+    // AT+SMTPAUTH=1,"ohn","123456" //Set user name and password
+    // AT+SMTPFROM="john@sim.com","john" //Set sender address and name
+    // AT+SMTPRCPT=0,0,"john@sim.com","john" //Set the recipient(To:)
+    // AT+SMTPRCPT=1,0,"john@sim.com","john" //Set the recipient(Cc:)
+    // AT+SMTPRCPT=2,0,"john@sim.com","john" //Set the recipient(Bcc:)
+    // AT+SMTPSUB="Test" //Set the subject
+    // AT+SMTPBODY=19 //Set the body
+    // AT+SMTPSEND //Send the Email
+    Serial.println();
+    Serial.println("****************BATTERY*****************");
+    Serial.print("Battery percent: ");
+    Serial.print(modem.getBattPercent());
+    Serial.println("%");
 
-//     // modem.getGPS(&lat, &lon, &alt, &speed);
+    // enableGPS();
+    modem.getGPS(&lat, &lon, &alt, &speed);
 
-//     // Serial.println("****************GPS*****************");
-//     // Serial.print("lat:");
-//     // Serial.println(lat);
-//     // Serial.print("lon:");
-//     // Serial.println(lon);
-//     // Serial.print("alt:");
-//     // Serial.println(alt);
-//     // Serial.print("speed:");
-//     // Serial.println(speed);
-//     // Serial.println("************************************");
-//     // Serial.println();
-// }
+    Serial.println("****************GPS*****************");
+    Serial.print("lat:");
+    Serial.println(lat);
+    Serial.print("lon:");
+    Serial.println(lon);
+    Serial.print("alt:");
+    Serial.println(alt);
+    Serial.print("speed:");
+    Serial.println(speed);
+    Serial.println("************************************");
+    Serial.println();
+
+    /*
+    ===============================================
+    https://support.hologram.io/hc/en-us/articles/360036559494-SIMCOM-SIM7000
+
+    AT+CFUN=1
+    Expected Response: OK
+
+    //Set preferred mode to LTE only.
+    AT+CNMP=38
+    Expected Response: OK
+
+    //Set device preference to Cat-M1 over NB-IoT
+    AT+CMNB=1
+    Expected Response: OK
+
+    //
+    AT+CIPSTATUS
+    Expected Response = STATE: IP INITIAL
+
+        If the response is not the expected response, deactivate the GPRS PDP Context and check the status again.
+
+        AT+CIPSHUT
+        Expected Response = SHUT OK
+
+        AT+CIPSTATUS
+        Expected Response = STATE: IP INITIAL
+    //
+
+    //
+    AT+CSTT?
+    Initial Response = +CSTT: "CMNET","",""
+
+    Set the APN and connect to the Hologram Cloud
+
+        AT+CSTT="hologram"
+        Expected Response = OK
+
+        AT+CIICR
+        Expected Response = OK
+
+        AT+CIFSR
+        Expected Response = [IP ADDRESS]
+        Response DL = 100.71.215.133
+
+        AT+CIPSTART="TCP","cloudsocket.hologram.io",9999
+        Expected Response = OK
+                            CONNECT OK
+    //
+
+    ===============================================
+
+    Send message to the Hologram Cloud
+    Device Key = #0r3Ex17
+
+    The message structure includes the device key, the message, and any topics.
+    {"k":"[DEVICE_KEY]","d":"[MESSAGE_BODY]","t":"TOPIC_NAME"}
+
+
+    To initiate sending the message, use the following command. Make sure you replace [DATA_LENGTH_IN_BYTES] with the payload's total number of bytes.
+    Please note that the entire payload includes: {"k":"[DEVICE_KEY]","d":"[MESSAGE_BODY]","t":"TOPIC_NAME"}, and you should use this when calculating the number of bytes.
+    Pour l'exemple, ça devrait être 71 caractères...
+    AT+CIPSEND=71
+
+    AT+CIPSEND=[DATA_LENGTH_IN_BYTES]
+    Expected Response =
+    >
+
+    Exemple:
+    {"k":"#0r3Ex17","d":"hello from SIM7000", "t":"SIMCOM_SIM7000_Article"}
+    Expected Response =
+    SEND OK
+    [0,0]
+    CLOSED
+
+    */
+
+    // Serial.println("=== CIPSTATUS: ");
+    // modem.sendAT("+CIPSTATUS");
+    // if (modem.waitResponse(1000L, res) == 1)
+    // {
+    //     res.replace(GSM_NL "OK" GSM_NL, "");
+    //     Serial.print("CIPSTATUS: ");
+    //     Serial.println(res);
+    // }
+
+    // delay(5000);
+    // Serial.println("=== CIPSTART: ");
+    // modem.sendAT("+CIPSTART=\"TCP\",\"cloudsocket.hologram.io\",9999");
+    // if (modem.waitResponse(1000L, res) == 1)
+    // {
+    //     res.replace(GSM_NL "OK" GSM_NL, "");
+    //     Serial.print("CIPSTART: ");
+    //     Serial.println(res);
+    // }
+
+    // delay(5000);
+    // Serial.println("=== CIPSEND=: ");
+    // modem.sendAT("+CIPSEND=72");
+    // if (modem.waitResponse(1000L, res) == 1)
+    // {
+    //     res.replace(GSM_NL "OK" GSM_NL, "");
+    //     Serial.print("CIPSEND=: ");
+    //     Serial.println(res);
+    // }
+
+    // delay(5000);
+    // // {"k":"#0r3Ex17","d":"hello from SIM7000", "t":"SIMCOM_SIM7000_Article"}
+    // Serial.println("=== CIPSEND: ");
+    // modem.sendAT("{\"k\":\"#0r3Ex17\",\"d\":\"hello from SIM7000\", \"t\":\"SIMCOM_SIM7000_Article\"}");
+    // if (modem.waitResponse(1000L, res) == 1)
+    // {
+    //     res.replace(GSM_NL "OK" GSM_NL, "");
+    //     Serial.print("CIPSEND: ");
+    //     Serial.println(res);
+    // }
+}
+
+void loop()
+{
+    while (SerialAT.available())
+    {
+        SerialMon.write(SerialAT.read());
+    }
+    while (SerialMon.available())
+    {
+        SerialAT.write(SerialMon.read());
+    }
+}
 
 //
 //
@@ -441,273 +578,286 @@
 //
 //
 // // https://www.raspberryme.com/guide-lilygo-t-sim7000g-esp32-lte-gprs-gps/#Envoi_de_SMS
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/lilygo-t-sim7000g-esp32-lte-gprs-gps/
+// /*
+//   Rui Santos
+//   Complete project details at https://RandomNerdTutorials.com/lilygo-t-sim7000g-esp32-lte-gprs-gps/
 
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
+//   Permission is hereby granted, free of charge, to any person obtaining a copy
+//   of this software and associated documentation files.
 
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+// */
 
-// Original code: https://github.com/Xinyuan-LilyGO/LilyGO-T-SIM7000G/blob/master/examples/Arduino_NetworkTest/Arduino_NetworkTest.ino
+// // Original code: https://github.com/Xinyuan-LilyGO/LilyGO-T-SIM7000G/blob/master/examples/Arduino_NetworkTest/Arduino_NetworkTest.ino
 
-#define TINY_GSM_MODEM_SIM7000
-#define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
+// #define TINY_GSM_MODEM_SIM7000
+// #define TINY_GSM_RX_BUFFER 1024 // Set RX buffer to 1Kb
 
-#define SerialAT Serial1
-// Set serial for debug console (to the Serial Monitor, default speed 115200)
-#define SerialMon Serial
+// #define SerialAT Serial1
+// // Set serial for debug console (to the Serial Monitor, default speed 115200)
+// #define SerialMon Serial
 
-// See all AT commands, if wanted
+// // See all AT commands, if wanted
 // #define DUMP_AT_COMMANDS
 
-// set GSM PIN, if any
-#define GSM_PIN ""
+// // set GSM PIN, if any
+// #define GSM_PIN ""
 
-// Your GPRS credentials, if any
-const char apn[] = "hologram"; // SET TO YOUR APN
-const char gprsUser[] = "";
-const char gprsPass[] = "";
+// // Your GPRS credentials, if any
+// const char apn[] = "hologram"; // SET TO YOUR APN
+// const char gprsUser[] = "";
+// const char gprsPass[] = "";
 
-#include <TinyGsmClient.h>
-#include <SPI.h>
-#include <SD.h>
-#include <Ticker.h>
+// #include <TinyGsmClient.h>
+// #include <SPI.h>
+// #include <SD.h>
+// #include <Ticker.h>
 
-#ifdef DUMP_AT_COMMANDS
-#include <StreamDebugger.h>
-StreamDebugger debugger(SerialAT, SerialMon);
-TinyGsm modem(debugger);
-#else
-TinyGsm modem(SerialAT);
-#endif
+// #ifdef DUMP_AT_COMMANDS
+// #include <StreamDebugger.h>
+// StreamDebugger debugger(SerialAT, SerialMon);
+// TinyGsm modem(debugger);
+// #else
+// TinyGsm modem(SerialAT);
+// #endif
 
-// LilyGO T-SIM7000G Pinout
-#define UART_BAUD 115200
-#define PIN_DTR 25
-#define PIN_TX 27
-#define PIN_RX 26
-#define PWR_PIN 4
+// // LilyGO T-SIM7000G Pinout
+// #define UART_BAUD 115200
+// #define PIN_DTR 25
+// #define PIN_TX 27
+// #define PIN_RX 26
+// #define PWR_PIN 4
 
-#define SD_MISO 2
-#define SD_MOSI 15
-#define SD_SCLK 14
-#define SD_CS 13
-#define LED_PIN 12
+// #define SD_MISO 2
+// #define SD_MOSI 15
+// #define SD_SCLK 14
+// #define SD_CS 13
+// #define LED_PIN 12
 
-void modemPowerOn()
-{
-    pinMode(PWR_PIN, OUTPUT);
-    digitalWrite(PWR_PIN, LOW);
-    delay(1000);
-    digitalWrite(PWR_PIN, HIGH);
-}
+// void modemPowerOn()
+// {
+//     pinMode(PWR_PIN, OUTPUT);
+//     digitalWrite(PWR_PIN, LOW);
+//     delay(1000);
+//     digitalWrite(PWR_PIN, HIGH);
+// }
 
-void modemPowerOff()
-{
-    pinMode(PWR_PIN, OUTPUT);
-    digitalWrite(PWR_PIN, LOW);
-    delay(1500);
-    digitalWrite(PWR_PIN, HIGH);
-}
+// void modemPowerOff()
+// {
+//     pinMode(PWR_PIN, OUTPUT);
+//     digitalWrite(PWR_PIN, LOW);
+//     delay(1500);
+//     digitalWrite(PWR_PIN, HIGH);
+// }
 
-void modemRestart()
-{
-    modemPowerOff();
-    delay(1000);
-    modemPowerOn();
-}
+// void modemRestart()
+// {
+//     modemPowerOff();
+//     delay(1000);
+//     modemPowerOn();
+// }
 
-void setup()
-{
-    // Set console baud rate
-    SerialMon.begin(115200);
+// void setup()
+// {
+//     // Set console baud rate
+//     SerialMon.begin(115200);
 
-    delay(10);
+//     delay(10);
 
-    // Set LED OFF
-    pinMode(LED_PIN, OUTPUT);
-    digitalWrite(LED_PIN, HIGH);
+//     // Set LED OFF
+//     pinMode(LED_PIN, OUTPUT);
+//     digitalWrite(LED_PIN, HIGH);
 
-    modemPowerOn();
+//     modemPowerOn();
 
-    Serial.println("========SDCard Detect.======");
-    SPI.begin(SD_SCLK, SD_MISO, SD_MOSI);
-    if (!SD.begin(SD_CS))
-    {
-        Serial.println("SDCard MOUNT FAIL");
-    }
-    else
-    {
-        uint32_t cardSize = SD.cardSize() / (1024 * 1024);
-        String str = "SDCard Size: " + String(cardSize) + "MB";
-        Serial.println(str);
-    }
-    Serial.println("===========================");
+//     Serial.println("========SDCard Detect.======");
+//     SPI.begin(SD_SCLK, SD_MISO, SD_MOSI);
+//     if (!SD.begin(SD_CS))
+//     {
+//         Serial.println("SDCard MOUNT FAIL");
+//     }
+//     else
+//     {
+//         uint32_t cardSize = SD.cardSize() / (1024 * 1024);
+//         String str = "SDCard Size: " + String(cardSize) + "MB";
+//         Serial.println(str);
+//     }
+//     Serial.println("===========================");
 
-    SerialAT.begin(UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
+//     SerialAT.begin(UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
 
-    Serial.println("/**********************************************************/");
-    Serial.println("To initialize the network test, please make sure your LTE ");
-    Serial.println("antenna has been connected to the SIM interface on the board.");
-    Serial.println("/**********************************************************/\n\n");
+//     Serial.println("/**********************************************************/");
+//     Serial.println("To initialize the network test, please make sure your LTE ");
+//     Serial.println("antenna has been connected to the SIM interface on the board.");
+//     Serial.println("/**********************************************************/\n\n");
 
-    delay(10000);
-}
+//     delay(10000);
+// }
 
-void loop()
-{
-    String res;
+// void loop()
+// {
+//     String res;
 
-    Serial.println("========INIT========");
+//     Serial.println("========INIT========");
 
-    if (!modem.init())
-    {
-        modemRestart();
-        delay(2000);
-        Serial.println("Failed to restart modem, attempting to continue without restarting");
-        return;
-    }
+//     if (!modem.init())
+//     {
+//         modemRestart();
+//         delay(2000);
+//         Serial.println("Failed to restart modem, attempting to continue without restarting");
+//         return;
+//     }
 
-    Serial.println("========SIMCOMATI======");
-    modem.sendAT("+SIMCOMATI");
-    modem.waitResponse(1000L, res);
-    res.replace(GSM_NL "OK" GSM_NL, "");
-    Serial.println(res);
-    res = "";
-    Serial.println("=======================");
+//     Serial.println("========SIMCOMATI======");
+//     modem.sendAT("+SIMCOMATI");
+//     modem.waitResponse(1000L, res);
+//     res.replace(GSM_NL "OK" GSM_NL, "");
+//     Serial.println(res);
+//     res = "";
+//     Serial.println("=======================");
 
-    Serial.println("=====Preferred mode selection=====");
-    modem.sendAT("+CNMP?");
-    if (modem.waitResponse(1000L, res) == 1)
-    {
-        res.replace(GSM_NL "OK" GSM_NL, "");
-        Serial.println(res);
-    }
-    res = "";
-    Serial.println("=======================");
+//     Serial.println("=====Preferred mode selection=====");
+//     modem.sendAT("+CNMP?");
+//     if (modem.waitResponse(1000L, res) == 1)
+//     {
+//         res.replace(GSM_NL "OK" GSM_NL, "");
+//         Serial.println(res);
+//     }
+//     res = "";
+//     Serial.println("=======================");
 
-    Serial.println("=====Preferred selection between CAT-M and NB-IoT=====");
-    modem.sendAT("+CMNB?");
-    if (modem.waitResponse(1000L, res) == 1)
-    {
-        res.replace(GSM_NL "OK" GSM_NL, "");
-        Serial.println(res);
-    }
-    res = "";
-    Serial.println("=======================");
+//     Serial.println("=====Preferred selection between CAT-M and NB-IoT=====");   // Devrait être 1 selon Hologram
+//     modem.sendAT("+CMNB?");
+//     if (modem.waitResponse(1000L, res) == 1)
+//     {
+//         res.replace(GSM_NL "OK" GSM_NL, "");
+//         Serial.println(res);
+//     }
+//     res = "";
+//     Serial.println("=======================");
 
-    String name = modem.getModemName();
-    Serial.println("Modem Name: " + name);
+//     String name = modem.getModemName();
+//     Serial.println("Modem Name: " + name);
 
-    String modemInfo = modem.getModemInfo();
-    Serial.println("Modem Info: " + modemInfo);
+//     String modemInfo = modem.getModemInfo();
+//     Serial.println("Modem Info: " + modemInfo);
 
-    // Unlock your SIM card with a PIN if needed
-    if (GSM_PIN && modem.getSimStatus() != 3)
-    {
-        modem.simUnlock(GSM_PIN);
-    }
+//     // Unlock your SIM card with a PIN if needed
+//     if (GSM_PIN && modem.getSimStatus() != 3)
+//     {
+//         modem.simUnlock(GSM_PIN);
+//     }
 
-    for (int i = 0; i <= 4; i++)
-    {
-        uint8_t network[] = {
-            2,  /*Automatic*/
-            13, /*GSM only*/
-            38, /*LTE only*/
-            51  /*GSM and LTE only*/
-        };
-        Serial.printf("Try %d method\n", network[i]);
-        modem.setNetworkMode(network[i]);
-        delay(3000);
-        bool isConnected = false;
-        int tryCount = 60;
-        while (tryCount--)
-        {
-            int16_t signal = modem.getSignalQuality();
-            Serial.print("Signal: ");
-            Serial.print(signal);
-            Serial.print(" ");
-            Serial.print("isNetworkConnected: ");
-            isConnected = modem.isNetworkConnected();
-            Serial.println(isConnected ? "CONNECT" : "NO CONNECT");
-            if (isConnected)
-            {
-                break;
-            }
-            delay(1000);
-            digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-        }
-        if (isConnected)
-        {
-            break;
-        }
-    }
+//     // modem.sendAT("+CFUN=1");
+//     // if (modem.waitResponse(10000L) != 1)
+//     // {
+//     //     Serial.println(" +CFUN=1  false ");
+//     // }
+//     // delay(200);
 
-    digitalWrite(LED_PIN, HIGH);
+//     // modem.sendAT("+CNMP=38");
+//     // if (modem.waitResponse(10000L) != 1)
+//     // {
+//     //     Serial.println(" +CNMP=1  false ");
+//     // }
+//     // delay(200);
 
-    Serial.println();
-    Serial.println("Device is connected .");
-    Serial.println();
+//     for (int i = 0; i <= 4; i++)
+//     {
+//         uint8_t network[] = {
+//             2,  /*Automatic*/
+//             13, /*GSM only*/
+//             38, /*LTE only*/
+//             51  /*GSM and LTE only*/
+//         };
+//         Serial.printf("Try %d method\n", network[i]);
+//         modem.setNetworkMode(network[i]);
+//         delay(3000);
+//         bool isConnected = false;
+//         int tryCount = 60;
+//         while (tryCount--)
+//         {
+//             int16_t signal = modem.getSignalQuality();
+//             Serial.print("Signal: ");
+//             Serial.print(signal);
+//             Serial.print(" ");
+//             Serial.print("isNetworkConnected: ");
+//             isConnected = modem.isNetworkConnected();
+//             Serial.println(isConnected ? "CONNECT" : "NO CONNECT");
+//             if (isConnected)
+//             {
+//                 break;
+//             }
+//             delay(1000);
+//             digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+//         }
+//         if (isConnected)
+//         {
+//             break;
+//         }
+//     }
 
-    Serial.println("=====Inquiring UE system information=====");
-    modem.sendAT("+CPSI?");
-    if (modem.waitResponse(1000L, res) == 1)
-    {
-        res.replace(GSM_NL "OK" GSM_NL, "");
-        Serial.println(res);
-    }
+//     digitalWrite(LED_PIN, HIGH);
 
-    /* Ajout de DL*/
-    Serial.println("=======================");
-    Serial.print("getNetworkMode: ");
-    Serial.println(modem.getNetworkMode());
-    Serial.println("=======================");
+//     Serial.println();
+//     Serial.println("Device is connected .");
+//     Serial.println();
 
-    
-    Serial.println("=======================");
-    modem.sendAT("+CGNSMOD?");
-    if (modem.waitResponse(1000L, res) == 1)
-    {
-        res.replace(GSM_NL "OK" GSM_NL, "");
-        Serial.println(res);
-    }
+//     Serial.println("=====Inquiring UE system information=====");
+//     modem.sendAT("+CPSI?");
+//     if (modem.waitResponse(1000L, res) == 1)
+//     {
+//         res.replace(GSM_NL "OK" GSM_NL, "");
+//         Serial.println(res);
+//     }
 
-    // modem.sendAT("+CGNSMOD=1,1,1,1");
-    // if (modem.waitResponse(1000L, res) == 1)
-    // {
-    //     res.replace(GSM_NL "OK" GSM_NL, "");
-    //     Serial.println(res);
-    // }
+//     /* Ajout de DL*/
+//     Serial.println("=======================");
+//     Serial.print("getNetworkMode: ");
+//     Serial.println(modem.getNetworkMode());
+//     Serial.println("=======================");
 
-    modem.sendAT("+CGNSMOD?");
-    if (modem.waitResponse(1000L, res) == 1)
-    {
-        res.replace(GSM_NL "OK" GSM_NL, "");
-        Serial.println(res);
-    }
-    Serial.println("=======================");
+//     Serial.println("=======================");
+//     modem.sendAT("+CGNSMOD?");
+//     if (modem.waitResponse(1000L, res) == 1)
+//     {
+//         res.replace(GSM_NL "OK" GSM_NL, "");
+//         Serial.println(res);
+//     }
 
-    Serial.println("/**********************************************************/");
-    Serial.println("After the network test is complete, please enter the  ");
-    Serial.println("AT command in the serial terminal.");
-    Serial.println("/**********************************************************/\n\n");
+//     // modem.sendAT("+CGNSMOD=1,1,1,1");
+//     // if (modem.waitResponse(1000L, res) == 1)
+//     // {
+//     //     res.replace(GSM_NL "OK" GSM_NL, "");
+//     //     Serial.println(res);
+//     // }
 
-    while (1)
-    {
-        while (SerialAT.available())
-        {
-            SerialMon.write(SerialAT.read());
-        }
-        while (SerialMon.available())
-        {
-            SerialAT.write(SerialMon.read());
-        }
-    }
-}
+//     modem.sendAT("+CGNSMOD?");
+//     if (modem.waitResponse(1000L, res) == 1)
+//     {
+//         res.replace(GSM_NL "OK" GSM_NL, "");
+//         Serial.println(res);
+//     }
+//     Serial.println("=======================");
+
+//     Serial.println("/**********************************************************/");
+//     Serial.println("After the network test is complete, please enter the  ");
+//     Serial.println("AT command in the serial terminal.");
+//     Serial.println("/**********************************************************/\n\n");
+
+//     while (1)
+//     {
+//         while (SerialAT.available())
+//         {
+//             SerialMon.write(SerialAT.read());
+//         }
+//         while (SerialMon.available())
+//         {
+//             SerialAT.write(SerialMon.read());
+//         }
+//     }
+// }
 
 //
 //
@@ -869,7 +1019,7 @@ void loop()
 
 //     // Set Modem GPS Power Control Pin to LOW ,turn off GPS power
 //     // Only in version 20200415 is there a function to control GPS power
-//     modem.sendAT("+CGPIO=0,48,1,0");
+//     modem.sendAT("+CGPIO=0,4,1,0");
 //     if (modem.waitResponse(10000L) != 1)
 //     {
 //         DBG("Set GPS Power LOW Failed");
@@ -1065,7 +1215,7 @@ void loop()
 //     Serial.println("\n---Starting GPS TEST---\n");
 //     // Set Modem GPS Power Control Pin to HIGH ,turn on GPS power
 //     // Only in version 20200415 is there a function to control GPS power
-//     modem.sendAT("+CGPIO=0,48,1,1");
+//     modem.sendAT("+CGPIO=0,4,1,1");
 //     if (modem.waitResponse(10000L) != 1)
 //     {
 //         DBG("Set GPS Power HIGH Failed");
@@ -1092,7 +1242,7 @@ void loop()
 
 //     // Set Modem GPS Power Control Pin to LOW ,turn off GPS power
 //     // Only in version 20200415 is there a function to control GPS power
-//     modem.sendAT("+CGPIO=0,48,1,0");
+//     modem.sendAT("+CGPIO=0,4,1,0");
 //     if (modem.waitResponse(10000L) != 1)
 //     {
 //         DBG("Set GPS Power LOW Failed");

@@ -2,17 +2,17 @@
 #include <Arduino.h>
 #include "Interfaces/ICompass.h"
 #include "Configurations.h"
-#include "TrackSenseProperties.h"
+#include "TSProperties.h"
 
 
 
 class CompassHMC5883L : public ICompass
 {
 private:
-    TrackSenseProperties* _trackSenseProperties;
+    TSProperties* _TSProperties;
 
 public:
-    CompassHMC5883L(TrackSenseProperties* trackSenseProperties);
+    CompassHMC5883L(TSProperties* TSProperties);
     ~CompassHMC5883L();
 
     void tick() override;

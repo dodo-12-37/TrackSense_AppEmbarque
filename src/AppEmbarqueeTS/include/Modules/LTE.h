@@ -1,19 +1,19 @@
-#pragma once
-#include <Arduino.h>
-#include "Interfaces/ILTE.h"
-#include "Configurations.h"
-#include "TrackSenseProperties.h"
+// #pragma once
+// #include <Arduino.h>
+// #include "Interfaces/ILTE.h"
+// #include "Configurations.h"
+// #include "TSProperties.h"
 
 
 
-class LTE : public ILTE
-{
-private:
-    const TrackSenseProperties* _trackSenseProperties;
+// class LTE : public ILTE
+// {
+// private:
+//     const TSProperties* _TSProperties;
 
-public:
-    LTE(TrackSenseProperties* trackSenseProperties);
-    ~LTE();
+// public:
+//     LTE(TSProperties* TSProperties);
+//     ~LTE();
 
-    void tick() override;
-};
+//     void tick() override;
+// };
