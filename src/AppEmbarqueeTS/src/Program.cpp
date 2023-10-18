@@ -36,6 +36,17 @@ Program::Program() : _TSProperties(nullptr),
     // Serial.print("PIN_BATTERY voltage digital : ");
     // Serial.print(digitalRead(PIN_BATTERY));
     // Serial.println(" V");
+
+    xTaskCreatePinnedToCore(
+        (TaskFunction_t)&Program::executeCore0,   // Cast the function pointer to the correct type // Done by copilot...
+        "executeCore0", // Name of the task
+        1000000,    // Stack size in words
+        NULL,    // Task input parameter
+        10,      // Priority of the task
+        NULL,    // Task handle.
+        0        // Core where the task should run
+    );
+
 }
 
 Program::~Program()
@@ -43,11 +54,11 @@ Program::~Program()
     ;
 }
 
-void Program::execute()
+void Program::executeCore1()
 {
     this->_controlerButtons->tick();
     this->_buzzer->tick();
-    this->_controlerScreen->tick();
+    // this->_controlerScreen->tick();
     this->_ble->tick();
     this->_gsm->tick();
     this->_sdCard->tick();
@@ -65,4 +76,12 @@ void Program::execute()
     // Serial.println(voltage);
 
     // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = (double)analogueVoltage;
+}
+
+void Program::executeCore0(void *pvParameters)
+{
+    while (1)
+    {
+        this->_controlerScreen->tick();
+    }
 }

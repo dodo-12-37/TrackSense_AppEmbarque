@@ -15,5 +15,5 @@ void setup()
 
 void loop()
 {
-  program->execute();
+  program->executeCore1();
 }
