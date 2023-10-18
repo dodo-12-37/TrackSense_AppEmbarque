@@ -36,5 +36,5 @@ public:
     ~Program();
 
     void executeCore1();
-    void executeCore0(void *pvParameters); // forward declaration of the task executeCore0 function
+    void executeCore0();
 };
