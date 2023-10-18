@@ -21,7 +21,6 @@ class Program
 {
 private:
     TSProperties *_TSProperties;
-    // ILTE *_lte;
     IGSM *_gsm;
     ISDCard *_sdCard;
     IGyroscope *_gyroscope;
