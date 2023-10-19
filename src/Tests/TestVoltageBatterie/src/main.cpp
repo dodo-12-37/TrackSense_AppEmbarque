@@ -1,22 +1,31 @@
 #include <Arduino.h>
+#include "SDCard.h"
 #ifdef TEST
-#include <gtest/gtest.h>
+    #include <gtest/gtest.h>
 #endif
 
 #define PIN_BAT 35 /* read battery voltage, Disabled when using USB - ONLY INPUT PIN */
 
+
 float map_battery_voltage_to_percentage(float voltage, float min_voltage, float max_voltage, float min_percentage, float max_percentage);
 void sortData(float data[], int size);
+void read_bat();
 
+
+SDCard *sdCard = new SDCard();
 int BP = 0;
 float v_bat = 0;
 const int VReads = 15; // number of voltage readings before choosing a median, keep this number odd
+int vref = 1100;       // ADC reference voltage, change this to 1100 if using ESP32 ADC
+
 
 void setup()
 {
     Serial.begin(115200); // Start serial monitor at a baud rate of 9600
     delay(500);
     pinMode(PIN_BAT, INPUT);
+
+    sdCard->init();
 
 #ifdef TEST
     ::testing::InitGoogleTest();
@@ -27,6 +36,7 @@ void read_bat()
 { // reads and returns the battery voltage
     float voltageBuffer[VReads];
     uint32_t Read_buffer = 0;
+
     for (int x = 0; x < VReads; x++)
     {
         for (int i = 0; i < VReads; i++)
@@ -36,11 +46,19 @@ void read_bat()
         sortData(voltageBuffer, VReads);
         Read_buffer += (voltageBuffer[(VReads - 1) / 2]);
     }
-    v_bat = (((float)(Read_buffer / VReads) / 4096) * 3600 * 2) / 1000;
-    BP = map_battery_voltage_to_percentage(v_bat, 2.5, 4.2, 0, 100); // get battery voltage as a percentage 0-100%
+
+    // v_bat = (((float)(Read_buffer / VReads) / 4096) * 3600 * 2) / 1000;
+    v_bat= ((float)(Read_buffer / VReads) / 4096.0) * 2.0 * 3.3 * (vref / 1000.0);
+    BP = map_battery_voltage_to_percentage(v_bat, 3.0, 4.2, 0, 100); // get battery voltage as a percentage 0-100%
+    
     if (BP < 0)
     {
         BP = 0;
+    }
+
+    if (BP > 100)
+    {
+        BP = 100;
     }
 }
 
@@ -77,7 +95,7 @@ void loop()
 #endif
 
     static unsigned long last_time = 0;
-    if (millis() - last_time >= 5000)
+    if (millis() - last_time >= 2000)
     {
         last_time = millis();
         read_bat();
@@ -86,5 +104,7 @@ void loop()
         Serial.print("Battery Percentage : ");
         Serial.print(BP);
         Serial.println("%"); // 0-100%
+
+        sdCard->tick(v_bat, BP);
     }
 }
