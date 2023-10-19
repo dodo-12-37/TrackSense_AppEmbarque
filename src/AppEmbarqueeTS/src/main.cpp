@@ -1,9 +1,12 @@
 #include <Arduino.h>
 #include "Program.h"
 
+
+
 void loopCore0(void *pvParameters); // forward declaration of the loopCore0 function
 
 Program *program = nullptr;
+
 
 void setup()
 {
@@ -34,9 +37,6 @@ void loopCore0(void *pvParameters)
 {
     while (true)
     {
-        // Serial.print("          loopCore0() running in core ");
-        // Serial.println(xPortGetCoreID());
-
         program->executeCore0();
         
         // delay(1000);
