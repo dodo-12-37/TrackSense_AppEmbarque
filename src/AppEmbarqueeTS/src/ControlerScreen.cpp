@@ -38,7 +38,7 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    Serial.print("tick() running in core ");
+    Serial.print("                                      ControlerScreen::tick() running in core ");
     Serial.println(xPortGetCoreID());
 
     if (this->_TSProperties->PropertiesTS.IsOnStanby)

@@ -36,6 +36,7 @@ private:
 
 public:
     ControlerButtons(TSProperties* TSProperties);
+    ControlerButtons(const ControlerButtons &other);
     ~ControlerButtons();
 
     void tick();

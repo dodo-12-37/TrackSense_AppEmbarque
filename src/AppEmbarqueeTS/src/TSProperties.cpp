@@ -41,7 +41,7 @@ void TSProperties::initProperties()
     // Screen
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
-    this->PropertiesScreen.ScreenRotation = 0;
+    this->PropertiesScreen.ScreenRotation = 2;
 
     // Current Ride
     this->PropertiesCurrentRide.IsRideStarted = false;

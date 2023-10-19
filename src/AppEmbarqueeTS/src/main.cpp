@@ -17,7 +17,7 @@ void setup()
   xTaskCreatePinnedToCore(
         loopCore0,
         "loopCore0", // Name of the task
-        10000000,    // Stack size in words // À vérifier !!!
+        5000,    // Stack size in words // À vérifier !!!
         NULL,    // Task input parameter
         100,      // Priority of the task
         NULL,    // Task handle.
@@ -28,14 +28,19 @@ void setup()
 void loop()
 {
   program->executeCore1();
+  
+  // delay(1000);
 }
 
 void loopCore0(void *pvParameters)
 {
   while (true)
   {
-    Serial.print("loopCore0() running in core ");
-    Serial.println(xPortGetCoreID());
+    // Serial.print("          loopCore0() running in core ");
+    // Serial.println(xPortGetCoreID());
+
     program->executeCore0();
+
+    // delay(1000);
   }
 }
