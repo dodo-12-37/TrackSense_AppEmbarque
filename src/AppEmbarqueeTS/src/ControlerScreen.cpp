@@ -158,21 +158,21 @@ void ControlerScreen::drawInitTSPage()
     this->_screen->setFont(1);
 }
 
-int ControlerScreen::arrondiPourcentageAux5UnitesPres(int pourcentage)
-{
-    int temp = pourcentage % 5;
+// int ControlerScreen::arrondiPourcentageAux5UnitesPres(int pourcentage)
+// {
+//     int temp = pourcentage % 5;
 
-    if (temp < 3)
-    {
-        pourcentage -= temp;
-    }
-    else
-    {
-        pourcentage += (5 - temp);
-    }
+//     if (temp < 3)
+//     {
+//         pourcentage -= temp;
+//     }
+//     else
+//     {
+//         pourcentage += (5 - temp);
+//     }
 
-    return pourcentage;
-}
+//     return pourcentage;
+// }
 
 void ControlerScreen::drawHomePage()
 {
@@ -182,8 +182,7 @@ void ControlerScreen::drawHomePage()
     this->_screen->drawLogoTS();
 
     int batteryLengthInPixels = 50;
-    // this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
-    this->_screen->drawBattery(15,
+    this->_screen->drawBattery(this->_screen->calculateXCoordItemToCenter(batteryLengthInPixels),
                                15,
                                batteryLengthInPixels,
                                this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage);
