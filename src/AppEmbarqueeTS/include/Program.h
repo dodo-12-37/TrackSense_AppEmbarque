@@ -35,5 +35,6 @@ public:
     Program();
     ~Program();
 
-    void execute();
+    void executeCore1();
+    void executeCore0();
 };

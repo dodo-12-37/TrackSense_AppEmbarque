@@ -47,7 +47,7 @@ public:
             uint dureeHour = this->DurationS / 3600;
             uint dureeMinutes = (this->DurationS % 3600) / 60;
             uint dureeSecondes = this->DurationS % 60;
-            char buffer[8]; // Un tampon pour stocker la chaîne formatée
+            char buffer[9]; // Un tampon pour stocker la chaîne formatée
             sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
             return String(buffer);
         }
@@ -57,10 +57,9 @@ public:
             uint dureeHour = this->DurationS / 3600;
             uint dureeMinutes = (this->DurationS % 3600) / 60;
             uint dureeSecondes = this->DurationS % 60;
-            char buffer[8]; // Un tampon pour stocker la chaîne formatée
+            char buffer[9]; // Un tampon pour stocker la chaîne formatée
             sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
             text = String(buffer);
-            // return String(buffer);
         }
 
         void resetCurrentRide()

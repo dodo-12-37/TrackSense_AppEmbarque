@@ -43,11 +43,11 @@ Program::~Program()
     ;
 }
 
-void Program::execute()
+void Program::executeCore1()
 {
     this->_controlerButtons->tick();
     this->_buzzer->tick();
-    this->_controlerScreen->tick();
+    // this->_controlerScreen->tick();
     this->_ble->tick();
     this->_gsm->tick();
     this->_sdCard->tick();
@@ -59,10 +59,15 @@ void Program::execute()
     // uint16_t analogueVoltage = analogRead(PIN_BATTERY);
     // // float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
     // float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (1100 / 1000.0);
-    // long percent = map(battery_voltage, 0, 1023, 0, 100);   
+    // long percent = map(battery_voltage, 0, 1023, 0, 100);
 
     // String voltage = "Voltage :" + String(battery_voltage) + "V\n";
     // Serial.println(voltage);
 
     // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = (double)analogueVoltage;
+}
+
+void Program::executeCore0()
+{
+    this->_controlerScreen->tick();
 }
