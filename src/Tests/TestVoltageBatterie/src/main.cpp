@@ -1,12 +1,12 @@
 #include <Arduino.h>
+#ifdef TEST
+#include <gtest/gtest.h>
+#endif
 
 #define PIN_BAT 35 /* read battery voltage, Disabled when using USB - ONLY INPUT PIN */
 
-
-
 float map_battery_voltage_to_percentage(float voltage, float min_voltage, float max_voltage, float min_percentage, float max_percentage);
 void sortData(float data[], int size);
-
 
 int BP = 0;
 float v_bat = 0;
@@ -17,6 +17,10 @@ void setup()
     Serial.begin(115200); // Start serial monitor at a baud rate of 9600
     delay(500);
     pinMode(PIN_BAT, INPUT);
+
+#ifdef TEST
+    ::testing::InitGoogleTest();
+#endif
 }
 
 void read_bat()
@@ -63,6 +67,15 @@ void sortData(float data[], int size)
 
 void loop()
 {
+#ifdef TEST
+    // Run tests
+    if (RUN_ALL_TESTS())
+        ;
+
+    // sleep 1 sec
+    delay(1000);
+#endif
+
     static unsigned long last_time = 0;
     if (millis() - last_time >= 5000)
     {

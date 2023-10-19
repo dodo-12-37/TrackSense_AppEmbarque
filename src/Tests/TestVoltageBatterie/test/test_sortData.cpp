@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+
 void sortData(float data[], int size);
 
 TEST(SortDataTest, SortsArrayInAscendingOrder)
@@ -14,8 +15,8 @@ TEST(SortDataTest, SortsArrayInAscendingOrder)
     EXPECT_FLOAT_EQ(data[4], 5.0);
 }
 
-int main(int argc, char **argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+// int main(int argc, char **argv)
+// {
+//     testing::InitGoogleTest(&argc, argv);
+//     return RUN_ALL_TESTS();
+// }
