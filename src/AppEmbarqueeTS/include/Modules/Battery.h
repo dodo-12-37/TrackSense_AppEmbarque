@@ -8,7 +8,7 @@ class Battery : public IBattery
 {
 private:
     TSProperties *_TSProperties;
-    int _batteryPercentage; // = 0;
+    float _batteryPercentage; // = 0;
     float _batteryVoltage; // = 0;
     const int _voltageReads; // = 15; // number of voltage readings before choosing a median, keep this number odd
     int vref; // = 1100;       // ADC reference voltage, change this to 1100 if using ESP32 ADC
