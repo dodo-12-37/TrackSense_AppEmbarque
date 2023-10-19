@@ -13,9 +13,9 @@ void read_bat();
 
 
 SDCard *sdCard = new SDCard();
-int BP = 0;
-float v_bat = 0;
-const int VReads = 15; // number of voltage readings before choosing a median, keep this number odd
+int _batteryPercentage = 0;
+float _batteryVoltage = 0;
+const int _voltageReads = 15; // number of voltage readings before choosing a median, keep this number odd
 int vref = 1100;       // ADC reference voltage, change this to 1100 if using ESP32 ADC
 
 
@@ -34,31 +34,31 @@ void setup()
 
 void read_bat()
 { // reads and returns the battery voltage
-    float voltageBuffer[VReads];
+    float voltageBuffer[_voltageReads];
     uint32_t Read_buffer = 0;
 
-    for (int x = 0; x < VReads; x++)
+    for (int x = 0; x < _voltageReads; x++)
     {
-        for (int i = 0; i < VReads; i++)
+        for (int i = 0; i < _voltageReads; i++)
         {
             voltageBuffer[i] = (uint32_t)analogRead(PIN_BAT);
         }
-        sortData(voltageBuffer, VReads);
-        Read_buffer += (voltageBuffer[(VReads - 1) / 2]);
+        sortData(voltageBuffer, _voltageReads);
+        Read_buffer += (voltageBuffer[(_voltageReads - 1) / 2]);
     }
 
-    // v_bat = (((float)(Read_buffer / VReads) / 4096) * 3600 * 2) / 1000;
-    v_bat= ((float)(Read_buffer / VReads) / 4096.0) * 2.0 * 3.3 * (vref / 1000.0);
-    BP = map_battery_voltage_to_percentage(v_bat, 3.0, 4.2, 0, 100); // get battery voltage as a percentage 0-100%
+    // _batteryVoltage = (((float)(Read_buffer / _voltageReads) / 4096) * 3600 * 2) / 1000;
+    _batteryVoltage= ((float)(Read_buffer / _voltageReads) / 4096.0) * 2.0 * 3.3 * (vref / 1000.0);
+    _batteryPercentage = map_battery_voltage_to_percentage(_batteryVoltage, 3.0, 4.2, 0, 100); // get battery voltage as a percentage 0-100%
     
-    if (BP < 0)
+    if (_batteryPercentage < 0)
     {
-        BP = 0;
+        _batteryPercentage = 0;
     }
 
-    if (BP > 100)
+    if (_batteryPercentage > 100)
     {
-        BP = 100;
+        _batteryPercentage = 100;
     }
 }
 
@@ -100,11 +100,11 @@ void loop()
         last_time = millis();
         read_bat();
         Serial.print("Battery Voltage : ");
-        Serial.println(v_bat); // 2.5v - 4.2v
+        Serial.println(_batteryVoltage); // 2.5v - 4.2v
         Serial.print("Battery Percentage : ");
-        Serial.print(BP);
+        Serial.print(_batteryPercentage);
         Serial.println("%"); // 0-100%
 
-        sdCard->tick(v_bat, BP);
+        sdCard->tick(_batteryVoltage, _batteryPercentage);
     }
 }

@@ -2,8 +2,19 @@
 #include <Arduino.h>
 
 /*----- DEBUG -----*/
-#define DEBUG_BUTTONS false
-#define DEBUG_GSM false
+#ifdef DEBUG
+    #define DEBUG_BUTTONS false
+    #define DEBUG_GSM false
+    #define DEBUG_SD_CARD false
+    #define DEBUG_GYROSCOPE false
+    #define DEBUG_COMPASS false
+    #define DEBUG_ACCELEROMETER false
+    #define DEBUG_BLE false
+    #define DEBUG_SCREEN false
+    #define DEBUG_BUZZER false
+    #define DEBUG_BATTERY true
+#endif
+
 
 /*----- Screen -----*/
 #define SPI_TFCard 0 // 1 = SPI, 0 = VSPI
@@ -114,6 +125,13 @@
 
 /*----- Battery -----*/
 #define PIN_BATTERY 35
+#define BATTERY_VOLTAGE_MIN 3.0
+#define BATTERY_VOLTAGE_MAX 4.2
+#define BATTERY_PERCENTAGE_MIN 0
+#define BATTERY_PERCENTAGE_MAX 100
+#define BATTERY_NB_READS 15 // number of voltage readings before choosing a median, keep this number odd
+#define BATTERY_VREF 1100   // ADC reference voltage, change this to 1100 if using ESP32 ADC
+
 
 /*----- Buttons -----*/
 #define PIN_BUTTON1 33
