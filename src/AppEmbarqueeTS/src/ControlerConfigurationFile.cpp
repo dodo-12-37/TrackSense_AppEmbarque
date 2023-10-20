@@ -15,18 +15,13 @@ String ControlerConfigurationFile::readFile()
 
     if (file)
     {
-        Serial.println(String("ControlerConfigurationFile readFile Opened : ") + PATH_CONFIGURATION_FILE);
-
         while (file.available()) 
         {
             content += file.readString();
         }
     }
 
-    Serial.println(String("ControlerConfigurationFile readFile read : ") + content);
-
     file.close();
-    // FS.end();
 
     return content;
 }
@@ -38,13 +33,10 @@ void ControlerConfigurationFile::writeFile(String const& content)
 
     if (file)
     {
-        Serial.println(String("ControlerConfigurationFile writeFile Opened : ") + PATH_CONFIGURATION_FILE);
         file.println(content);
-        Serial.println(String("ControlerConfigurationFile writeFile : ") + content);
     }
 
     file.close();
-    // FS.end();
 }
 
 String ControlerConfigurationFile::getValue(String const& field)
@@ -61,8 +53,6 @@ void ControlerConfigurationFile::setValue(String const& field, String const& val
 {
     String content = ControlerConfigurationFile::readFile(); 
 
-    Serial.println(String("ControlerConfigurationFile setValue read : ") + content);
-
     DynamicJsonDocument configFileJson(DYNAMIQUE_JSON_DOCUMENT_SIZE);
     deserializeJson(configFileJson, content);
 
@@ -70,8 +60,6 @@ void ControlerConfigurationFile::setValue(String const& field, String const& val
 
     String newContent = String("");
     serializeJson(configFileJson, newContent);
-
-    Serial.println(String("ControlerConfigurationFile setValue content to write : ") + newContent);
 
     ControlerConfigurationFile::writeFile(newContent);
 }
