@@ -1,6 +1,6 @@
 #include "TSProperties.h"
-
-
+#include "Configurations.h"
+#include "ControlerConfigurationFile.h"
 
 TSProperties::TSProperties() : PropertiesTS(),
                                PropertiesBattery(),
@@ -41,7 +41,7 @@ void TSProperties::initProperties()
     // Screen
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
-    this->PropertiesScreen.ScreenRotation = 2;
+    this->PropertiesScreen.ScreenRotation = atoi(ControlerConfigurationFile::getValue(FIELD_SCREEN_ROTATION).c_str());
 
     // Current Ride
     this->PropertiesCurrentRide.IsRideStarted = false;

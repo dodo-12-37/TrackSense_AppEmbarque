@@ -64,7 +64,7 @@ void ControlerButtons::tick()
     {
     case 0:
         /* Nothing Happened... */
-        Serial.println("No button pressed");
+        // Serial.println("No button pressed");
         if (!this->_TSProperties->PropertiesCurrentRide.IsRideStarted) //  && !this->_TSProperties->PropertiesTS.IsInitializingTS
         {
             if (dateActuelle - this->_lastDateChangementStateButtons > this->_TSProperties->PropertiesButtons.TimeBeforeInactivityMS)

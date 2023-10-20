@@ -38,7 +38,7 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    Serial.print("                                      ControlerScreen::tick() running in core ");
+    // Serial.print("                                      ControlerScreen::tick() running in core ");
     Serial.println(xPortGetCoreID());
 
     if (this->_TSProperties->PropertiesTS.IsOnStanby)
@@ -57,8 +57,8 @@ void ControlerScreen::tick()
 
         this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
-        Serial.print("Active Screen : ");
-        Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
+        // Serial.print("Active Screen : ");
+        // Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
 
         switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
         {

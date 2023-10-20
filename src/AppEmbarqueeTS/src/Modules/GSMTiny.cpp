@@ -176,7 +176,7 @@ void GSMTiny::tick()
     /* PropertiesBattery */
     // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = this->modem->getBattPercent();
 
-    Serial.println("=======================================");
+    // Serial.println("=======================================");
 #if DEBUG_GSM
     Serial.println("Tick GSM");
     Serial.println("IsRideStarted : " + String(this->_TSProperties->PropertiesCurrentRide.IsRideStarted));
