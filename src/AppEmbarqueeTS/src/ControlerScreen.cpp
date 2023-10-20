@@ -158,22 +158,6 @@ void ControlerScreen::drawInitTSPage()
     this->_screen->setFont(1);
 }
 
-// int ControlerScreen::arrondiPourcentageAux5UnitesPres(int pourcentage)
-// {
-//     int temp = pourcentage % 5;
-
-//     if (temp < 3)
-//     {
-//         pourcentage -= temp;
-//     }
-//     else
-//     {
-//         pourcentage += (5 - temp);
-//     }
-
-//     return pourcentage;
-// }
-
 void ControlerScreen::drawHomePage()
 {
 #if DEBUG_BUTTONS
@@ -186,7 +170,6 @@ void ControlerScreen::drawHomePage()
                                15,
                                batteryLengthInPixels,
                                this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage);
-    //    this->arrondiPourcentageAux5UnitesPres((uint)this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage));
 
     int rideStartedLengthInPixels = 40;
     this->_screen->drawIsRideStarted(this->_screen->calculateXCoordItemToCenter(rideStartedLengthInPixels), 185, rideStartedLengthInPixels);
@@ -254,7 +237,6 @@ void ControlerScreen::drawRidePage()
                                8,
                                batteryLengthInPixels,
                                this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage);
-    //    this->arrondiPourcentageAux5UnitesPres((uint)this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage));
 #endif
 }
 
@@ -278,8 +260,6 @@ void ControlerScreen::drawRideStatisticsPage()
 
     if (this->_TSProperties->PropertiesTS.IsFrenchMode) // Français
     {
-        // this->_screen->printText("Statistiques", this->_screen->calculateXCoordTextToCenter("Statistiques"), 65);
-
         this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000, 3), "Km", 10, 85, 185, 95);
         this->_screen->drawStatistics("Duree:", this->_TSProperties->PropertiesCurrentRide.formatDurationHMS(), "h:m:s", 10, 85, 185, 120);
         this->_screen->drawStatistics("V.Moy:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH, 2), "Km/h", 10, 85, 185, 145);
@@ -287,8 +267,6 @@ void ControlerScreen::drawRideStatisticsPage()
     }
     else // Anglais
     {
-        // this->_screen->printText("Statistics", this->_screen->calculateXCoordTextToCenter("Statistics"), 65);
-
         this->_screen->drawStatistics("Dist.:", String(this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / 1000, 3), "Km", 10, 90, 185, 95);
         this->_screen->drawStatistics("Dur.:", this->_TSProperties->PropertiesCurrentRide.formatDurationHMS(), "h:m:s", 10, 90, 185, 120);
         this->_screen->drawStatistics("Avg. S.:", String(this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH, 2), "Km/h", 10, 90, 185, 145);
