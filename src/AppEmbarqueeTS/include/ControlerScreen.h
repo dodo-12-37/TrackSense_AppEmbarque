@@ -27,11 +27,6 @@ private:
     void drawEndingRidePage() override;
     void drawErrorPage() override;
 
-    /* Showing modes */
-    // void setRotation(u_int8_t rotation) override;
-    // void setBackgroudColor(uint16_t darkModeColor = TFT_DARK_MODE_BACKGROUND_COLOR, uint16_t lightModeColor = TFT_LIGHT_MODE_BACKGROUND_COLOR) override;
-    int arrondiPourcentageAux5UnitesPres(int pourcentage);
-
 public:
     ControlerScreen(TSProperties *TSProperties);
     ~ControlerScreen();
@@ -60,5 +55,4 @@ public:
         -3 : Page Erreur
     */
     void tick() override;
-
 };

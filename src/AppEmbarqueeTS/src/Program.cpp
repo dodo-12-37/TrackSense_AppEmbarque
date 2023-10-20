@@ -8,6 +8,7 @@ Program::Program() : _TSProperties(nullptr),
                      _accelerometer(nullptr),
                      _ble(nullptr),
                      _buzzer(nullptr),
+                     _battery(nullptr),
                      _controlerButtons(nullptr),
                      _controlerScreen(nullptr)
 {
@@ -21,21 +22,12 @@ Program::Program() : _TSProperties(nullptr),
     this->_compass = new CompassHMC5883L(this->_TSProperties);
     this->_accelerometer = new AccelerometerMPU6050(this->_TSProperties);
     this->_buzzer = new Buzzer(this->_TSProperties);
+    this->_battery = new Battery(this->_TSProperties);
 
     this->_TSProperties->PropertiesTS.IsInitializingTS = false;
     this->_TSProperties->PropertiesScreen.ActiveScreen = HOME_PAGE_ID;
 
     this->_controlerButtons->resetLastDateChangementStateButtons();
-
-    // pinMode(PIN_BATTERY, INPUT);
-
-    // Serial.print("PIN_BATTERY voltage analogue : ");
-    // Serial.print(analogRead(PIN_BATTERY));
-    // Serial.println(" V");
-
-    // Serial.print("PIN_BATTERY voltage digital : ");
-    // Serial.print(digitalRead(PIN_BATTERY));
-    // Serial.println(" V");
 }
 
 Program::~Program()
@@ -47,6 +39,7 @@ void Program::executeCore1()
 {
     this->_controlerButtons->tick();
     this->_buzzer->tick();
+    this->_battery->tick();
     // this->_controlerScreen->tick();
     this->_ble->tick();
     this->_gsm->tick();
@@ -54,17 +47,6 @@ void Program::executeCore1()
     this->_gyroscope->tick();
     this->_compass->tick();
     this->_accelerometer->tick();
-
-    // // float vref = 1100;
-    // uint16_t analogueVoltage = analogRead(PIN_BATTERY);
-    // // float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
-    // float battery_voltage = ((float)analogueVoltage / 4095.0) * 2.0 * 3.3 * (1100 / 1000.0);
-    // long percent = map(battery_voltage, 0, 1023, 0, 100);
-
-    // String voltage = "Voltage :" + String(battery_voltage) + "V\n";
-    // Serial.println(voltage);
-
-    // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = (double)analogueVoltage;
 }
 
 void Program::executeCore0()
