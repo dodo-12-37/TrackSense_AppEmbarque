@@ -12,7 +12,8 @@
     #define DEBUG_BLE false
     #define DEBUG_SCREEN false
     #define DEBUG_BUZZER false
-    #define DEBUG_BATTERY true
+    #define DEBUG_BATTERY false
+    #define DEBUG_CORE false
 #endif
 
 

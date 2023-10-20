@@ -32,6 +32,8 @@ private:
     ControlerButtons *_controlerButtons;
     IControlerScreen *_controlerScreen;
 
+    SemaphoreHandle_t xMutex; // Create a mutex object
+
 public:
     Program();
     ~Program();

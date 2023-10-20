@@ -1,12 +1,9 @@
 #include <Arduino.h>
 #include "Program.h"
 
-
-
 void loopCore0(void *pvParameters); // forward declaration of the loopCore0 function
 
 Program *program = nullptr;
-
 
 void setup()
 {
@@ -24,6 +21,67 @@ void setup()
         NULL,        // Task handle.
         0            // Core where the task should run
     );
+
+#if DEBUG_CORE == 1
+    Serial.println("Debug mode");
+
+    Serial.printf("Flash Speed = %d Flash mode = %d", ESP.getFlashChipSpeed(), (int)ESP.getFlashChipMode());
+    Serial.println();
+
+    Serial.printf("Chip Cores = %d", ESP.getChipCores());
+    Serial.println();
+
+    Serial.printf("Chip Model = %s", ESP.getChipModel());
+    Serial.println();
+
+    Serial.printf("Chip Revision = %d", ESP.getChipRevision());
+    Serial.println();
+
+    Serial.printf("CPU Frequency = %d", ESP.getCpuFreqMHz());
+    Serial.println();
+
+    Serial.printf("Heap Size = %d", ESP.getHeapSize());
+    Serial.println();
+
+    Serial.printf("Free Heap = %d", ESP.getFreeHeap());
+    Serial.println();
+
+    Serial.printf("Sketch Size = %d", ESP.getSketchSize());
+    Serial.println();
+
+    Serial.printf("Free Sketch Space = %d", ESP.getFreeSketchSpace());
+    Serial.println();
+
+    Serial.printf("Flash Chip Size = %d", ESP.getFlashChipSize());
+    Serial.println();
+
+    Serial.printf("Cycle Count = %d", ESP.getCycleCount());
+    Serial.println();
+
+    Serial.printf("PSRAM Size = %d", ESP.getPsramSize());
+    Serial.println();
+
+    Serial.printf("Max Alloc Heap = %d", ESP.getMaxAllocHeap());
+    Serial.println();
+
+    Serial.printf("Max Alloc PSRAM = %d", ESP.getMaxAllocPsram());
+    Serial.println();
+
+    Serial.printf("SDK Version = %s", ESP.getSdkVersion());
+    Serial.println();
+
+    Serial.printf("Sketch Size = %d", ESP.getSketchSize());
+    Serial.println();
+
+    ESP.magicFlashChipMode(0);
+    delay(1000);
+    Serial.printf("Flash Speed = %d Flash mode = %d", ESP.getFlashChipSpeed(), ESP.getFlashChipMode());
+    Serial.println();
+
+    // int optimumStackSize = (5000 - uxTaskGetStackHighWaterMark(NULL)) + 2000;
+    // Serial.printf("Optimum Stack Size = %d", optimumStackSize);
+    // Serial.println();
+#endif
 }
 
 void loop()
@@ -37,53 +95,16 @@ void loopCore0(void *pvParameters)
 {
     while (true)
     {
+#if DEBUG_CORE == 1
+        Serial.printf("Stack High Water Mark = %d.......", uxTaskGetStackHighWaterMark(NULL));
+        Serial.println();
+        int optimumStackSize = (5000 - uxTaskGetStackHighWaterMark(NULL)) + 2000;
+        Serial.printf("Optimum Stack Size = %d.......", optimumStackSize);
+        Serial.println();
+#endif
+
         program->executeCore0();
-        
+
         // delay(1000);
     }
 }
-
-/*
-
-ESP32-WROVER-E-N16R8 16 MB (Quad SPI) 8 MB (Quad SPI) –40 ~ 85
-
-
-abort() was called at PC 0x400f9518 on core 0
-
-
-Backtrace: 0x400838d5:0x3ffbea6c |<-CORRUPTED
-
-  #0  0x400838d5:0x3ffbea6c in panic_abort at /Users/ficeto/Desktop/ESP32/ESP32S2/esp-idf-public/components/esp_system/panic.c:408
-
-
-
-
-ELF file SHA256: b49e8b8012d18ef0
-
-Rebooting...
-ets Jul 29 2019 12:21:46
-
-rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
-configsip: 0, SPIWP:0xee
-clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
-mode:DIO, clock div:2
-load:0x3fff0030,len:1184
-load:0x40078000,len:13232
-load:0x40080400,len:3028
-entry 0x400805e4
-[   475][I][esp32-hal-psram.c:96] psramInit(): PSRAM enabled
-Start Advertising
-========SDCard Detect.======
-SDCard Size: 30436MB
-SDCard Ride Id find: bac33e05-187e-cc6a-9fea-37695630ec50
-SDCard nb of rides: 1
-SDCard nb of rides: 1
-===========================
-Initializing modem...
-Modem is finally functional
-Modem initialized.
-Disabling GPS
-
-
-
-*/

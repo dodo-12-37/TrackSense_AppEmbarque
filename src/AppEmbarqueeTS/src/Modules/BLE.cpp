@@ -7,7 +7,7 @@
 
 #include "Modules/BLE.h"
 #include "Configurations.h"
-// #include "ControlerConfigurationFile.h"
+#include "ControlerConfigurationFile.h"
 
 /*----- Definition des membres statics -----*/
 bool BLE::isDeviceConnected = false;
@@ -212,7 +212,7 @@ void BLE::initCaracteristics()
 
     this->_screenRotateCharacteristic = this->_screenService->
         createCharacteristic(BLE_SCREEN_CHARACTRISTIC_ROTATE, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    // this->_screenRotateCharacteristic->setValue(ControlerConfigurationFile::getValue(FIELD_SCREEN_ROTATION).c_str());
+    this->_screenRotateCharacteristic->setValue(ControlerConfigurationFile::getValue(FIELD_SCREEN_ROTATION).c_str());
     this->_screenRotateCharacteristic->setCallbacks(new ScreenRotateCallbacks());
 };
 
@@ -306,7 +306,7 @@ void BLE::confirmPointReceived()
 void BLE::updateTSProperties()
 {
     this->_TSProperties->PropertiesScreen.ScreenRotation = atoi(this->_screenRotateCharacteristic->getValue().c_str());  
-    // ControlerConfigurationFile::setValue(FIELD_SCREEN_ROTATION, this->_screenRotateCharacteristic->getValue().c_str()); 
+    ControlerConfigurationFile::setValue(FIELD_SCREEN_ROTATION, this->_screenRotateCharacteristic->getValue().c_str()); 
 
     BLE::isNeedToUpdateTSProperties = false;
 };
