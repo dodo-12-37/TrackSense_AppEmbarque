@@ -10,7 +10,7 @@
 
 
 
-ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0)
+ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0), xMutex(nullptr)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
@@ -19,6 +19,8 @@ ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSPropert
     this->tft->begin(80000000);
     this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
     this->canvas->setTextWrap(false);
+
+    this->xMutex = xSemaphoreCreateMutex(); // Create a mutex object
 
     // tft->setFont(&BebasNeue_Regular24pt7b);
     // tft->setFont(&FreeSansBold12pt7b);
@@ -233,7 +235,16 @@ void ScreenGC9A01::drawOnScreen()
     if (this->_lastBuffer != temp)
     {
         this->_lastBuffer = temp;
-        this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
+
+        inline uint16_t* buff = nullptr;
+
+        if (xSemaphoreTake(xMutex, portMAX_DELAY))
+        { 
+            buff = this->canvas->getBuffer();
+            xSemaphoreGive(xMutex); // release the mutex
+        }
+
+        this->tft->drawRGBBitmap(0, 0, buff, this->canvas->width(), this->canvas->height());
     }
 
     this->drawBackgroundColor();
