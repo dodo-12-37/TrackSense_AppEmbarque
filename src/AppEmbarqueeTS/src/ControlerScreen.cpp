@@ -41,8 +41,8 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    if (xSemaphoreTake(xMutex, portMAX_DELAY))
-    {
+    // if (xSemaphoreTake(xMutex, portMAX_DELAY))
+    // {
         // Serial.print("                                      ControlerScreen::tick() running in core ");
         // Serial.println(xPortGetCoreID());
 
@@ -132,18 +132,18 @@ void ControlerScreen::tick()
         }
 
         // this->_screen->drawOnScreen();   // We use void ControlerScreen::printScreen() on Core 0 to draw on screen
-        xSemaphoreGive(xMutex); // release the mutex
-    }
+    //     xSemaphoreGive(xMutex); // release the mutex
+    // }
 }
 
 void ControlerScreen::printScreen()
 {
-    if (xSemaphoreTake(xMutex, portMAX_DELAY))
-    {
+    // if (xSemaphoreTake(xMutex, portMAX_DELAY))
+    // {
         this->_screen->drawOnScreen();
 
-        xSemaphoreGive(xMutex); // release the mutex
-    }
+        // xSemaphoreGive(xMutex); // release the mutex
+    // }
 }
 
 /*

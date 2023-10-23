@@ -21,6 +21,8 @@ private:
     uint16_t calculateScreenBuffer();
 
 public:
+    SemaphoreHandle_t _lock;
+
     ScreenGC9A01(TSProperties *TSProperties);
     ~ScreenGC9A01();
 
