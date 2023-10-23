@@ -126,6 +126,11 @@ void ControlerScreen::tick()
         }
     }
 
+    // this->_screen->drawOnScreen();
+}
+
+void ControlerScreen::printScreen()
+{
     this->_screen->drawOnScreen();
 }
 

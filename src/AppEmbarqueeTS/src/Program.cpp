@@ -113,6 +113,8 @@ void Program::executeCore1()
 
         xSemaphoreGive(xMutex); // release the mutex
     }
+
+    this->_controlerScreen->tick();
 }
 
 void Program::executeCore0()
@@ -120,7 +122,7 @@ void Program::executeCore0()
     if (xSemaphoreTake(xMutex, (200 * portTICK_PERIOD_MS))) // try to acquire the mutex
     {
         Serial.println("                                _controlerScreen");
-        this->_controlerScreen->tick();
+        this->_controlerScreen->printScreen();
         
         xSemaphoreGive(xMutex); // release the mutex
     }

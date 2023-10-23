@@ -55,4 +55,5 @@ public:
         -3 : Page Erreur
     */
     void tick() override;
+    void printScreen() override;
 };
