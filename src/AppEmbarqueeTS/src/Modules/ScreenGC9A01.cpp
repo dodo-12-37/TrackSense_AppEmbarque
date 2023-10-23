@@ -8,9 +8,7 @@
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSans18pt7b.h>
 
-
-
-ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0), xMutex(nullptr)
+ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0) //, xMutex(nullptr)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
@@ -20,7 +18,7 @@ ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSPropert
     this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
     this->canvas->setTextWrap(false);
 
-    this->xMutex = xSemaphoreCreateMutex(); // Create a mutex object
+    // this->xMutex = xSemaphoreCreateMutex(); // Create a mutex object
 
     // tft->setFont(&BebasNeue_Regular24pt7b);
     // tft->setFont(&FreeSansBold12pt7b);
@@ -44,9 +42,9 @@ ScreenGC9A01::~ScreenGC9A01()
 
 void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le logo TS en Light Mode : this->drawfillCircle()
 {
-    int16_t coordX = 17; 
-    int16_t coordY = 65; 
-    uint16_t width = 42; 
+    int16_t coordX = 17;
+    int16_t coordY = 65;
+    uint16_t width = 42;
     uint16_t height = 56;
 
     int16_t coordX_ = 0;
@@ -230,24 +228,24 @@ void ScreenGC9A01::drawStatistics(String title, String value, String unit, int16
 
 void ScreenGC9A01::drawOnScreen()
 {
-    uint16_t temp = this->calculateScreenBuffer();
+    // if (xSemaphoreTake(xMutex, portMAX_DELAY))
+    // {
+        uint16_t temp = this->calculateScreenBuffer();
 
-    if (this->_lastBuffer != temp)
-    {
-        this->_lastBuffer = temp;
+        if (this->_lastBuffer != temp)
+        {
+            this->_lastBuffer = temp;
 
-        inline uint16_t* buff = nullptr;
+            uint16_t *buff = nullptr;
 
-        if (xSemaphoreTake(xMutex, portMAX_DELAY))
-        { 
             buff = this->canvas->getBuffer();
-            xSemaphoreGive(xMutex); // release the mutex
+            this->tft->drawRGBBitmap(0, 0, buff, this->canvas->width(), this->canvas->height());
         }
 
-        this->tft->drawRGBBitmap(0, 0, buff, this->canvas->width(), this->canvas->height());
-    }
+        this->drawBackgroundColor();
 
-    this->drawBackgroundColor();
+    //     xSemaphoreGive(xMutex); // release the mutex
+    // }
 }
 
 uint16_t ScreenGC9A01::calculateScreenBuffer()

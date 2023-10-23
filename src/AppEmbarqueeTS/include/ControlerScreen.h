@@ -14,6 +14,8 @@ private:
     TSProperties *_TSProperties;
     ScreenGC9A01 *_screen;
     unsigned long _timeToDisplayEndingRidePageMS;
+    
+    SemaphoreHandle_t xMutex; // Create a mutex object
 
     /* Pages */
     void drawInitTSPage() override;
