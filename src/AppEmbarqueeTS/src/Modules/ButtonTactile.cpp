@@ -44,7 +44,7 @@ int ButtonTactile::getFinalState()
 
         /* Manque gestion des double pressions longues et courtes ...  */
 
-#if DEBUG_TS_BUTTONS == true
+#if DEBUG_TS_BUTTONS_HARDCORE == true
         if (this->_pinButton == 33)
         {
             Serial.println("================== START DEBUG BUTTON ===================");

@@ -176,7 +176,7 @@ void ControlerScreen::drawInitTSPage()
 
 void ControlerScreen::drawHomePage()
 {
-#if DEBUG_TS_BUTTONS
+#if DEBUG_TS_BUTTONS_HARDCORE
     this->_screen->testButtonsScreen();
 #else
     this->_screen->drawLogoTS();
@@ -204,7 +204,7 @@ void ControlerScreen::drawRideDirectionPage()
 
 void ControlerScreen::drawRidePage()
 {
-#if DEBUG_TS_GPS
+#if DEBUG_TS_GPS_HARDCORE
     this->_screen->testGPS();
 #else
     String speed = "";

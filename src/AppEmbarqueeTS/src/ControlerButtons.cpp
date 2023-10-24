@@ -44,7 +44,7 @@ void ControlerButtons::tick()
 
     long dateActuelle = millis();
 
-#if DEBUG_TS_BUTTONS
+#if DEBUG_TS_BUTTONS_HARDCORE
     this->_TSProperties->PropertiesButtons.Button1State = this->_finalStateButton1;
     this->_TSProperties->PropertiesButtons.Button2State = this->_finalStateButton2;
 #endif

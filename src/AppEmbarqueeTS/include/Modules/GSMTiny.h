@@ -22,7 +22,6 @@ private:
     unsigned long _lastReadTimeMS;
 
     unsigned long _durationS;
-    unsigned long _maxDurationTresholdInSeconds;
 
     double _lastValidLatitude;
     double _lastValidLongitude;

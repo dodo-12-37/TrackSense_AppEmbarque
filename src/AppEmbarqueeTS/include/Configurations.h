@@ -3,28 +3,28 @@
 
 /*----- DEBUG -----*/
 #ifdef DEBUG
-    // Debug_Type : 
-    // #define DEBUG_TS_APPLICATION    true
-
-    #define DEBUG_TS_BUTTONS        false
-    #define DEBUG_TS_SCREEN         true
-    #define DEBUG_TS_GSM            true
-    #define DEBUG_TS_GPS            true
-    #define DEBUG_TS_SDCARD         true
-    #define DEBUG_TS_BLE            true
-    #define DEBUG_TS_BATTERY        false
-    #define DEBUG_TS_BUZZER         false
-    #define DEBUG_TS_ACCELEROMETER  false
-    #define DEBUG_TS_COMPASS        false
-    #define DEBUG_TS_GYROSCOPE      false
-    #define DEBUG_TS_CORE           false
+    // Debug_Type : true = affiche les messages de debug, false = n'affiche pas les messages de debug
+    #define DEBUG_TS_BUTTONS            false
+    #define DEBUG_TS_BUTTONS_HARDCORE   false
+    #define DEBUG_TS_SCREEN             true
+    #define DEBUG_TS_GSM                true
+    #define DEBUG_TS_GPS                true
+    #define DEBUG_TS_GPS_HARDCORE       false
+    #define DEBUG_TS_SDCARD             true
+    #define DEBUG_TS_BLE                true
+    #define DEBUG_TS_BATTERY            false
+    #define DEBUG_TS_BUZZER             false
+    #define DEBUG_TS_ACCELEROMETER      false
+    #define DEBUG_TS_COMPASS            false
+    #define DEBUG_TS_GYROSCOPE          false
+    #define DEBUG_TS_CORE               false
 #endif
 
 #define DEBUG_STRING(Debug_Type, Valeur) if (Debug_Type) {Serial.print(Valeur);};
 #define DEBUG_STRING_LN(Debug_Type, Valeur) if (Debug_Type) {Serial.println(Valeur);};
 
 /*----- Screen -----*/
-#define SPI_TFCard 0 // 1 = SPI, 0 = VSPI // ALWAYS USE VSPI
+#define SPI_TFCard 0 // 1 = SPI, 0 = VSPI // ALWAYS USE VSPI, NEVER USE SPI. Our connections are bad and we can't use SPI.
 
 #if SPI_TFCard
     // Ne pas considérer cette possibilité de connexion de l'écran. Aucune chance que ça fonctionne. Le PCB peut être modifié à l'avenir.

@@ -70,6 +70,6 @@ void Program::executeCore1()
 
 void Program::executeCore0()
 {
-    DEBUG_STRING_LN(DEBUG_TS_CORE, "                                _controlerScreen");
+    DEBUG_STRING_LN(DEBUG_TS_CORE || DEBUG_TS_SCREEN, "                                             _controlerScreen->printScreen()");
     this->_controlerScreen->printScreen();
 }

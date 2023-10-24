@@ -20,11 +20,10 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _isModemOn(false),
                                                _isGPSFixed(false),
                                                _distanceMetersBetweenLastPointAndCurrentPoint(0),
-                                               _maxDistanceTresholdInMeters(11),
+                                               _maxDistanceTresholdInMeters(MINIMUM_DISTANCE_TO_ADD_POSITION),
                                                _lastValidLatitude(0),
                                                _lastValidLongitude(0),
                                                _durationS(0),
-                                               _maxDurationTresholdInSeconds(30),
                                                _lastReadTimeMS(0)
 {
     this->modem = new TinyGsm(SerialAT);
@@ -126,7 +125,7 @@ void GSMTiny::tick()
                     }
                     this->_distanceMetersBetweenLastPointAndCurrentPoint = this->distanceBetweenInMeters(this->_lastValidLatitude, this->_lastValidLongitude, this->_latitude, this->_longitude);
 
-                    if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters) // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
+                    if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters)
                     {
                         this->saveCurrentRideDatasToTSProperties();
 #if DEBUG_TS_GPS
@@ -178,7 +177,7 @@ bool GSMTiny::readDatas()
         {
             result = true;
 
-#if DEBUG_TS_GPS
+#if DEBUG_TS_GPS_HARDCORE
             Serial.println("Latitude: " + String(this->_latitude, 10) + "\tLongitude: " + String(this->_longitude, 10));
             Serial.println("Speed: " + String(this->_speed) + "\tAltitude: " + String(this->_altitude));
             Serial.println("Visible Satellites: " + String(this->_visibleSatellites) + "\tUsed Satellites: " + String(this->_usedSatellites));
@@ -209,7 +208,6 @@ bool GSMTiny::isFixValid()
 
     if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00 && this->_accuracy < 2 && this->_altitude != 0)
     {
-
         result = true;
     }
 
@@ -246,7 +244,7 @@ void GSMTiny::saveGPSDatasToTSProperties()
     this->_TSProperties->PropertiesGPS.IsFixValid = this->isFixValid();
     this->_TSProperties->PropertiesGPS.IsGPSFixed = this->isGPSFixed();
 
-    DEBUG_STRING_LN(DEBUG_TS_GPS, "--------------------------------------------Accuracy : " + String(this->_TSProperties->PropertiesGPS.Accuracy));
+    DEBUG_STRING_LN(DEBUG_TS_GPS_HARDCORE, "--------------------------------------------Accuracy : " + String(this->_TSProperties->PropertiesGPS.Accuracy));
 }
 
 void GSMTiny::saveCurrentRideDatasToTSProperties()
