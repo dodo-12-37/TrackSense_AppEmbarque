@@ -8,8 +8,8 @@
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSans18pt7b.h>
 
-#define MUTEX_LOCK()    do {} while (xSemaphoreTake(_lock, portMAX_DELAY) != pdPASS)
-#define MUTEX_UNLOCK()  xSemaphoreGive(_lock)
+// #define MUTEX_LOCK()    do {} while (xSemaphoreTake(_lock, portMAX_DELAY) != pdPASS)
+// #define MUTEX_UNLOCK()  xSemaphoreGive(_lock)
 
 ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0) //, xMutex(nullptr)
 {
@@ -53,7 +53,7 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
     int16_t coordX_ = 0;
     int16_t coordY_ = 0;
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     this->canvas->setTextSize(7);
     this->canvas->setFont();
@@ -103,7 +103,7 @@ void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le
 
     this->canvas->setFont(&FreeSans9pt7b);
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX, uint pourcentage)
@@ -115,7 +115,7 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     double coordBarreVerteX = coordX + (zoneBarreVerteX - barreVerteX) / 2;
     double coordBarreVerteY = coordY + (hauteurY - barreVerteY) / 2;
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     this->canvas->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     this->canvas->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
@@ -165,14 +165,14 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
     const String strBatteryLevel = String(pourcentage) + "%";
     this->canvas->printf("%-3s", strBatteryLevel.c_str());
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t largeurX)
 {
     double hauteurY = largeurX;
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
     {
@@ -183,12 +183,12 @@ void ScreenGC9A01::drawIsRideStarted(int16_t coordX, int16_t coordY, int16_t lar
         this->canvas->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawError()
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     this->canvas->fillScreen(GC9A01A_RED);
     this->setTextColor(GC9A01A_BLACK, GC9A01A_RED, GC9A01A_WHITE, GC9A01A_RED);
@@ -204,14 +204,14 @@ void ScreenGC9A01::drawError()
         this->canvas->printf("%-8s", "ERROR !");
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeurX)
 {
     double hauteurY = largeurX;
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.IsGPSFixed)
     {
@@ -226,7 +226,7 @@ void ScreenGC9A01::drawIsGPSValid(int16_t coordX, int16_t coordY, int16_t largeu
         this->canvas->fillRect(coordX, coordY, largeurX, hauteurY, GC9A01A_RED);
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawStatistics(String title, String value, String unit, int16_t titleCoordX, int16_t valueCoordX, int16_t unitCoordX, int16_t coordY)
@@ -261,9 +261,9 @@ void ScreenGC9A01::drawOnScreen()
 
             uint16_t *buff = nullptr;
 
-            MUTEX_LOCK();
+            // MUTEX_LOCK();
             buff = this->canvas->getBuffer();
-            MUTEX_UNLOCK();
+            // MUTEX_UNLOCK();
 
             this->tft->drawRGBBitmap(0, 0, buff, this->canvas->width(), this->canvas->height());
         }
@@ -315,7 +315,7 @@ int ScreenGC9A01::calculateXCoordTextToCenter(String text)
 
 void ScreenGC9A01::setFont(uint id)
 {
-    MUTEX_LOCK();  
+    // MUTEX_LOCK();  
 
     switch (id)
     {
@@ -345,7 +345,7 @@ void ScreenGC9A01::setFont(uint id)
         break;
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)
@@ -355,7 +355,7 @@ int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)
 
 void ScreenGC9A01::drawBackgroundColor(uint16_t darkModeColor, uint16_t lightModeColor)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -366,7 +366,7 @@ void ScreenGC9A01::drawBackgroundColor(uint16_t darkModeColor, uint16_t lightMod
         this->canvas->fillScreen(lightModeColor);
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
@@ -374,7 +374,7 @@ void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
                                 uint16_t textLightModeColor,
                                 uint16_t backgroundLightModeColor)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -385,28 +385,28 @@ void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
         this->canvas->setTextColor(textLightModeColor, backgroundLightModeColor);
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::setRotation(u_int8_t rotation)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
     this->canvas->setRotation(rotation);
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::setTextSize(uint8_t size)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
     this->canvas->setTextSize(size);
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::setTextWrap(boolean wrap)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
     this->canvas->setTextWrap(wrap);
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::printText(String text, int16_t coordX, int16_t coordY)
@@ -414,18 +414,18 @@ void ScreenGC9A01::printText(String text, int16_t coordX, int16_t coordY)
     String text2 = "%-" + String(text.length()) + "s";
     const char *formatChar = text2.c_str();
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     this->canvas->setCursor(coordX, coordY);
     this->canvas->printf(formatChar, text.c_str());
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
                             uint16_t darkModeColor, uint16_t lightModeColor)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -436,13 +436,13 @@ void ScreenGC9A01::drawRect(int16_t x, int16_t y, int16_t width, int16_t height,
         this->canvas->drawRect(x, y, width, height, lightModeColor);
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t height,
                                 uint16_t darkModeColor, uint16_t lightModeColor)
 {
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
@@ -453,7 +453,7 @@ void ScreenGC9A01::drawFillRect(int16_t x, int16_t y, int16_t width, int16_t hei
         this->canvas->fillRect(x, y, width, height, lightModeColor);
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 #pragma endregion DrawingTools
 
@@ -470,7 +470,7 @@ void ScreenGC9A01::testGPS()
 {
     char *formatChar = (char *)"%-21s";
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     if (this->_TSProperties->PropertiesGPS.IsFixValid && this->_TSProperties->PropertiesGPS.UsedSatellites >= 4)
     {
@@ -520,7 +520,7 @@ void ScreenGC9A01::testGPS()
     String strAccuracy = "Accu:   " + String(this->_TSProperties->PropertiesGPS.Accuracy, 4);
     this->canvas->printf(formatChar, strAccuracy.c_str());
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 
     // this->drawBattery(100, 5, 50, this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage);
 }
@@ -529,7 +529,7 @@ void ScreenGC9A01::testButtonsScreen()
 {
     this->setTextColor();
 
-    MUTEX_LOCK();
+    // MUTEX_LOCK();
 
     this->canvas->setTextSize(3);
     this->canvas->setCursor(35, 50);
@@ -685,7 +685,7 @@ void ScreenGC9A01::testButtonsScreen()
         // Serial.println("BUTTONS ERROR !!!");
     }
 
-    MUTEX_UNLOCK();
+    // MUTEX_UNLOCK();
 }
 
 #pragma endregion Tests

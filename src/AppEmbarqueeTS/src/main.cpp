@@ -17,7 +17,7 @@ void setup()
         "loopCore0", // Name of the task
         5000,        // Stack size in words // À vérifier !!!
         NULL,        // Task input parameter
-        100,         // Priority of the task
+        1,         // Priority of the task
         NULL,        // Task handle.
         0            // Core where the task should run
     );
@@ -87,8 +87,6 @@ void setup()
 void loop()
 {
     program->executeCore1();
-
-    // delay(1000);
 }
 
 void loopCore0(void *pvParameters)
@@ -102,9 +100,9 @@ void loopCore0(void *pvParameters)
         Serial.printf("Optimum Stack Size = %d.......", optimumStackSize);
         Serial.println();
 #endif
-
+        // Serial.println("loopCore0");
         program->executeCore0();
 
-        // delay(1000);
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
