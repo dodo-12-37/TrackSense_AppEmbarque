@@ -1,5 +1,7 @@
 #include "ControlerScreen.h"
 
+
+
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
                                                                _timeToDisplayEndingRidePageMS(10000)
@@ -38,7 +40,7 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    // Serial.print("                                      ControlerScreen::tick() running in core ");
+    Serial.print("                                      ControlerScreen::tick() running in core ");
     Serial.println(xPortGetCoreID());
 
     if (this->_TSProperties->PropertiesTS.IsOnStanby)
@@ -55,6 +57,8 @@ void ControlerScreen::tick()
             this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
         }
 
+        Serial.print("Screen Rotation : ");
+        Serial.println(this->_TSProperties->PropertiesScreen.ScreenRotation);
         this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
         // Serial.print("Active Screen : ");
