@@ -16,19 +16,6 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
     this->_guidGenerator->setRandomMode();
 }
 
-ControlerButtons::ControlerButtons(const ControlerButtons &other)
-{
-    this->_TSProperties = other._TSProperties;
-    this->_button1 = other._button1;
-    this->_button2 = other._button2;
-    // this->_isPressedButton1 = other._isPressedButton1;
-    // this->_isPressedButton2 = other._isPressedButton2;
-    this->_finalStateButton1 = other._finalStateButton1;
-    this->_finalStateButton2 = other._finalStateButton2;
-    this->_guidGenerator = other._guidGenerator;
-    this->_lastDateChangementStateButtons = other._lastDateChangementStateButtons;
-}
-
 ControlerButtons::~ControlerButtons()
 {
     ;
