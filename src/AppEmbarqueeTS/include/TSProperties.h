@@ -172,7 +172,7 @@ public:
             -2 : Page Fin Trajet
             -3 : Page Erreur
         */
-        int ActiveScreen;
+        int ActiveScreen;                           // Seul paramètre modifier par le controlerScreen
         bool IsDarkMode;
 
         /*

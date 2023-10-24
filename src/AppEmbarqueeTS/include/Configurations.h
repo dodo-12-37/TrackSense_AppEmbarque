@@ -2,37 +2,47 @@
 #include <Arduino.h>
 
 /*----- DEBUG -----*/
-#define DEBUG_BUTTONS false
-#define DEBUG_GSM false
+#ifdef DEBUG
+    #define DEBUG_BUTTONS false
+    #define DEBUG_GSM false
+    #define DEBUG_SD_CARD false
+    #define DEBUG_GYROSCOPE false
+    #define DEBUG_COMPASS false
+    #define DEBUG_ACCELEROMETER false
+    #define DEBUG_BLE false
+    #define DEBUG_SCREEN false
+    #define DEBUG_BUZZER false
+    #define DEBUG_BATTERY false
+    #define DEBUG_CORE false
+#endif
 
 /*----- Screen -----*/
-#define SPI_TFCard 0 // 1 = SPI, 0 = VSPI
+#define SPI_TFCard 0 // 1 = SPI, 0 = VSPI // ALWAYS USE VSPI
 
 #if SPI_TFCard
-// Ne pas considérer cette possibilité de connexion de l'écran. Aucune chance que ça fonctionne. Le PCB peut être modifié à l'avenir.
-#define TFT_BLK -1  // LED back-light
-#define TFT_CS 12   // 25       // Chip select control pin
-#define TFT_DC 25   // 02          // Data Command control pin
-#define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin)
-#define TFT_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
-#define TFT_CLK 14  // In some display driver board, it might be written as "SCL" and so on.
-#define TFT_MISO 2  // Ne semble pas être utile, car non tactile
+    // Ne pas considérer cette possibilité de connexion de l'écran. Aucune chance que ça fonctionne. Le PCB peut être modifié à l'avenir.
+    #define TFT_BLK -1  // LED back-light
+    #define TFT_CS 12   // 25       // Chip select control pin
+    #define TFT_DC 25   // 02          // Data Command control pin
+    #define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin)
+    #define TFT_MOSI 15 // In some display driver board, it might be written as "SDA" and so on.
+    #define TFT_CLK 14  // In some display driver board, it might be written as "SCL" and so on.
+    #define TFT_MISO 2  // Ne semble pas être utile, car non tactile
 
 #else // VSPI
 
-#define TFT_BLK -1  // 12 // LED back-light. "BLK" or "BLK"
-#define TFT_CS 5    // 25     // Chip select control pin. "CS" or "SS"
-#define TFT_DC 0    // 19        // Data Command control pin
-#define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
-#define TFT_MOSI 23 // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
-#define TFT_CLK 18  // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
-#define TFT_MISO 19 // Ne semble pas être utile, car non tactile
+    #define TFT_BLK -1  // 12 // LED back-light. "BLK" or "BLK"
+    #define TFT_CS 5    // 25     // Chip select control pin. "CS" or "SS"
+    #define TFT_DC 0    // 19        // Data Command control pin
+    #define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
+    #define TFT_MOSI 23 // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
+    #define TFT_CLK 18  // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
+    #define TFT_MISO 19 // Ne semble pas être utile, car non tactile
 
 #endif
 
 #define TFT_WIDTH 240
 #define TFT_HEIGHT 240
-// #define TFT_INIT_ROTATION 0
 #define TFT_LIGHT_MODE_BACKGROUND_COLOR GC9A01A_WHITE
 #define TFT_LIGHT_MODE_TEXT_COLOR GC9A01A_BLACK
 #define TFT_DARK_MODE_BACKGROUND_COLOR GC9A01A_BLACK
@@ -114,6 +124,12 @@
 
 /*----- Battery -----*/
 #define PIN_BATTERY 35
+#define BATTERY_VOLTAGE_MIN 3.0
+#define BATTERY_VOLTAGE_MAX 4.2
+#define BATTERY_PERCENTAGE_MIN 0
+#define BATTERY_PERCENTAGE_MAX 100
+#define BATTERY_NB_READS 15 // number of voltage readings before choosing a median, keep this number odd
+#define BATTERY_VREF 1100   // ADC reference voltage, change this to 1100 if using ESP32 ADC
 
 /*----- Buttons -----*/
 #define PIN_BUTTON1 33
