@@ -26,30 +26,15 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _durationS(0),
                                                _maxDurationTresholdInSeconds(30),
                                                _lastReadTimeMS(0)
-//    ,
-//    _latitude2(0),
-//    _longitude2(0),
-//    _speed2(0),
-//    _altitude2(0),
-//    _visibleSatellites2(0),
-//    _usedSatellites2(0),
-//    _accuracy2(0),
-//    _year2(0),
-//    _month2(0),
-//    _day2(0),
-//    _hour2(0),
-//    _minute2(0),
-//    _seconde2(0)
 {
     this->modem = new TinyGsm(SerialAT);
     pinMode(PIN_GSM_PWR, OUTPUT);
 
-
     // // Set LED OFF
-    // pinMode(PIN_SDCARD_LED, OUTPUT);
+    // pinMode(PIN_LED, OUTPUT);
     // Serial.println("Set LED OFF");
-    // digitalWrite(PIN_SDCARD_LED, HIGH);
-    
+    // digitalWrite(PIN_LED, HIGH);
+
     this->init();
 }
 
@@ -96,77 +81,9 @@ void GSMTiny::init()
 
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
-    // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = this->modem->getBattPercent();
-
-    // delay(5000);
-    // Serial.println("Set LED ON");
-    // digitalWrite(PIN_SDCARD_LED, LOW);
-
-
-    // uint8_t battChargeState = 0;
-    // int8_t battPercent = 0;
-    // uint16_t battVoltage = 0;
-    // this->modem->getBattStats(battChargeState, battPercent, battVoltage);
-    // Serial.println("battChargeState : " + String(battChargeState));
-    // Serial.println("battPercent : " + String(battPercent));
-    // Serial.println("battVoltage : " + String(battVoltage / 1000.0F, 3));
 
     this->gpsPowerOff();
     delay(5000);
-
-    /*
-        Initializing modem...
-
-        @10h00
-        Modem datas :
-            battChargeState : 0
-            battPercent : 66 %
-            battVoltage : 3.869 V
-        Multimètre : 
-            battVoltage : 4.188 V
-
-        @10h45
-        Modem datas :
-            battChargeState : 
-            battPercent : 90 %
-            battVoltage :  V
-        Multimètre : 
-            battVoltage : 4.094 V
-
-        @11h30
-        Modem datas :
-            battChargeState : 
-            battPercent : 90 %
-            battVoltage :  V
-        Multimètre : 
-            battVoltage : 4.067 V
-        
-        @??h??
-        Modem datas :
-            battChargeState : 
-            battPercent :  %
-            battVoltage :  V
-        Multimètre : 
-            battVoltage :  V
-
-        
-        @??h??
-        Modem datas :
-            battChargeState : 
-            battPercent :  %
-            battVoltage :  V
-        Multimètre : 
-            battVoltage :  V
-
-        
-        @??h??
-        Modem datas :
-            battChargeState : 
-            battPercent :  %
-            battVoltage :  V
-        Multimètre : 
-            battVoltage :  V
-    */
 }
 
 void GSMTiny::tick()
@@ -258,11 +175,7 @@ bool GSMTiny::readDatas()
         Serial.println("Requesting current GPS/GNSS/GLONASS location");
 
         if (this->modem->getGPS(&this->_latitude, &this->_longitude, &this->_speed, &this->_altitude, &this->_visibleSatellites, &this->_usedSatellites,
-                                &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde)
-            //                     &&
-            // this->modem->getGPS(&this->_latitude2, &this->_longitude2, &this->_speed2, &this->_altitude2, &this->_visibleSatellites2, &this->_usedSatellites2,
-            //                     &this->_accuracy2, &this->_year2, &this->_month2, &this->_day2, &this->_hour2, &this->_minute2, &this->_seconde2))
-        )
+                                &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde))
         {
             result = true;
 
@@ -295,16 +208,10 @@ bool GSMTiny::isFixValid()
 {
     bool result = false;
 
-    if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00 && this->_accuracy < 2 && this->_altitude != 0
-        // &&
-        // this->_latitude2 != 0 && this->_longitude2 != 0 && this->_usedSatellites2 >= 4 && this->_speed2 != -9999.00 && this->_accuracy2 < 2 && this->_altitude2 != 0)
-    )
+    if (this->_latitude != 0 && this->_longitude != 0 && this->_usedSatellites >= 4 && this->_speed != -9999.00 && this->_accuracy < 2 && this->_altitude != 0)
     {
-        // if (this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude) < this->_maxDistanceTresholdInMeters)
-        // {
-        // Serial.println("Distance between 2 points : " + String(this->distanceBetweenInMeters(this->_latitude2, this->_longitude2, this->_latitude, this->_longitude)));
+
         result = true;
-        // }
     }
 
     return result;
