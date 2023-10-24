@@ -221,7 +221,7 @@ void ScreenGC9A01::drawOnScreen()
 {
     uint16_t temp = this->calculateScreenBuffer();
 
-    if (this->_lastBuffer != temp)
+    if (this->_lastBuffer != temp || this->_TSProperties->PropertiesScreen.IsScreenRotationChanged)
     {
         this->_lastBuffer = temp;
 

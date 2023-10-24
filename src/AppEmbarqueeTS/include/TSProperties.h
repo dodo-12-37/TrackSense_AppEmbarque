@@ -182,6 +182,7 @@ public:
             3 : Pins vers la droite
         */
         uint8_t ScreenRotation;
+        bool IsScreenRotationChanged;
 
     } PropertiesScreen;
 

@@ -119,7 +119,7 @@ void BLE::tick()
         {
             this->_TSProperties->PropertiesCompletedRideToSend.IsStatsReceived = BLE::isCompletedRideStatsReceived;
             if (!BLE::isCompletedRideStatsReceived || BLE::isCompletedRideStatsSending) // Renvoie les stats tant qu'on a pas la confirmation de reception
-            {
+            {   // Il faudrait peut-être vérifier si la Ride possède au moins 1 point...
                 DEBUG_STRING_LN(DEBUG_TS_BLE, "BLE Send Stats");
                 this->sendCompletedRideStats();
             }
@@ -296,6 +296,7 @@ void BLE::confirmPointReceived()
 void BLE::updateTSProperties()
 {
     this->_TSProperties->PropertiesScreen.ScreenRotation = atoi(this->_screenRotateCharacteristic->getValue().c_str());
+    this->_TSProperties->PropertiesScreen.IsScreenRotationChanged = true;
     ControlerConfigurationFile::setValue(FIELD_SCREEN_ROTATION, this->_screenRotateCharacteristic->getValue().c_str());
 
     BLE::isNeedToUpdateTSProperties = false;

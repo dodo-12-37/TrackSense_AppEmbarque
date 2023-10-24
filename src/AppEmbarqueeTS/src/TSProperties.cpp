@@ -44,12 +44,11 @@ void TSProperties::initProperties()
     // SD Card
     this->PropertiesSDCard.IsSDCardConnected = false;
 
-    // 
-
     // Screen
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
     this->PropertiesScreen.ScreenRotation = atoi(ControlerConfigurationFile::getValue(FIELD_SCREEN_ROTATION).c_str());
+    this->PropertiesScreen.IsScreenRotationChanged = false;
 
     // Current Ride
     this->PropertiesCurrentRide.resetCurrentRide();

@@ -44,6 +44,9 @@ void ControlerScreen::tick()
 {
     if (xSemaphoreTake(_xMutex, (100 * portTICK_PERIOD_MS)))
     {
+            DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Screen Rotation : " + String(this->_TSProperties->PropertiesScreen.ScreenRotation));
+            this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
+            
         if (this->_TSProperties->PropertiesTS.IsOnStanby)
         {
             DEBUG_STRING_LN(DEBUG_TS_SCREEN, "IsOnStanby");
@@ -58,8 +61,6 @@ void ControlerScreen::tick()
                 this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
             }
 
-            DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Screen Rotation : " + String(this->_TSProperties->PropertiesScreen.ScreenRotation));
-            this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
             DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Active Screen : " + String(this->_TSProperties->PropertiesScreen.ActiveScreen));
 

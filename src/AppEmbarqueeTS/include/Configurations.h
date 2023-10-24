@@ -7,8 +7,8 @@
     #define DEBUG_TS_BUTTONS            false
     #define DEBUG_TS_BUTTONS_HARDCORE   false
     #define DEBUG_TS_SCREEN             false
-    #define DEBUG_TS_GSM                true
-    #define DEBUG_TS_GPS                true
+    #define DEBUG_TS_GSM                false
+    #define DEBUG_TS_GPS                false
     #define DEBUG_TS_GPS_HARDCORE       false
     #define DEBUG_TS_SDCARD             true
     #define DEBUG_TS_BLE                true
