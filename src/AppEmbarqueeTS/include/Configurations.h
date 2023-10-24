@@ -84,12 +84,14 @@
 #define ENDING_RIDE_PAGE_ID -2
 #define ERROR_PAGE_ID -3
 
+/*----- ESP32 -----*/
+#define PIN_LED 12
+
 /*----- SD Card -----*/
 #define PIN_SDCARD_MOSI 15
 #define PIN_SDCARD_SCLK 14
 #define PIN_SDCARD_CS 13
 #define PIN_SDCARD_MISO 2
-#define PIN_LED 12
 
 #define SDCARD_ROOT_PATH "/cr"
 #define SDCARD_FILE_EXTENSION ".csv"
@@ -123,6 +125,7 @@
 #define PIN_BUZZER 32
 
 /*----- Battery -----*/
+// How to calculate Voltage : https://github.com/Xinyuan-LilyGO/LilyGO-T-SIM7000G/issues/104#issuecomment-833887214
 #define PIN_BATTERY 35
 #define BATTERY_VOLTAGE_MIN 3.0
 #define BATTERY_VOLTAGE_MAX 4.2
