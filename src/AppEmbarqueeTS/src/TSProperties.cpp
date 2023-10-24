@@ -1,6 +1,6 @@
 #include "TSProperties.h"
-
-
+#include "Configurations.h"
+#include "ControlerConfigurationFile.h"
 
 TSProperties::TSProperties() : PropertiesTS(),
                                PropertiesBattery(),
@@ -28,7 +28,7 @@ void TSProperties::initProperties()
     this->PropertiesTS.IsFrenchMode = true; // À récupérer dans la mémoire avec les paramètres du cellulaire un jour
 
     // Battery
-    this->PropertiesBattery.BatteryLevel = 0;
+    this->PropertiesBattery.BatteryLevelPourcentage = 0;
 
     // Buttons
     this->PropertiesButtons.Button1State = 0;
@@ -38,17 +38,24 @@ void TSProperties::initProperties()
     // Buzzer
     this->PropertiesBuzzer.IsBuzzerOn = false;
 
+    // Temperature
+    this->PropertiesTemperature.Temperature = 0;
+
+    // SD Card
+    this->PropertiesSDCard.IsSDCardConnected = false;
+
     // Screen
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
-    this->PropertiesScreen.ScreenRotation = 0;
+    this->PropertiesScreen.ScreenRotation = atoi(ControlerConfigurationFile::getValue(FIELD_SCREEN_ROTATION).c_str());
+    this->PropertiesScreen.IsScreenRotationChanged = false;
 
     // Current Ride
-    this->PropertiesCurrentRide.IsRideStarted = false;
-    this->PropertiesCurrentRide.IsRidePaused = false;
-    this->PropertiesCurrentRide.IsRideFinished = false;
-    this->PropertiesCurrentRide.IsRideReadyToSave = false;
     this->PropertiesCurrentRide.resetCurrentRide();
+    // this->PropertiesCurrentRide.IsRideStarted = false;
+    // this->PropertiesCurrentRide.IsRidePaused = false;
+    // this->PropertiesCurrentRide.IsRideFinished = false;
+    // this->PropertiesCurrentRide.IsRideReadyToSave = false;
     
     // BLE
     this->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";

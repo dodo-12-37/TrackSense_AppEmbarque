@@ -1,6 +1,5 @@
 #pragma once
 #include <Arduino.h>
-// #include "TSProperties.h"
 #include "Configurations.h"
 
 class TSProperties
@@ -12,7 +11,7 @@ public:
         bool IsInitializingTS;
         bool IsInitializedGSM;
         bool IsOnStanby;    // mode veille
-        bool IsFrenchMode;  // mode français. If false, mode english. // À récupérer dans la mémoire avec les paramètres du cellulaire un jour.
+        bool IsFrenchMode;  // mode français. If false, mode english. // TODO : Take from Configuration.json file
     } PropertiesTS;
 
     /* datas Current ride */
@@ -47,7 +46,7 @@ public:
             uint dureeHour = this->DurationS / 3600;
             uint dureeMinutes = (this->DurationS % 3600) / 60;
             uint dureeSecondes = this->DurationS % 60;
-            char buffer[8]; // Un tampon pour stocker la chaîne formatée
+            char buffer[9]; // Un tampon pour stocker la chaîne formatée
             sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
             return String(buffer);
         }
@@ -57,10 +56,9 @@ public:
             uint dureeHour = this->DurationS / 3600;
             uint dureeMinutes = (this->DurationS % 3600) / 60;
             uint dureeSecondes = this->DurationS % 60;
-            char buffer[8]; // Un tampon pour stocker la chaîne formatée
+            char buffer[9]; // Un tampon pour stocker la chaîne formatée
             sprintf(buffer, "%02d:%02d:%02d", dureeHour, dureeMinutes, dureeSecondes);
             text = String(buffer);
-            // return String(buffer);
         }
 
         void resetCurrentRide()
@@ -74,6 +72,7 @@ public:
             this->MaxSpeedKMPH = 0;
             this->AverageSpeedKMPH = 0;
             this->DistanceTotalMeters = 0;
+
             this->DurationS = 0;
             this->DateBegin = "0000-00-00T00:00:00";
             this->DateEnd = "0000-00-00T00:00:00";
@@ -173,7 +172,7 @@ public:
             -2 : Page Fin Trajet
             -3 : Page Erreur
         */
-        int ActiveScreen;
+        int ActiveScreen;                           // Seul paramètre modifier par le controlerScreen
         bool IsDarkMode;
 
         /*
@@ -183,6 +182,7 @@ public:
             3 : Pins vers la droite
         */
         uint8_t ScreenRotation;
+        bool IsScreenRotationChanged;
 
     } PropertiesScreen;
 
@@ -204,7 +204,7 @@ public:
     /* datas LTE */
     struct TSPropertiesLTE
     {
-        bool IsDeviceLTEConnected;
+        // bool IsDeviceLTEConnected;
     } PropertiesLTE;
 
     /* datas Wifi */
@@ -216,8 +216,8 @@ public:
     /* datas Compass */
     struct TSPropertiesCompass
     {
-        double Heading_angle; // PositionNord
-        double DeclinationAngle;
+        // double Heading_angle; // PositionNord
+        // double DeclinationAngle;
         // double CalibrationCompassX;
         // double CalibrationCompassY;
         // double CalibrationCompassZ;
@@ -226,17 +226,17 @@ public:
     /* datas Gyroscope */
     struct TSPropertiesGyroscope
     {
-        double RollAngle;  // PositionRoulis
-        double PitchAngle; // PositionTangage
-        double YawAngle;   // PositionLacet
+        // double RollAngle;  // PositionRoulis
+        // double PitchAngle; // PositionTangage
+        // double YawAngle;   // PositionLacet
     } PropertiesGyroscope;
 
     /* datas Accelerometer */
     struct TSPropertiesAccelerometer
     {
-        double Acceleration_x;
-        double Acceleration_y;
-        double Acceleration_z;
+        // double Acceleration_x;
+        // double Acceleration_y;
+        // double Acceleration_z;
     } PropertiesAccelerometer;
 
     /* datas Temperature */
@@ -248,7 +248,7 @@ public:
     /* datas Battery */
     struct TSPropertiesBattery
     {
-        double BatteryLevel;
+        float BatteryLevelPourcentage;
     } PropertiesBattery;
 
     /* datas Buzzer */

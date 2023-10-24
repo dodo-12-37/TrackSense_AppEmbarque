@@ -21,12 +21,14 @@ private:
     BLEAdvertising* _advertisingBLE;
 
     BLEService* _completedRideService;
-
-    BLECharacteristic* _CRDataCaracteristic;
-    BLECharacteristic* _CRNotificationCaracteristic;
-
+    BLECharacteristic* _CRDataCharacteristic;
+    BLECharacteristic* _CRNotificationCharacteristic;
     BLEDescriptor* _CRDataDescriptor;
     BLEDescriptor* _CRNotificationDescriptor;
+
+    BLEService* _screenService;
+    BLECharacteristic* _screenRotateCharacteristic;
+    BLEDescriptor* _screenRotateDescriptor;
 
     unsigned long _lastTimeStatsSent;
     unsigned long _lastTimePointSent;
@@ -36,13 +38,15 @@ private:
 
     void initBLE();
     void initAdvertising();
-    void initCompletedRideService();
-    void initCompletedRideCaracteristics();
-    void initCompletedRideDescriptors();
+    void initServices();
+    void initCaracteristics();
+    void initDescriptors();
     void startServices();
     void sendCompletedRideStats();
     void sendCompletedRideCurrentPoint();
     void confirmPointReceived();
+
+    void updateTSProperties();
 
 public:
     static bool isDeviceConnected;
@@ -52,6 +56,8 @@ public:
     static bool isCompletedRidePointReceived;
     static bool isAdvertiesingStarted;
     static int currentPointNumber;
+
+    static bool isNeedToUpdateTSProperties;
 
     BLE(TSProperties* TSProperties);
     ~BLE();

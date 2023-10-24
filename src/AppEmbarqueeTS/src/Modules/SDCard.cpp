@@ -25,20 +25,20 @@ SDCard::~SDCard()
 
 void SDCard::init()
 {
-    Serial.println("========SDCard Detect.======");
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, "========SDCard Detect.======");
     SPI.begin(PIN_SDCARD_SCLK, PIN_SDCARD_MISO, PIN_SDCARD_MOSI);
 
     this->_TSProperties->PropertiesSDCard.IsSDCardConnected = SD.begin(PIN_SDCARD_CS);
 
     if (!this->_TSProperties->PropertiesSDCard.IsSDCardConnected)
     {
-        Serial.println("SDCard MOUNT FAIL");
+        DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard MOUNT FAIL");
     }
     else
     {
         uint32_t cardSize = SD.cardSize() / (1024 * 1024);
-        String str = "SDCard Size: " + String(cardSize) + "MB";
-        Serial.println(str);
+        // String str = "SDCard Size: " + String(cardSize) + "MB";
+        DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Size: " + String(cardSize) + "MB");
 
         if (!SD.exists(SDCARD_ROOT_PATH))
         {
@@ -47,7 +47,7 @@ void SDCard::init()
 
         this->checkFiles();
     }
-    Serial.println("===========================");
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, "===========================");
 }
 
 void SDCard::tick()
@@ -77,12 +77,12 @@ void SDCard::checkFiles()
             
             if (!this->_queueCompletedRideIds.contains(idTemp))
             {
-                Serial.println("SDCard Ride Id find: " + idTemp);
+                DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Ride Id find: " + idTemp);
                 this->_queueCompletedRideIds.enqueue(idTemp);
                 this->_nbRidesInSDCard++;
             }
 
-            Serial.println("SDCard nb of rides: " + String(this->_nbRidesInSDCard));
+            DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard nb of rides: " + String(this->_nbRidesInSDCard));
             file.close();
         }
     }
@@ -136,7 +136,7 @@ void SDCard::processCurrentRide()
 
         this->writeStatsFile();
         this->_currentPointsFile.close();
-        Serial.println("SDCard Ride Id add into the queue: " + this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
+        DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Ride Id add into the queue: " + this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
         this->_queueCompletedRideIds.enqueue(this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
         this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
     }
@@ -204,14 +204,14 @@ void SDCard::setStatsToSend()
 
         if (compt == SDCARD_POSITION_NUMBER_OF_POINTS)
         {
-            Serial.println("SDCard Number of points : " + line);
+            DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Number of points : " + line);
             this->_TSProperties->PropertiesCompletedRideToSend.NbPoints = line.toInt();
         }
     }
 
     stats.close();
 
-    Serial.println("SDCard Stats find to send: " + content);
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Stats find to send: " + content);
 
     this->_TSProperties->PropertiesCompletedRideToSend.Stats = content;
 };
@@ -266,7 +266,7 @@ void SDCard::setPointsToSendFromFile()
         this->_TSProperties->PropertiesCompletedRideToSend.Point = point;
         this->_TSProperties->PropertiesCompletedRideToSend.IsPointReady = true;
         this->_TSProperties->PropertiesCompletedRideToSend.IsPointReceived = false;
-        Serial.println("SDCard Points ready to send: " + String(this->_TSProperties->PropertiesCompletedRideToSend.Point));
+        DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Points ready to send: " + String(this->_TSProperties->PropertiesCompletedRideToSend.Point));
     }
 };
 
@@ -278,7 +278,7 @@ void SDCard::processSendRide()
     {
         if (this->_TSProperties->PropertiesCompletedRideToSend.IsReceived)
         {
-            Serial.println("SDCard begin to delete files");
+            DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard begin to delete files");
             this->_currentFileSendPoints.close();
             this->deleteCurrentRideFiles();
             this->_isSendingPoints = false;
@@ -293,9 +293,9 @@ void SDCard::processSendRide()
         else if (!this->_TSProperties->PropertiesCompletedRideToSend.IsReady)
         {
             this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId = this->_queueCompletedRideIds.dequeue();
-            Serial.println("SDCard Ride Id find to send: " + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId);
+            DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Ride Id find to send: " + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId);
             this->setStatsToSend();
-            Serial.println("SDCard stats ready to send !");
+            DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard stats ready to send !");
 
             this->_isSendingPoints = true;
             this->_isSendingRide = true;
@@ -323,7 +323,7 @@ void SDCard::deleteCurrentRideFiles()
         + this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId) 
         + String(SDCARD_FILE_STATS_NAME) 
         + String(SDCARD_FILE_EXTENSION));
-    Serial.println(String("Completed Ride Stats file deleted: ") 
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, String("Completed Ride Stats file deleted: ") 
         + String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId)
         + String(SDCARD_FILE_STATS_NAME) 
         + String(SDCARD_FILE_EXTENSION));
@@ -334,7 +334,7 @@ void SDCard::deleteCurrentRideFiles()
         +String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId) 
         + String(SDCARD_FILE_POINTS_NAME) 
         + String(SDCARD_FILE_EXTENSION));
-    Serial.println(String("Completed Ride Points file deleted: ") 
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, String("Completed Ride Points file deleted: ") 
         + String(this->_TSProperties->PropertiesCompletedRideToSend.CompletedRideId)
         + String(SDCARD_FILE_STATS_NAME) 
         + String(SDCARD_FILE_EXTENSION));
