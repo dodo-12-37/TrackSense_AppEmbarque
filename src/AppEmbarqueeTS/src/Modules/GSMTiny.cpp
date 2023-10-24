@@ -103,13 +103,13 @@ void GSMTiny::init()
     // digitalWrite(PIN_SDCARD_LED, LOW);
 
 
-    uint8_t battChargeState = 0;
-    int8_t battPercent = 0;
-    uint16_t battVoltage = 0;
-    this->modem->getBattStats(battChargeState, battPercent, battVoltage);
-    Serial.println("battChargeState : " + String(battChargeState));
-    Serial.println("battPercent : " + String(battPercent));
-    Serial.println("battVoltage : " + String(battVoltage / 1000.0F, 3));
+    // uint8_t battChargeState = 0;
+    // int8_t battPercent = 0;
+    // uint16_t battVoltage = 0;
+    // this->modem->getBattStats(battChargeState, battPercent, battVoltage);
+    // Serial.println("battChargeState : " + String(battChargeState));
+    // Serial.println("battPercent : " + String(battPercent));
+    // Serial.println("battVoltage : " + String(battVoltage / 1000.0F, 3));
 
     this->gpsPowerOff();
     delay(5000);
