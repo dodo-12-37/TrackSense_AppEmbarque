@@ -1,9 +1,12 @@
 #include <Arduino.h>
 #include "Program.h"
 
+
+
 void loopCore0(void *pvParameters); // forward declaration of the loopCore0 function
 
 Program *program = nullptr;
+
 
 void setup()
 {
@@ -17,7 +20,7 @@ void setup()
         "loopCore0", // Name of the task
         5000,        // Stack size in words // À vérifier !!!
         NULL,        // Task input parameter
-        1,         // Priority of the task
+        1,           // Priority of the task
         NULL,        // Task handle.
         0            // Core where the task should run
     );
@@ -100,9 +103,15 @@ void loopCore0(void *pvParameters)
         Serial.printf("Optimum Stack Size = %d.......", optimumStackSize);
         Serial.println();
 #endif
-        // Serial.println("loopCore0");
         program->executeCore0();
 
+        /*
+            REALLY IMPORTANT : 
+            Some Arduino low code is running on core 0 by default. If a Task is running on core 0 without pause, 
+            it take 100% of calculation time and let no time for Arduino low code to run. The Application will crash at random moment...
+            So, we need to pause the task to let some time for Arduino low code to run.
+            vTaskDelay(10 / portTICK_PERIOD_MS) is the minimum value to let Arduino low code to run.
+        */
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }

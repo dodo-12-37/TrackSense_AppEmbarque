@@ -38,17 +38,25 @@ void TSProperties::initProperties()
     // Buzzer
     this->PropertiesBuzzer.IsBuzzerOn = false;
 
+    // Temperature
+    this->PropertiesTemperature.Temperature = 0;
+
+    // SD Card
+    this->PropertiesSDCard.IsSDCardConnected = false;
+
+    // 
+
     // Screen
     this->PropertiesScreen.ActiveScreen = INIT_TS_PAGE_ID;
     this->PropertiesScreen.IsDarkMode = true;
     this->PropertiesScreen.ScreenRotation = atoi(ControlerConfigurationFile::getValue(FIELD_SCREEN_ROTATION).c_str());
 
     // Current Ride
-    this->PropertiesCurrentRide.IsRideStarted = false;
-    this->PropertiesCurrentRide.IsRidePaused = false;
-    this->PropertiesCurrentRide.IsRideFinished = false;
-    this->PropertiesCurrentRide.IsRideReadyToSave = false;
     this->PropertiesCurrentRide.resetCurrentRide();
+    // this->PropertiesCurrentRide.IsRideStarted = false;
+    // this->PropertiesCurrentRide.IsRidePaused = false;
+    // this->PropertiesCurrentRide.IsRideFinished = false;
+    // this->PropertiesCurrentRide.IsRideReadyToSave = false;
     
     // BLE
     this->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";

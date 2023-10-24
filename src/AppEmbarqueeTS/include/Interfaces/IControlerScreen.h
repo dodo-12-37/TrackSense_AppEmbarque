@@ -7,6 +7,8 @@ class IControlerScreen
 public:
     virtual void tick() = 0;
     virtual void printScreen() = 0;
+    
+private:
     /*
         Draw Pages
     */

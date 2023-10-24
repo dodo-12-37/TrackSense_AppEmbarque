@@ -2,13 +2,14 @@
 
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
-                                                               _timeToDisplayEndingRidePageMS(10000)
+                                                               _timeToDisplayEndingRidePageMS(10000),
+                                                               _xMutex(nullptr)
 {
     this->_screen = new ScreenGC9A01(this->_TSProperties);
-
-    this->xMutex = xSemaphoreCreateMutex(); // Create a mutex object
+    this->_xMutex = xSemaphoreCreateMutex(); // Create a mutex object
 
     this->tick();
+    this->printScreen();
 }
 
 ControlerScreen::~ControlerScreen()
@@ -41,11 +42,8 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    // if (xSemaphoreTake(xMutex, portMAX_DELAY))
-    // {
-        // Serial.print("                                      ControlerScreen::tick() running in core ");
-        // Serial.println(xPortGetCoreID());
-
+    if (xSemaphoreTake(_xMutex, (100 * portTICK_PERIOD_MS)))
+    {
         if (this->_TSProperties->PropertiesTS.IsOnStanby)
         {
             Serial.println("IsOnStanby");
@@ -132,18 +130,19 @@ void ControlerScreen::tick()
         }
 
         // this->_screen->drawOnScreen();   // We use void ControlerScreen::printScreen() on Core 0 to draw on screen
-    //     xSemaphoreGive(xMutex); // release the mutex
-    // }
+        xSemaphoreGive(_xMutex); // release the mutex
+    }
 }
 
 void ControlerScreen::printScreen()
 {
-    // if (xSemaphoreTake(xMutex, portMAX_DELAY))
-    // {
+    // if (xSemaphoreTake(_xMutex, (200 * portTICK_PERIOD_MS)))
+    if (xSemaphoreTake(_xMutex, portMAX_DELAY))
+    {
         this->_screen->drawOnScreen();
 
-        // xSemaphoreGive(xMutex); // release the mutex
-    // }
+        xSemaphoreGive(_xMutex); // release the mutex
+    }
 }
 
 /*

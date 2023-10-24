@@ -16,13 +16,9 @@ private:
     GFXcanvas16 *canvas;
     uint16_t _lastBuffer;
 
-    // SemaphoreHandle_t xMutex; // Create a mutex object
-
     uint16_t calculateScreenBuffer();
 
 public:
-    SemaphoreHandle_t _lock;
-
     ScreenGC9A01(TSProperties *TSProperties);
     ~ScreenGC9A01();
 

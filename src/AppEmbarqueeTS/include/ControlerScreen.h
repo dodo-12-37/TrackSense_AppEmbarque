@@ -15,7 +15,7 @@ private:
     ScreenGC9A01 *_screen;
     unsigned long _timeToDisplayEndingRidePageMS;
     
-    SemaphoreHandle_t xMutex; // Create a mutex object
+    SemaphoreHandle_t _xMutex; // Create a mutex object
 
     /* Pages */
     void drawInitTSPage() override;

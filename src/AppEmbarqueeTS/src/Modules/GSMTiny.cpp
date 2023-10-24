@@ -26,20 +26,6 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                _durationS(0),
                                                _maxDurationTresholdInSeconds(30),
                                                _lastReadTimeMS(0)
-//    ,
-//    _latitude2(0),
-//    _longitude2(0),
-//    _speed2(0),
-//    _altitude2(0),
-//    _visibleSatellites2(0),
-//    _usedSatellites2(0),
-//    _accuracy2(0),
-//    _year2(0),
-//    _month2(0),
-//    _day2(0),
-//    _hour2(0),
-//    _minute2(0),
-//    _seconde2(0)
 {
     this->modem = new TinyGsm(SerialAT);
     pinMode(PIN_GSM_PWR, OUTPUT);
