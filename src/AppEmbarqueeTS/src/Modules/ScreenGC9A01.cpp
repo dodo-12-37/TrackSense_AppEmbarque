@@ -1,12 +1,13 @@
 #include "Modules/ScreenGC9A01.h"
 
-// #include <Fonts/BebasNeue_Regular18pt7b.h> // Font logo TrackSense
-// #include <Fonts/BebasNeue_Regular6pt7b.h>  // Font logo TrackSense
-// #include <Fonts/BebasNeue_Regular24pt7b.h> // Font logo TrackSense
+/* Fonts */
 #include <Fonts/FreeSansBold9pt7b.h>
 #include <Fonts/FreeSansOblique9pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSans18pt7b.h>
+// #include <Fonts/BebasNeue_Regular18pt7b.h> // Font logo TrackSense
+// #include <Fonts/BebasNeue_Regular6pt7b.h>  // Font logo TrackSense
+// #include <Fonts/BebasNeue_Regular24pt7b.h> // Font logo TrackSense
 
 
 
@@ -15,7 +16,6 @@ ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSPropert
     this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
     this->canvas = new GFXcanvas16(TFT_WIDTH, TFT_HEIGHT);
 
-    // this->tft->begin();
     this->tft->begin(80000000);
     this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
     this->canvas->setTextWrap(false);
@@ -42,9 +42,9 @@ ScreenGC9A01::~ScreenGC9A01()
 
 void ScreenGC9A01::drawLogoTS() // TODO : Ajouter des fonctions pour dessiner le logo TS en Light Mode : this->drawfillCircle()
 {
-    int16_t coordX = 17; 
-    int16_t coordY = 65; 
-    uint16_t width = 42; 
+    int16_t coordX = 17;
+    int16_t coordY = 65;
+    uint16_t width = 42;
     uint16_t height = 56;
 
     int16_t coordX_ = 0;
@@ -110,15 +110,6 @@ void ScreenGC9A01::drawBattery(int16_t coordX, int16_t coordY, int16_t largeurX,
 
     this->canvas->drawRect(coordX, coordY, zoneBarreVerteX, hauteurY, GC9A01A_WHITE);                                   // Contour
     this->canvas->fillRect(coordX + zoneBarreVerteX, coordY + hauteurY / 4, hauteurY / 4, hauteurY / 2, GC9A01A_WHITE); // ti boute        + hauteurY / 2 - 16/2
-
-    // if (pourcentage < this->_lastBatteryLevel + 2 && pourcentage > this->_lastBatteryLevel - 2)
-    // {
-    //     pourcentage = this->_lastBatteryLevel;
-    // }
-    // else
-    // {
-    //     this->_lastBatteryLevel = pourcentage;
-    // }
 
     switch (pourcentage)
     {
@@ -233,7 +224,12 @@ void ScreenGC9A01::drawOnScreen()
     if (this->_lastBuffer != temp)
     {
         this->_lastBuffer = temp;
-        this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
+
+        uint16_t *buff = nullptr;
+
+        buff = this->canvas->getBuffer();
+
+        this->tft->drawRGBBitmap(0, 0, buff, this->canvas->width(), this->canvas->height());
     }
 
     this->drawBackgroundColor();
@@ -280,6 +276,7 @@ int ScreenGC9A01::calculateXCoordTextToCenter(String text)
 
 void ScreenGC9A01::setFont(uint id)
 {
+
     switch (id)
     {
     case 0:
@@ -316,6 +313,7 @@ int ScreenGC9A01::calculateXCoordItemToCenter(uint16_t lengthInPixels)
 
 void ScreenGC9A01::drawBackgroundColor(uint16_t darkModeColor, uint16_t lightModeColor)
 {
+
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
         this->canvas->fillScreen(darkModeColor);
@@ -331,6 +329,7 @@ void ScreenGC9A01::setTextColor(uint16_t textDarkModeColor,
                                 uint16_t textLightModeColor,
                                 uint16_t backgroundLightModeColor)
 {
+
     if (this->_TSProperties->PropertiesScreen.IsDarkMode)
     {
         this->canvas->setTextColor(textDarkModeColor, backgroundDarkModeColor);
@@ -360,6 +359,7 @@ void ScreenGC9A01::printText(String text, int16_t coordX, int16_t coordY)
 {
     String text2 = "%-" + String(text.length()) + "s";
     const char *formatChar = text2.c_str();
+
     this->canvas->setCursor(coordX, coordY);
     this->canvas->printf(formatChar, text.c_str());
 }
@@ -458,6 +458,7 @@ void ScreenGC9A01::testGPS()
 void ScreenGC9A01::testButtonsScreen()
 {
     this->setTextColor();
+
     this->canvas->setTextSize(3);
     this->canvas->setCursor(35, 50);
 
@@ -492,7 +493,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "No button pressed !");
         }
-        // Serial.println("No button pressed");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 0) // short press button 1
     {
@@ -505,7 +505,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Button 1 SHORT press !");
         }
-        // Serial.println("Button 1 SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 1) // short press button 2
     {
@@ -518,7 +517,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Button 2 SHORT press !");
         }
-        // Serial.println("Button 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 0) // long press button 1
     {
@@ -531,7 +529,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Button 1 LONG press !");
         }
-        // Serial.println("Button 1 LONG press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 2) // long press button 2
     {
@@ -544,7 +541,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Button 2 LONG press !");
         }
-        // Serial.println("Button 2 LONG press");
     }
     else if (isButton1Pressed == 3 & isButton2Pressed == 0) // double short press button 1
     {
@@ -557,7 +553,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Button 1 DOUBLE SHORT press !");
         }
-        // Serial.println("Button 1 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 0 & isButton2Pressed == 3) // double short press button 2
     {
@@ -570,7 +565,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Button 2 DOUBLE SHORT press !");
         }
-        // Serial.println("Button 2 DOUBLE SHORT press");
     }
     else if (isButton1Pressed == 1 & isButton2Pressed == 1) // short press button 1 and 2
     {
@@ -583,7 +577,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Buttons 1 and 2 SHORT press !");
         }
-        // Serial.println("Buttons 1 and 2 SHORT press");
     }
     else if (isButton1Pressed == 2 & isButton2Pressed == 2) // long press button 1 and 2
     {
@@ -596,7 +589,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "Buttons 1 and 2 LONG press !");
         }
-        // Serial.println("Buttons 1 and 2 LONG press");
     }
     else
     {
@@ -609,7 +601,6 @@ void ScreenGC9A01::testButtonsScreen()
         {
             this->canvas->printf(formatChar, "BUTTONS ERROR !!!");
         }
-        // Serial.println("BUTTONS ERROR !!!");
     }
 }
 

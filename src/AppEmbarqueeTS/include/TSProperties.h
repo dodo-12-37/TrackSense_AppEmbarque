@@ -1,6 +1,5 @@
 #pragma once
 #include <Arduino.h>
-// #include "TSProperties.h"
 #include "Configurations.h"
 
 class TSProperties
@@ -12,7 +11,7 @@ public:
         bool IsInitializingTS;
         bool IsInitializedGSM;
         bool IsOnStanby;    // mode veille
-        bool IsFrenchMode;  // mode français. If false, mode english. // À récupérer dans la mémoire avec les paramètres du cellulaire un jour.
+        bool IsFrenchMode;  // mode français. If false, mode english. // TODO : Take from Configuration.json file
     } PropertiesTS;
 
     /* datas Current ride */
@@ -73,6 +72,7 @@ public:
             this->MaxSpeedKMPH = 0;
             this->AverageSpeedKMPH = 0;
             this->DistanceTotalMeters = 0;
+
             this->DurationS = 0;
             this->DateBegin = "0000-00-00T00:00:00";
             this->DateEnd = "0000-00-00T00:00:00";
@@ -203,7 +203,7 @@ public:
     /* datas LTE */
     struct TSPropertiesLTE
     {
-        bool IsDeviceLTEConnected;
+        // bool IsDeviceLTEConnected;
     } PropertiesLTE;
 
     /* datas Wifi */
@@ -215,8 +215,8 @@ public:
     /* datas Compass */
     struct TSPropertiesCompass
     {
-        double Heading_angle; // PositionNord
-        double DeclinationAngle;
+        // double Heading_angle; // PositionNord
+        // double DeclinationAngle;
         // double CalibrationCompassX;
         // double CalibrationCompassY;
         // double CalibrationCompassZ;
@@ -225,17 +225,17 @@ public:
     /* datas Gyroscope */
     struct TSPropertiesGyroscope
     {
-        double RollAngle;  // PositionRoulis
-        double PitchAngle; // PositionTangage
-        double YawAngle;   // PositionLacet
+        // double RollAngle;  // PositionRoulis
+        // double PitchAngle; // PositionTangage
+        // double YawAngle;   // PositionLacet
     } PropertiesGyroscope;
 
     /* datas Accelerometer */
     struct TSPropertiesAccelerometer
     {
-        double Acceleration_x;
-        double Acceleration_y;
-        double Acceleration_z;
+        // double Acceleration_x;
+        // double Acceleration_y;
+        // double Acceleration_z;
     } PropertiesAccelerometer;
 
     /* datas Temperature */

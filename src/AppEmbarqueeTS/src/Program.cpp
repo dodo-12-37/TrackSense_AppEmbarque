@@ -37,19 +37,39 @@ Program::~Program()
 
 void Program::executeCore1()
 {
+    Serial.println("_controlerButtons");
     this->_controlerButtons->tick();
+
+    Serial.println("_buzzer");
     this->_buzzer->tick();
+
+    Serial.println("_battery");
     this->_battery->tick();
-    // this->_controlerScreen->tick();
+
+    Serial.println("_controlerScreen->tick()");
+    this->_controlerScreen->tick();
+
+    Serial.println("_ble");
     this->_ble->tick();
+
+    Serial.println("_gsm");
     this->_gsm->tick();
+
+    Serial.println("_sdCard");
     this->_sdCard->tick();
+
+    Serial.println("_gyroscope");
     this->_gyroscope->tick();
+
+    Serial.println("_compass");
     this->_compass->tick();
+
+    Serial.println("_accelerometer");
     this->_accelerometer->tick();
 }
 
 void Program::executeCore0()
 {
-    this->_controlerScreen->tick();
+    Serial.println("                                _controlerScreen");
+    this->_controlerScreen->printScreen();
 }

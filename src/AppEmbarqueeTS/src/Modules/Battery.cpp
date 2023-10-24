@@ -62,7 +62,6 @@ void Battery::readBatteryVoltage()
         Read_buffer += (voltageBuffer[(this->_voltageReads - 1) / 2]);
     }
 
-    // _batteryVoltage = (((float)(Read_buffer / _voltageReads) / 4096) * 3600 * 2) / 1000;
     this->_batteryVoltage = ((float)(Read_buffer / this->_voltageReads) / 4096.0) * 2.0 * 3.3 * (this->vref / 1000.0);
 }
 
