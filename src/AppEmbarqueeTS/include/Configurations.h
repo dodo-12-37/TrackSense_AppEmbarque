@@ -6,18 +6,17 @@
     // Debug_Type : 
     // #define DEBUG_TS_APPLICATION    true
 
-    // #define DEBUG_TS_CONTROLER_BUTTONS        true
     #define DEBUG_TS_BUTTONS        false
-    #define DEBUG_TS_GSM            false
-    #define DEBUG_TS_GPS            false
-    #define DEBUG_TS_SDCARD         false
-    #define DEBUG_TS_GYROSCOPE      false
-    #define DEBUG_TS_COMPASS        false
-    #define DEBUG_TS_ACCELEROMETER  false
-    #define DEBUG_TS_BLE            false
-    #define DEBUG_TS_SCREEN         false
-    #define DEBUG_TS_BUZZER         false
+    #define DEBUG_TS_SCREEN         true
+    #define DEBUG_TS_GSM            true
+    #define DEBUG_TS_GPS            true
+    #define DEBUG_TS_SDCARD         true
+    #define DEBUG_TS_BLE            true
     #define DEBUG_TS_BATTERY        false
+    #define DEBUG_TS_BUZZER         false
+    #define DEBUG_TS_ACCELEROMETER  false
+    #define DEBUG_TS_COMPASS        false
+    #define DEBUG_TS_GYROSCOPE      false
     #define DEBUG_TS_CORE           false
 #endif
 

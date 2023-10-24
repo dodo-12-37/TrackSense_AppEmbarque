@@ -343,7 +343,7 @@ void GSMTiny::gpsPowerOn()
             0 Set the GPIO low level
             1 Set the GPIO high level
     */
-    Serial.println("Enabling GPS");
+    DEBUG_STRING_LN(DEBUG_TS_GSM, "Enabling GPS");
     // Set SIM7000G GPIO4 HIGH ,turn on GPS power
     // CMD:AT+SGPIO=0,4,1,1
     // Only in version 20200415 is there a function to control GPS power
@@ -352,8 +352,7 @@ void GSMTiny::gpsPowerOn()
     this->modem->sendAT("+SGPIO=0,4,1,1");
     if (this->modem->waitResponse(10000L) != 1)
     {
-        // Serial.println(" SGPIO=0,4,1,1 false ");
-        Serial.println("Set GPS Power HIGH Failed");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, " SGPIO=0,4,1,1 false : Set GPS Power HIGH Failed");
     }
 
     this->modem->enableGPS();
@@ -363,7 +362,7 @@ void GSMTiny::gpsPowerOn()
 
 void GSMTiny::gpsPowerOff()
 {
-    Serial.println("Disabling GPS");
+    DEBUG_STRING_LN(DEBUG_TS_GSM, "Disabling GPS");
     this->modem->disableGPS();
 
     // Set SIM7000G GPIO4 LOW ,turn off GPS power
