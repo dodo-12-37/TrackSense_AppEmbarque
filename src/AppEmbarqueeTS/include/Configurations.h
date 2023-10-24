@@ -6,7 +6,7 @@
     // Debug_Type : true = affiche les messages de debug, false = n'affiche pas les messages de debug
     #define DEBUG_TS_BUTTONS            false
     #define DEBUG_TS_BUTTONS_HARDCORE   false
-    #define DEBUG_TS_SCREEN             true
+    #define DEBUG_TS_SCREEN             false
     #define DEBUG_TS_GSM                true
     #define DEBUG_TS_GPS                true
     #define DEBUG_TS_GPS_HARDCORE       false
@@ -110,6 +110,10 @@
 
 /*----- ESP32 -----*/
 #define PIN_LED 12
+// setting PWM properties
+#define LEDC_FREQ 5000
+#define LEDC_CHANNEL_0 0
+#define LEDC_RESOLUTION 8
 
 /*----- SD Card -----*/
 #define PIN_SDCARD_MOSI 15
