@@ -21,7 +21,7 @@ void Battery::tick()
     this->readBatteryVoltage();
     this->readBatteryPercentage();
 
-#if DEBUG_BATTERY
+#if DEBUG_TS_BATTERY == true
     Serial.print("Battery Voltage : ");
     Serial.println(_batteryVoltage); // 3.0v - 4.2v
     Serial.print("Battery Percentage : ");

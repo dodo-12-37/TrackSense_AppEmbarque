@@ -37,39 +37,39 @@ Program::~Program()
 
 void Program::executeCore1()
 {
-    Serial.println("_controlerButtons");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_controlerButtons");
     this->_controlerButtons->tick();
 
-    Serial.println("_buzzer");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_buzzer");
     this->_buzzer->tick();
 
-    Serial.println("_battery");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_battery");
     this->_battery->tick();
 
-    Serial.println("_controlerScreen->tick()");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_controlerScreen->tick()");
     this->_controlerScreen->tick();
 
-    Serial.println("_ble");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_ble");
     this->_ble->tick();
 
-    Serial.println("_gsm");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_gsm");
     this->_gsm->tick();
 
-    Serial.println("_sdCard");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_sdCard");
     this->_sdCard->tick();
 
-    Serial.println("_gyroscope");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_gyroscope");
     this->_gyroscope->tick();
 
-    Serial.println("_compass");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_compass");
     this->_compass->tick();
 
-    Serial.println("_accelerometer");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "_accelerometer");
     this->_accelerometer->tick();
 }
 
 void Program::executeCore0()
 {
-    Serial.println("                                _controlerScreen");
+    DEBUG_STRING_LN(DEBUG_TS_CORE, "                                _controlerScreen");
     this->_controlerScreen->printScreen();
 }

@@ -3,18 +3,26 @@
 
 /*----- DEBUG -----*/
 #ifdef DEBUG
-    #define DEBUG_BUTTONS false
-    #define DEBUG_GSM false
-    #define DEBUG_SD_CARD false
-    #define DEBUG_GYROSCOPE false
-    #define DEBUG_COMPASS false
-    #define DEBUG_ACCELEROMETER false
-    #define DEBUG_BLE false
-    #define DEBUG_SCREEN false
-    #define DEBUG_BUZZER false
-    #define DEBUG_BATTERY false
-    #define DEBUG_CORE false
+    // Debug_Type : 
+    // #define DEBUG_TS_APPLICATION    true
+
+    // #define DEBUG_TS_CONTROLER_BUTTONS        true
+    #define DEBUG_TS_BUTTONS        false
+    #define DEBUG_TS_GSM            false
+    #define DEBUG_TS_GPS            false
+    #define DEBUG_TS_SDCARD         false
+    #define DEBUG_TS_GYROSCOPE      false
+    #define DEBUG_TS_COMPASS        false
+    #define DEBUG_TS_ACCELEROMETER  false
+    #define DEBUG_TS_BLE            false
+    #define DEBUG_TS_SCREEN         false
+    #define DEBUG_TS_BUZZER         false
+    #define DEBUG_TS_BATTERY        false
+    #define DEBUG_TS_CORE           false
 #endif
+
+#define DEBUG_STRING(Debug_Type, Valeur) if (Debug_Type) {Serial.print(Valeur);};
+#define DEBUG_STRING_LN(Debug_Type, Valeur) if (Debug_Type) {Serial.println(Valeur);};
 
 /*----- Screen -----*/
 #define SPI_TFCard 0 // 1 = SPI, 0 = VSPI // ALWAYS USE VSPI

@@ -25,7 +25,7 @@ void setup()
         0            // Core where the task should run
     );
 
-#if DEBUG_CORE == 1
+#if DEBUG_TS_CORE == 1
     Serial.println("Debug mode");
 
     Serial.printf("Flash Speed = %d Flash mode = %d", ESP.getFlashChipSpeed(), (int)ESP.getFlashChipMode());
@@ -75,7 +75,7 @@ void setup()
 
     Serial.printf("Sketch Size = %d", ESP.getSketchSize());
     Serial.println();
-
+    
     ESP.magicFlashChipMode(0);
     delay(1000);
     Serial.printf("Flash Speed = %d Flash mode = %d", ESP.getFlashChipSpeed(), ESP.getFlashChipMode());
@@ -96,7 +96,7 @@ void loopCore0(void *pvParameters)
 {
     while (true)
     {
-#if DEBUG_CORE == 1
+#if DEBUG_TS_CORE == 1
         Serial.printf("Stack High Water Mark = %d.......", uxTaskGetStackHighWaterMark(NULL));
         Serial.println();
         int optimumStackSize = (5000 - uxTaskGetStackHighWaterMark(NULL)) + 2000;

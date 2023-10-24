@@ -9,14 +9,11 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
                                                                  _finalStateButton2(0),
                                                                  _guidGenerator(nullptr),
                                                                  _lastDateChangementStateButtons(millis())
-//  _lastDateChangementStateButtons(millis() + BUTTON_INACTIVITY_TIME_MS)
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
     this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
     this->_guidGenerator = new UUID();
     this->_guidGenerator->setRandomMode();
-
-    // this->tick();
 }
 
 ControlerButtons::ControlerButtons(const ControlerButtons &other)
@@ -34,6 +31,7 @@ ControlerButtons::ControlerButtons(const ControlerButtons &other)
 
 ControlerButtons::~ControlerButtons()
 {
+    ;
 }
 
 void ControlerButtons::tick()
@@ -46,7 +44,7 @@ void ControlerButtons::tick()
 
     long dateActuelle = millis();
 
-#if DEBUG_BUTTONS
+#if DEBUG_TS_BUTTONS
     this->_TSProperties->PropertiesButtons.Button1State = this->_finalStateButton1;
     this->_TSProperties->PropertiesButtons.Button2State = this->_finalStateButton2;
 #endif
@@ -55,7 +53,6 @@ void ControlerButtons::tick()
     {
         this->_lastDateChangementStateButtons = dateActuelle;
         this->_TSProperties->PropertiesTS.IsOnStanby = false;
-        // Serial.println("++++++++++++++++++++++ Reset _lastDateChangementStateButtons ++++++++++++++++++++++");
     }
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
@@ -64,13 +61,14 @@ void ControlerButtons::tick()
     {
     case 0:
         /* Nothing Happened... */
-        // Serial.println("No button pressed");
-        if (!this->_TSProperties->PropertiesCurrentRide.IsRideStarted) //  && !this->_TSProperties->PropertiesTS.IsInitializingTS
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "No button pressed");
+
+        if (!this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
             if (dateActuelle - this->_lastDateChangementStateButtons > this->_TSProperties->PropertiesButtons.TimeBeforeInactivityMS)
             {
                 this->_TSProperties->PropertiesTS.IsOnStanby = true;
-                // Serial.println("++++++++++++++++++++++ IsOnStanby = true ++++++++++++++++++++++");
+                DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "++++++++++++++++++++++ IsOnStanby = true ++++++++++++++++++++++");
             }
         }
         break;
@@ -79,14 +77,14 @@ void ControlerButtons::tick()
         /* Change Page Up */
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted) // À retirer pour quand on ajoutera la boussole
         {
-            Serial.println("Button 1 SHORT press");
+            DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Button 1 SHORT press");
             this->changePageUp();
         }
         break;
 
     case 2:
         /* Start/Stop Ride */
-        Serial.println("Button 1 LONG press");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Button 1 LONG press");
 
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
@@ -100,7 +98,7 @@ void ControlerButtons::tick()
 
     case 3:
         /* Trigger The Buzzer */
-        Serial.println("Button 1 DOUBLE SHORT press"); // Impossible !!!
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Button 1 DOUBLE SHORT press"); // Impossible !!!
         this->makeNoiseBuzzer();
         break;
 
@@ -108,20 +106,20 @@ void ControlerButtons::tick()
         /* Change Page Down */
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted) // À retirer pour quand on ajoutera la boussole
         {
-            Serial.println("Button 2 SHORT press");
+            DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Button 2 SHORT press");
             this->changePageDown();
         }
         break;
 
     case 5:
         /* Activate GoHome Mode */
-        Serial.println("Buttons 1 and 2 SHORT press");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Buttons 1 and 2 SHORT press");
         this->goHome();
         break;
 
     case 8:
         /* Pause/Restart Ride */
-        Serial.println("Button 2 LONG press");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Button 2 LONG press");
 
         if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted)
         {
@@ -138,19 +136,19 @@ void ControlerButtons::tick()
 
     case 10:
         /* Trigger The Buzzer */
-        Serial.println("Buttons 1 and 2 LONG press");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Buttons 1 and 2 LONG press");
         this->makeNoiseBuzzer();
         break;
 
     case 12:
         /* Trigger The Buzzer */
-        Serial.println("Button 2 DOUBLE SHORT press"); // Impossible !!!
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "Button 2 DOUBLE SHORT press"); // Impossible !!!
         this->makeNoiseBuzzer();
         break;
 
     default:
         /* Nothing Good Happened... */
-        Serial.println("BUTTONS ERROR !!!");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "BUTTONS ERROR !!!");
         break;
     }
 }
@@ -225,7 +223,7 @@ void ControlerButtons::startRide()
 {
     if (this->_TSProperties->PropertiesCurrentRide.IsRideStarted == false)
     {
-        Serial.println("===================== Start Ride =====================");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "===================== Start Ride =====================");
         this->_TSProperties->PropertiesCurrentRide.resetCurrentRide();
         this->_TSProperties->PropertiesGPS.resetGPSValues();
 
@@ -259,7 +257,7 @@ void ControlerButtons::finishRide()
         this->_TSProperties->PropertiesGPS.CounterTotal = 0;
         this->_TSProperties->PropertiesGPS.CounterGoodValue = 0;
 
-        Serial.println("===================== Finish Ride =====================");
+        DEBUG_STRING_LN(DEBUG_TS_BUTTONS, "===================== Finish Ride =====================");
     }
 }
 

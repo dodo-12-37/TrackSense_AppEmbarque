@@ -9,6 +9,7 @@ Buzzer::Buzzer(TSProperties* TSProperties) : _TSProperties(TSProperties)
 
 Buzzer::~Buzzer()
 {
+    ;
 }
 
 void Buzzer::tick()

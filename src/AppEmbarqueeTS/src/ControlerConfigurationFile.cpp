@@ -15,7 +15,7 @@ String ControlerConfigurationFile::readFile()
 
     if (file)
     {
-        while (file.available()) 
+        while (file.available())
         {
             content += file.readString();
         }
@@ -26,7 +26,7 @@ String ControlerConfigurationFile::readFile()
     return content;
 }
 
-void ControlerConfigurationFile::writeFile(String const& content)
+void ControlerConfigurationFile::writeFile(String const &content)
 {
     FS.begin(true);
     File file = FS.open(PATH_CONFIGURATION_FILE, "w");
@@ -39,9 +39,9 @@ void ControlerConfigurationFile::writeFile(String const& content)
     file.close();
 }
 
-String ControlerConfigurationFile::getValue(String const& field)
+String ControlerConfigurationFile::getValue(String const &field)
 {
-    String content = ControlerConfigurationFile::readFile(); 
+    String content = ControlerConfigurationFile::readFile();
 
     DynamicJsonDocument configFileJson(DYNAMIQUE_JSON_DOCUMENT_SIZE);
     deserializeJson(configFileJson, content);
@@ -49,9 +49,9 @@ String ControlerConfigurationFile::getValue(String const& field)
     return configFileJson[field];
 }
 
-void ControlerConfigurationFile::setValue(String const& field, String const& value)
+void ControlerConfigurationFile::setValue(String const &field, String const &value)
 {
-    String content = ControlerConfigurationFile::readFile(); 
+    String content = ControlerConfigurationFile::readFile();
 
     DynamicJsonDocument configFileJson(DYNAMIQUE_JSON_DOCUMENT_SIZE);
     deserializeJson(configFileJson, content);

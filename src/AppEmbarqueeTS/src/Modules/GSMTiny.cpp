@@ -32,7 +32,7 @@ GSMTiny::GSMTiny(TSProperties *TSProperties) : _TSProperties(TSProperties),
 
     // // Set LED OFF
     // pinMode(PIN_LED, OUTPUT);
-    // Serial.println("Set LED OFF");
+    // DEBUG_STRING_LN(DEBUG_TS_GSM, "Set LED OFF");
     // digitalWrite(PIN_LED, HIGH);
 
     this->init();
@@ -53,48 +53,46 @@ void GSMTiny::init()
     SerialAT.begin(GPS_UART_BAUD, SERIAL_8N1, PIN_GSM_RX, PIN_GSM_TX);
 
     // Restart takes quite some time
-    // To skip it, call init() instead of restart()
-    Serial.println("Initializing modem...");
+    // To skip it, call init() instead of restart() // It take less time to init than restart
+    DEBUG_STRING_LN(DEBUG_TS_GSM, "----- Initializing modem -----");
 
     if (this->modem->testAT())
     {
-        Serial.println("Modem is finally functional");
-        Serial.println("Modem initialized.");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, "Modem is finally functional");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, "Modem initialized.");
     }
     else
     {
         if (!this->modem->restart())
         {
-            Serial.println("Failed to restart modem, attempting to continue without restarting");
+            DEBUG_STRING_LN(DEBUG_TS_GSM, "Failed to restart modem, attempting to continue without restarting");
 
             if (!this->modem->init())
             {
-                Serial.println("Failed to initialize modem.");
+                DEBUG_STRING_LN(DEBUG_TS_GSM, "Failed to initialize modem.");
             }
         }
-        Serial.println("Modem is not functional");
-        Serial.println("Modem not initialized.");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, "Modem is not functional");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, "Modem not initialized.");
     }
 
-    this->gpsRestart();
+    // this->gpsRestart();
+    this->gpsPowerOn();
     this->setWorkModeGPS();
 
     this->_isInitialized = true;
     this->_TSProperties->PropertiesTS.IsInitializedGSM = true;
 
     this->gpsPowerOff();
-    delay(5000);
+    DEBUG_STRING_LN(DEBUG_TS_GSM, "----- Initialization modem finished -----");
 }
 
 void GSMTiny::tick()
 {
     long actualTime = millis();
 
-    /* PropertiesBattery */
-    // this->_TSProperties->PropertiesBattery.BatteryLevelPourcentage = this->modem->getBattPercent();
-
-    // Serial.println("=======================================");
-#if DEBUG_GSM
+#if DEBUG_GPS
+    Serial.println("=======================================");
     Serial.println("Tick GSM");
     Serial.println("IsRideStarted : " + String(this->_TSProperties->PropertiesCurrentRide.IsRideStarted));
     Serial.println("IsRideFinished : " + String(this->_TSProperties->PropertiesCurrentRide.IsRideFinished));
@@ -111,7 +109,7 @@ void GSMTiny::tick()
         {
             this->_durationS = (actualTime - this->_TSProperties->PropertiesCurrentRide.StartTimeMS) / 1000;
             this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
-            Serial.println("DurationS : " + String(this->_durationS));
+            DEBUG_STRING_LN(DEBUG_TS_GPS, "DurationS : " + String(this->_durationS));
 
             this->_lastReadTimeMS = actualTime;
 
@@ -131,7 +129,7 @@ void GSMTiny::tick()
                     if (this->_distanceMetersBetweenLastPointAndCurrentPoint > this->_maxDistanceTresholdInMeters) // || this->_durationS > this->_TSProperties->PropertiesCurrentRide.DurationS + this->_maxDurationTresholdInSeconds
                     {
                         this->saveCurrentRideDatasToTSProperties();
-#if DEBUG_GSM
+#if DEBUG_TS_GPS
                         Serial.println("Distance between last point and current point : " + String(this->_distanceMetersBetweenLastPointAndCurrentPoint));
 
                         Serial.println("PointID : " + String(this->_TSProperties->PropertiesCurrentRide.PointID));
@@ -150,7 +148,7 @@ void GSMTiny::tick()
             }
             else
             {
-                Serial.println("Write GPS : Location is not Valid");
+                DEBUG_STRING_LN(DEBUG_TS_GPS, "Write GPS : Location is not Valid");
             }
         }
 
@@ -158,7 +156,8 @@ void GSMTiny::tick()
     }
     else
     {
-        Serial.println("Write GPS : Ride is not Started");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, "Write GPS : Ride is not Started");
+
         if (this->_isGpsOn == true && this->_isModemOn == true && this->_isInitialized == true)
         {
             this->gpsPowerOff();
@@ -172,14 +171,14 @@ bool GSMTiny::readDatas()
 
     if (this->_isInitialized && this->_isGpsOn)
     {
-        Serial.println("Requesting current GPS/GNSS/GLONASS location");
+        DEBUG_STRING_LN(DEBUG_TS_GPS, "Requesting current GPS/GNSS/GLONASS location");
 
         if (this->modem->getGPS(&this->_latitude, &this->_longitude, &this->_speed, &this->_altitude, &this->_visibleSatellites, &this->_usedSatellites,
                                 &this->_accuracy, &this->_year, &this->_month, &this->_day, &this->_hour, &this->_minute, &this->_seconde))
         {
             result = true;
 
-#if DEBUG_GSM
+#if DEBUG_TS_GPS
             Serial.println("Latitude: " + String(this->_latitude, 10) + "\tLongitude: " + String(this->_longitude, 10));
             Serial.println("Speed: " + String(this->_speed) + "\tAltitude: " + String(this->_altitude));
             Serial.println("Visible Satellites: " + String(this->_visibleSatellites) + "\tUsed Satellites: " + String(this->_usedSatellites));
@@ -195,7 +194,7 @@ bool GSMTiny::readDatas()
         }
         else
         {
-            Serial.println("Couldn't get GPS/GNSS/GLONASS location.");
+            DEBUG_STRING_LN(DEBUG_TS_GPS, "Couldn't get GPS/GNSS/GLONASS location.");
         }
 
         this->_TSProperties->PropertiesGPS.CounterTotal++;
@@ -247,7 +246,7 @@ void GSMTiny::saveGPSDatasToTSProperties()
     this->_TSProperties->PropertiesGPS.IsFixValid = this->isFixValid();
     this->_TSProperties->PropertiesGPS.IsGPSFixed = this->isGPSFixed();
 
-    Serial.println("--------------------------------------------Accuracy : " + String(this->_TSProperties->PropertiesGPS.Accuracy));
+    DEBUG_STRING_LN(DEBUG_TS_GPS, "--------------------------------------------Accuracy : " + String(this->_TSProperties->PropertiesGPS.Accuracy));
 }
 
 void GSMTiny::saveCurrentRideDatasToTSProperties()
@@ -263,7 +262,6 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
     this->_TSProperties->PropertiesCurrentRide.NbPoints++;
     this->_TSProperties->PropertiesCurrentRide.DateEnd = this->getDatetime();
     this->_TSProperties->PropertiesCurrentRide.Temperature = this->_TSProperties->PropertiesTemperature.Temperature;
-    // this->_TSProperties->PropertiesCurrentRide.DurationS = this->_durationS;
     this->_TSProperties->PropertiesCurrentRide.CurrentPoint = String(this->_TSProperties->PropertiesCurrentRide.PointID) + ";" +
                                                               String(this->_latitude, 10) + ";" +
                                                               String(this->_longitude, 10) + ";" +
@@ -275,7 +273,6 @@ void GSMTiny::saveCurrentRideDatasToTSProperties()
 
     this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters += this->_distanceMetersBetweenLastPointAndCurrentPoint;
     this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH = max(this->_TSProperties->PropertiesCurrentRide.MaxSpeedKMPH, this->_speed);
-    // this->_TSProperties->PropertiesCurrentRide.AverageSpeedKMPH = (this->_TSProperties->PropertiesCurrentRide.DistanceTotalMeters / this->_TSProperties->PropertiesCurrentRide.DurationS) * 3.6;
 
     this->_TSProperties->PropertiesCurrentRide.IsPointReadyToSave = true;
 }
@@ -294,7 +291,6 @@ String GSMTiny::getDate()
     }
 
     String result = String(this->_year) + "-" + month + "-" + day;
-    // Serial.println("Date : " + result);
     return result;
 }
 
@@ -317,7 +313,6 @@ String GSMTiny::getTime()
     }
 
     String result = hour + ":" + minute + ":" + seconde;
-    // Serial.println("Time : " + result);
     return result;
 }
 
@@ -325,7 +320,6 @@ String GSMTiny::getDatetime()
 {
     // AppMobile doit recevoir ceci : 2023-09-03T14:30:00
     String result = this->getDate() + "T" + this->getTime();
-    // Serial.println("Datetime : " + result);
     return result;
 }
 
@@ -353,7 +347,7 @@ void GSMTiny::gpsPowerOn()
     // Set SIM7000G GPIO4 HIGH ,turn on GPS power
     // CMD:AT+SGPIO=0,4,1,1
     // Only in version 20200415 is there a function to control GPS power
-    // Version 20200415 (Version 1.1)
+    // Version 20200415 (Version 1.1) = The version we have.
     // Version 20191227 (Version 1.0)
     this->modem->sendAT("+SGPIO=0,4,1,1");
     if (this->modem->waitResponse(10000L) != 1)
@@ -375,14 +369,12 @@ void GSMTiny::gpsPowerOff()
     // Set SIM7000G GPIO4 LOW ,turn off GPS power
     // CMD:AT+SGPIO=0,4,1,0
     // Only in version 20200415 is there a function to control GPS power.
-    // Version 20200415 (Version 1.1) -> Nous avons cette version.
+    // Version 20200415 (Version 1.1) = The version we have.
     // Version 20191227 (Version 1.0)
-    // Revision:1529B08SIM7000G
-    this->modem->sendAT("+SGPIO=0,4,1,0"); // devrait pt être "+CGPIO=0,4,1,0" ou "+SGPIO=0,4,1,0"
+    this->modem->sendAT("+SGPIO=0,4,1,0"); // maybe it should be "+CGPIO=0,4,1,0" or "+SGPIO=0,4,1,0" ??? 
     if (this->modem->waitResponse(10000L) != 1)
     {
-        // Serial.println(" SGPIO=0,4,1,0 false ");
-        Serial.println("Set GPS Power LOW Failed");
+        DEBUG_STRING_LN(DEBUG_TS_GSM, " SGPIO=0,4,1,0 false : Set GPS Power LOW Failed");
     }
 
     delay(200);
@@ -436,11 +428,10 @@ void GSMTiny::modemRestart()
 */
 void GSMTiny::setWorkModeGPS()
 {
-    this->modem->sendAT("+CGNSMOD=1,1,1,1");
+    this->modem->sendAT("+CGNSMOD=1,1,1,1"); // Activate GPS, GLONASS, BeiDou, Galileo work mode.
     if (this->modem->waitResponse(10000L) != 1)
     {
-        Serial.print(" CGNSMOD=1,1,1,1 ");
-        Serial.println(" Activate GPS, GLONASS, BeiDou, Galileo work mode.");
+        DEBUG_STRING_LN(DEBUG_TS_GPS, " CGNSMOD=1,1,1,1 : Set work mode of SIM7000G GPS failed");
     }
 }
 

@@ -1,7 +1,5 @@
 #include "ControlerScreen.h"
 
-
-
 ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSProperties),
                                                                _screen(nullptr),
                                                                _timeToDisplayEndingRidePageMS(10000),
@@ -48,7 +46,7 @@ void ControlerScreen::tick()
     {
         if (this->_TSProperties->PropertiesTS.IsOnStanby)
         {
-            Serial.println("IsOnStanby");
+            DEBUG_STRING_LN(DEBUG_TS_SCREEN, "IsOnStanby");
             this->_screen->drawBackgroundColor(GC9A01A_BLUE, GC9A01A_BLUE);
             this->_screen->setTextSize(4);
             this->_screen->printText("Veille", this->_screen->calculateXCoordTextToCenter("Veille"), 140);
@@ -60,12 +58,10 @@ void ControlerScreen::tick()
                 this->_TSProperties->PropertiesScreen.ActiveScreen = ERROR_PAGE_ID;
             }
 
-        Serial.print("Screen Rotation : ");
-        Serial.println(this->_TSProperties->PropertiesScreen.ScreenRotation);
-        this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
+            DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Screen Rotation : " + String(this->_TSProperties->PropertiesScreen.ScreenRotation));
+            this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
 
-            Serial.print("Active Screen : ");
-            Serial.println(this->_TSProperties->PropertiesScreen.ActiveScreen);
+            DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Active Screen : " + String(this->_TSProperties->PropertiesScreen.ActiveScreen));
 
             switch (this->_TSProperties->PropertiesScreen.ActiveScreen)
             {
@@ -180,7 +176,7 @@ void ControlerScreen::drawInitTSPage()
 
 void ControlerScreen::drawHomePage()
 {
-#if DEBUG_BUTTONS
+#if DEBUG_TS_BUTTONS
     this->_screen->testButtonsScreen();
 #else
     this->_screen->drawLogoTS();
@@ -208,7 +204,7 @@ void ControlerScreen::drawRideDirectionPage()
 
 void ControlerScreen::drawRidePage()
 {
-#if DEBUG_GSM
+#if DEBUG_TS_GPS
     this->_screen->testGPS();
 #else
     String speed = "";
