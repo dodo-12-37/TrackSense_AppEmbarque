@@ -133,11 +133,20 @@ void SDCard::processCurrentRide()
         {
             this->writePoint();
         }
+        
+        if (this->_TSProperties->PropertiesCurrentRide.NbPoints > 0)
+        {
+            this->writeStatsFile();
+            this->_currentPointsFile.close();
+            DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Ride Id add into the queue: " + this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
+            this->_queueCompletedRideIds.enqueue(this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
+        }
+        else
+        {
+            this->_currentPointsFile.close();
+            this->deleteCurrentRideFiles();
+        }
 
-        this->writeStatsFile();
-        this->_currentPointsFile.close();
-        DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard Ride Id add into the queue: " + this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
-        this->_queueCompletedRideIds.enqueue(this->_TSProperties->PropertiesCurrentRide.CompletedRideId);
         this->_TSProperties->PropertiesCurrentRide.IsRideFinished = false;
     }
 };
@@ -280,7 +289,7 @@ void SDCard::processSendRide()
         {
             DEBUG_STRING_LN(DEBUG_TS_SDCARD, "SDCard begin to delete files");
             this->_currentFileSendPoints.close();
-            this->deleteCurrentRideFiles();
+            this->deleteCurrentRideSentFiles();
             this->_isSendingPoints = false;
             this->_isSendingRide = false;
             this->_TSProperties->PropertiesCompletedRideToSend.IsStatsReceived = false;
@@ -316,6 +325,31 @@ void SDCard::processSendRide()
 };
 
 void SDCard::deleteCurrentRideFiles()
+{
+    SD.remove((
+        SDCARD_ROOT_PATH
+        + String("/")
+        + this->_TSProperties->PropertiesCurrentRide.CompletedRideId) 
+        + String(SDCARD_FILE_STATS_NAME) 
+        + String(SDCARD_FILE_EXTENSION));
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, String("Completed Ride Stats file deleted: ") 
+        + String(this->_TSProperties->PropertiesCurrentRide.CompletedRideId)
+        + String(SDCARD_FILE_STATS_NAME) 
+        + String(SDCARD_FILE_EXTENSION));
+        
+    SD.remove(
+        SDCARD_ROOT_PATH
+        + String("/")
+        +String(this->_TSProperties->PropertiesCurrentRide.CompletedRideId) 
+        + String(SDCARD_FILE_POINTS_NAME) 
+        + String(SDCARD_FILE_EXTENSION));
+    DEBUG_STRING_LN(DEBUG_TS_SDCARD, String("Completed Ride Points file deleted: ") 
+        + String(this->_TSProperties->PropertiesCurrentRide.CompletedRideId)
+        + String(SDCARD_FILE_STATS_NAME) 
+        + String(SDCARD_FILE_EXTENSION));
+};
+
+void SDCard::deleteCurrentRideSentFiles()
 {
     SD.remove((
         SDCARD_ROOT_PATH
