@@ -226,8 +226,6 @@ void ScreenGC9A01::drawOnScreen()
 
         this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
     }
-
-    // this->drawBackgroundColor();
 }
 
 uint16_t ScreenGC9A01::calculateScreenBuffer()

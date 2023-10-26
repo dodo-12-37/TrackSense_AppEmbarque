@@ -9,7 +9,7 @@ ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSP
     this->_xMutex = xSemaphoreCreateMutex(); // Create a mutex object
 
     this->tick();
-    this->printScreen();
+    this->drawOnScreen();
 }
 
 ControlerScreen::~ControlerScreen()
@@ -43,7 +43,7 @@ ControlerScreen::~ControlerScreen()
 void ControlerScreen::tick()
 {
     // if (xSemaphoreTake(_xMutex, portMAX_DELAY))
-    if (xSemaphoreTake(_xMutex, (100 * portTICK_PERIOD_MS)))
+    if (xSemaphoreTake(_xMutex, (150 * portTICK_PERIOD_MS)))
     {
             this->_screen->drawBackgroundColor(); // Reset Canvas
 
@@ -133,12 +133,12 @@ void ControlerScreen::tick()
             }
         }
 
-        // this->_screen->drawOnScreen();   // We use void ControlerScreen::printScreen() on Core 0 to draw on screen
+        // this->_screen->drawOnScreen();   // We use void ControlerScreen::drawOnScreen() on Core 0 to draw on screen
         xSemaphoreGive(_xMutex); // release the mutex
     }
 }
 
-void ControlerScreen::printScreen()
+void ControlerScreen::drawOnScreen()
 {
     // if (xSemaphoreTake(_xMutex, (200 * portTICK_PERIOD_MS)))
     if (xSemaphoreTake(_xMutex, portMAX_DELAY))
