@@ -9,7 +9,7 @@ ControlerScreen::ControlerScreen(TSProperties *TSProperties) : _TSProperties(TSP
     this->_xMutex = xSemaphoreCreateMutex(); // Create a mutex object
 
     this->tick();
-    this->printScreen();
+    this->drawOnScreen();
 }
 
 ControlerScreen::~ControlerScreen()
@@ -42,15 +42,18 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
-    if (xSemaphoreTake(_xMutex, (100 * portTICK_PERIOD_MS)))
+    // if (xSemaphoreTake(_xMutex, portMAX_DELAY))
+    if (xSemaphoreTake(_xMutex, (150 * portTICK_PERIOD_MS)))
     {
+            this->_screen->drawBackgroundColor(); // Reset Canvas
+
             DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Screen Rotation : " + String(this->_TSProperties->PropertiesScreen.ScreenRotation));
             this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
             
         if (this->_TSProperties->PropertiesTS.IsOnStanby)
         {
             DEBUG_STRING_LN(DEBUG_TS_SCREEN, "IsOnStanby");
-            this->_screen->drawBackgroundColor(GC9A01A_BLUE, GC9A01A_BLUE);
+            this->_screen->drawBackgroundColor(GC9A01A_BLACK, GC9A01A_BLACK);
             this->_screen->setTextSize(4);
             this->_screen->printText("Veille", this->_screen->calculateXCoordTextToCenter("Veille"), 140);
         }
@@ -125,17 +128,17 @@ void ControlerScreen::tick()
                 break;
 
             default:                   // -3
-                this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
+                this->drawErrorPage();
                 break;
             }
         }
 
-        // this->_screen->drawOnScreen();   // We use void ControlerScreen::printScreen() on Core 0 to draw on screen
+        // this->_screen->drawOnScreen();   // We use void ControlerScreen::drawOnScreen() on Core 0 to draw on screen
         xSemaphoreGive(_xMutex); // release the mutex
     }
 }
 
-void ControlerScreen::printScreen()
+void ControlerScreen::drawOnScreen()
 {
     // if (xSemaphoreTake(_xMutex, (200 * portTICK_PERIOD_MS)))
     if (xSemaphoreTake(_xMutex, portMAX_DELAY))

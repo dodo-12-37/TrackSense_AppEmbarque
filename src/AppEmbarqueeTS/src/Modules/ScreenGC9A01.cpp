@@ -9,8 +9,6 @@
 // #include <Fonts/BebasNeue_Regular6pt7b.h>  // Font logo TrackSense
 // #include <Fonts/BebasNeue_Regular24pt7b.h> // Font logo TrackSense
 
-
-
 ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSProperties), _lastBuffer(0)
 {
     this->tft = new Adafruit_GC9A01A(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
@@ -224,15 +222,10 @@ void ScreenGC9A01::drawOnScreen()
     if (this->_lastBuffer != temp || this->_TSProperties->PropertiesScreen.IsScreenRotationChanged)
     {
         this->_lastBuffer = temp;
+        this->_TSProperties->PropertiesScreen.IsScreenRotationChanged = false;
 
-        uint16_t *buff = nullptr;
-
-        buff = this->canvas->getBuffer();
-
-        this->tft->drawRGBBitmap(0, 0, buff, this->canvas->width(), this->canvas->height());
+        this->tft->drawRGBBitmap(0, 0, this->canvas->getBuffer(), this->canvas->width(), this->canvas->height());
     }
-
-    this->drawBackgroundColor();
 }
 
 uint16_t ScreenGC9A01::calculateScreenBuffer()

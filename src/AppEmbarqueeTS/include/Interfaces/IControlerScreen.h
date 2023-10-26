@@ -6,7 +6,7 @@ class IControlerScreen
 {
 public:
     virtual void tick() = 0;
-    virtual void printScreen() = 0;
+    virtual void drawOnScreen() = 0;
     
 private:
     /*
