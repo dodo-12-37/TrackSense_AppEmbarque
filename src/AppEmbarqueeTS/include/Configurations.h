@@ -2,39 +2,25 @@
 #include <Arduino.h>
 
 /*----- DEBUG -----*/
-#ifdef DEBUG
-    // Debug_Type : true = affiche les messages de debug, false = n'affiche pas les messages de debug
-    #define DEBUG_TS_BUTTONS            false
-    #define DEBUG_TS_BUTTONS_HARDCORE   false
-    #define DEBUG_TS_SCREEN             false
-    #define DEBUG_TS_GSM                false
-    #define DEBUG_TS_GPS                false
-    #define DEBUG_TS_GPS_HARDCORE       false
-    #define DEBUG_TS_SDCARD             true
-    #define DEBUG_TS_BLE                true
-    #define DEBUG_TS_BATTERY            false
-    #define DEBUG_TS_BUZZER             false
-    #define DEBUG_TS_ACCELEROMETER      false
-    #define DEBUG_TS_COMPASS            false
-    #define DEBUG_TS_GYROSCOPE          false
-    #define DEBUG_TS_CORE               false
-#else   // Release
-    // Should always be false here !
-    #define DEBUG_TS_BUTTONS            false
-    #define DEBUG_TS_BUTTONS_HARDCORE   false
-    #define DEBUG_TS_SCREEN             false
-    #define DEBUG_TS_GSM                false
-    #define DEBUG_TS_GPS                false
-    #define DEBUG_TS_GPS_HARDCORE       false
-    #define DEBUG_TS_SDCARD             false
-    #define DEBUG_TS_BLE                false
-    #define DEBUG_TS_BATTERY            false
-    #define DEBUG_TS_BUZZER             false
-    #define DEBUG_TS_ACCELEROMETER      false
-    #define DEBUG_TS_COMPASS            false
-    #define DEBUG_TS_GYROSCOPE          false
-    #define DEBUG_TS_CORE               false
+#ifndef DEBUG
+    #define DEBUG false
 #endif
+
+// Debug_Type : true = affiche les messages de debug, false = n'affiche pas les messages de debug
+#define DEBUG_TS_BUTTONS            DEBUG && false
+#define DEBUG_TS_BUTTONS_HARDCORE   DEBUG && false
+#define DEBUG_TS_SCREEN             DEBUG && true
+#define DEBUG_TS_GSM                DEBUG && true
+#define DEBUG_TS_GPS                DEBUG && true
+#define DEBUG_TS_GPS_HARDCORE       DEBUG && false
+#define DEBUG_TS_SDCARD             DEBUG && true
+#define DEBUG_TS_BLE                DEBUG && true
+#define DEBUG_TS_BATTERY            DEBUG && false
+#define DEBUG_TS_BUZZER             DEBUG && false
+#define DEBUG_TS_ACCELEROMETER      DEBUG && false
+#define DEBUG_TS_COMPASS            DEBUG && false
+#define DEBUG_TS_GYROSCOPE          DEBUG && false
+#define DEBUG_TS_CORE               DEBUG && false
 
 #define DEBUG_STRING(Debug_Type, Valeur) if (Debug_Type) {Serial.print(Valeur);};
 #define DEBUG_STRING_LN(Debug_Type, Valeur) if (Debug_Type) {Serial.println(Valeur);};

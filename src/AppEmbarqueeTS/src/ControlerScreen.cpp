@@ -42,15 +42,18 @@ ControlerScreen::~ControlerScreen()
 */
 void ControlerScreen::tick()
 {
+    // if (xSemaphoreTake(_xMutex, portMAX_DELAY))
     if (xSemaphoreTake(_xMutex, (100 * portTICK_PERIOD_MS)))
     {
+            this->_screen->drawBackgroundColor(); // Reset Canvas
+
             DEBUG_STRING_LN(DEBUG_TS_SCREEN, "Screen Rotation : " + String(this->_TSProperties->PropertiesScreen.ScreenRotation));
             this->_screen->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
             
         if (this->_TSProperties->PropertiesTS.IsOnStanby)
         {
             DEBUG_STRING_LN(DEBUG_TS_SCREEN, "IsOnStanby");
-            this->_screen->drawBackgroundColor(GC9A01A_BLUE, GC9A01A_BLUE);
+            this->_screen->drawBackgroundColor(GC9A01A_BLACK, GC9A01A_BLACK);
             this->_screen->setTextSize(4);
             this->_screen->printText("Veille", this->_screen->calculateXCoordTextToCenter("Veille"), 140);
         }
@@ -125,7 +128,7 @@ void ControlerScreen::tick()
                 break;
 
             default:                   // -3
-                this->drawErrorPage(); // TODO : Enlever l'affichage de la page d'erreur pour la production
+                this->drawErrorPage();
                 break;
             }
         }
