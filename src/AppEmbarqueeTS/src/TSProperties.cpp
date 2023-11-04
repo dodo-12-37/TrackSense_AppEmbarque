@@ -52,10 +52,6 @@ void TSProperties::initProperties()
 
     // Current Ride
     this->PropertiesCurrentRide.resetCurrentRide();
-    // this->PropertiesCurrentRide.IsRideStarted = false;
-    // this->PropertiesCurrentRide.IsRidePaused = false;
-    // this->PropertiesCurrentRide.IsRideFinished = false;
-    // this->PropertiesCurrentRide.IsRideReadyToSave = false;
     
     // BLE
     this->PropertiesCompletedRideToSend.CompletedRideId = "00000000-0000-0000-0000-000000000000";

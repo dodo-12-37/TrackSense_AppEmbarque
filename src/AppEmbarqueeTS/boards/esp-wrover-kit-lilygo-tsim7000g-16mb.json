@@ -26,9 +26,10 @@
     "can"
   ],
   "debug": {
-    "default_tool": "ftdi",
+    "default_tool": "esp-prog",
     "onboard_tools": [
-      "ftdi"
+      "ftdi",
+      "esp-prog"
     ],
     "openocd_board": "esp32-wrover-kit-1.8v.cfg"
   },

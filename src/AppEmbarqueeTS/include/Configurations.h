@@ -4,6 +4,11 @@
 /*----- DEBUG -----*/
 #ifndef DEBUG
     #define DEBUG false
+    #define DEBUG_STRING(Debug_Type, Valeur)
+    #define DEBUG_STRING_LN(Debug_Type, Valeur)
+#else
+    #define DEBUG_STRING(Debug_Type, Valeur) if (Debug_Type) {Serial.print(Valeur);};
+    #define DEBUG_STRING_LN(Debug_Type, Valeur) if (Debug_Type) {Serial.println(Valeur);};
 #endif
 
 // Debug_Type : true = affiche les messages de debug, false = n'affiche pas les messages de debug
@@ -22,12 +27,9 @@
 #define DEBUG_TS_GYROSCOPE          DEBUG && false
 #define DEBUG_TS_CORE               DEBUG && false
 
-#define DEBUG_STRING(Debug_Type, Valeur) if (Debug_Type) {Serial.print(Valeur);};
-#define DEBUG_STRING_LN(Debug_Type, Valeur) if (Debug_Type) {Serial.println(Valeur);};
-
 
 /*----- Screen -----*/
-#define SPI_TFCard 0 // 1 = SPI, 0 = VSPI // ALWAYS USE VSPI, NEVER USE SPI. Our connections are bad and we can't use SPI.
+#define SPI_TFCard 0 // 1 = SPI, 0 = VSPI // ALWAYS USE VSPI, NEVER USE SPI. Our connections are bad on our V1.0 PCB and we can't use SPI_TFCard.
 
 #if SPI_TFCard
     // Ne pas considérer cette possibilité de connexion de l'écran. Aucune chance que ça fonctionne. Le PCB peut être modifié à l'avenir.
