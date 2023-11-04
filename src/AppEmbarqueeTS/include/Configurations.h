@@ -16,10 +16,10 @@
 #define DEBUG_TS_BUTTONS_HARDCORE   DEBUG && false
 #define DEBUG_TS_SCREEN             DEBUG && true
 #define DEBUG_TS_GSM                DEBUG && true
-#define DEBUG_TS_GPS                DEBUG && true
+#define DEBUG_TS_GPS                DEBUG && false
 #define DEBUG_TS_GPS_HARDCORE       DEBUG && false
 #define DEBUG_TS_SDCARD             DEBUG && true
-#define DEBUG_TS_BLE                DEBUG && true
+#define DEBUG_TS_BLE                DEBUG && false
 #define DEBUG_TS_BATTERY            DEBUG && false
 #define DEBUG_TS_BUZZER             DEBUG && false
 #define DEBUG_TS_ACCELEROMETER      DEBUG && false
@@ -42,10 +42,10 @@
     #define TFT_MISO 2  // Ne semble pas être utile, car non tactile
 
 #else // VSPI
-
-    #define TFT_BLK -1  // 12 // LED back-light. "BLK" or "BLK"
-    #define TFT_CS 5    // 25     // Chip select control pin. "CS" or "SS"
-    #define TFT_DC 0    // 19        // Data Command control pin
+    // ATTENTION : La PIN 25 TFT_BLK semble utilisée par le GPS selon le site officiel Lilygo. Mais elle ne semble pas utilisée par le GPS dans notre cas... Sert pour le mode veille !
+    #define TFT_BLK 25  // LED back-light. "BLK" or "BLK"
+    #define TFT_CS 5    // Chip select control pin. "CS" or "SS"
+    #define TFT_DC 0    // Data Command control pin
     #define TFT_RST -1  // Reset pin (could connect to Arduino RESET pin) "RST" or "RST"
     #define TFT_MOSI 23 // In some display driver board, it might be written as "SDA" and so on. "DIN" or "MOSI
     #define TFT_CLK 18  // In some display driver board, it might be written as "SCL" and so on. "CLK" or "SCK"
@@ -155,6 +155,7 @@
 #define PIN_BUTTON2 34
 #define BUTTON_LONG_PRESS_DURATION_MS 2000
 #define BUTTON_INACTIVITY_TIME_MS 300000 // 5 minutes
+// #define BUTTON_INACTIVITY_TIME_MS 5000 // 10 secondes
 
 /*----- BLE -----*/
 #define BLE_DEVICE_NAME "TrackSense"

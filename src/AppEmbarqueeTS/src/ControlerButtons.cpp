@@ -11,7 +11,7 @@ ControlerButtons::ControlerButtons(TSProperties *TSProperties) : _TSProperties(T
                                                                  _lastDateChangementStateButtons(millis())
 {
     this->_button1 = new ButtonTactile(PIN_BUTTON1, _TSProperties);
-    this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
+    // this->_button2 = new ButtonTactile(PIN_BUTTON2, _TSProperties);
     this->_guidGenerator = new UUID();
     this->_guidGenerator->setRandomMode();
 }
@@ -27,7 +27,8 @@ void ControlerButtons::tick()
     // this->_isPressedButton2 = this->_button2->getIsPressedButton();
 
     this->_finalStateButton1 = this->_button1->getFinalState(); // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
-    this->_finalStateButton2 = this->_button2->getFinalState();
+    // this->_finalStateButton2 = this->_button2->getFinalState();
+    this->_finalStateButton2 = 0;
 
     long dateActuelle = millis();
 
@@ -40,6 +41,7 @@ void ControlerButtons::tick()
     {
         this->_lastDateChangementStateButtons = dateActuelle;
         this->_TSProperties->PropertiesTS.IsOnStanby = false;
+        digitalWrite(TFT_BLK, HIGH); // Backlight on
     }
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
