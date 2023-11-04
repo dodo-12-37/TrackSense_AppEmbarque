@@ -18,6 +18,9 @@ ScreenGC9A01::ScreenGC9A01(TSProperties *TSProperties) : _TSProperties(TSPropert
     this->setRotation(this->_TSProperties->PropertiesScreen.ScreenRotation);
     this->canvas->setTextWrap(false);
 
+    pinMode(TFT_BLK, OUTPUT);
+    digitalWrite(TFT_BLK, HIGH); // Backlight on // TODO: Mettre dans une méthode pour allumer/éteindre le rétroéclairage
+
     // tft->setFont(&BebasNeue_Regular24pt7b);
     // tft->setFont(&FreeSansBold12pt7b);
 

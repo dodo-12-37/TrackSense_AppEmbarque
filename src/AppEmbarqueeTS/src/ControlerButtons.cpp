@@ -28,6 +28,7 @@ void ControlerButtons::tick()
 
     this->_finalStateButton1 = this->_button1->getFinalState(); // 0 == not pressed    // 1 == short press    // 2 == long press    // 3 == double short press
     this->_finalStateButton2 = this->_button2->getFinalState();
+    // this->_finalStateButton2 = 0;
 
     long dateActuelle = millis();
 
@@ -40,6 +41,7 @@ void ControlerButtons::tick()
     {
         this->_lastDateChangementStateButtons = dateActuelle;
         this->_TSProperties->PropertiesTS.IsOnStanby = false;
+        digitalWrite(TFT_BLK, HIGH); // Backlight on
     }
 
     int controlerState = this->_finalStateButton1 + 4 * this->_finalStateButton2;
